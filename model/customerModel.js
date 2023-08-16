@@ -1,27 +1,29 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
- accountHoldersName: { type: String, required: true, minLength: 3, maxLength: 30 },
+const CustomerSchema = new mongoose.Schema({
+  name: { type: String, required: true, minLength: 3, maxLength: 30 },
   middleName: { type: String, required: true,},
   occupation: { type: String, required: true,},
-  PlaceOfBirth: { type: String, required: true,},
+  placeOfBirth: { type: String, required: true,},
   sex: {
     type: String,
-    required: true,
+    enum: {
+      values: ["male", "female", "other"],
+      message: "Value of gender must be one of male, female, or other."
+    }
   },
   zip: {
-    type: String,
-    required: false,
+    type: String
   },
-  CustomersPhoneNo: {
-    type: Number,
+  customersPhoneNo: {
+    type: String,
     required: true,
     minLength: 8,
     maxLength: 11,
   },
   maritalStatus: {
     type: String,
-    required: false,
+    required: true,
 },
 spouseName: {
     type: String,
@@ -35,8 +37,8 @@ meansOfIdentification: {
     type: String,
     required: false,
   },
-  meansOfIdentification: {
- type: Number,
+  meansOfIdentificationNumber: {
+ type: String,
  required: false,
   },
   bankName: {
@@ -44,7 +46,7 @@ meansOfIdentification: {
     required: true,
   },
   bankAccountNo:{
-    type: Number,
+    type: String,
     required: true,
 },
 bankAccountName:{
@@ -60,7 +62,7 @@ contactAddress:{
     required: true,
 },
 bvn:{
-    type: Number,
+    type: String,
     required: true,
 },
 maritalStatus:{
@@ -70,4 +72,4 @@ maritalStatus:{
   
 }, {timestamps: true});
 
-module.exports = mongoose.model("UserModel", UserSchema);
+module.exports = User = mongoose.model('CustomerModel', CustomerSchema);

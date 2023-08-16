@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true, minLength: 3, maxLength: 30 },
   middleName: { type: String, required: true, minLength: 3, maxLength: 30 },
   lastName: { type: String, required: true, minLength: 3, maxLength: 30 },
@@ -14,6 +14,12 @@ const UserSchema = new mongoose.Schema({
     minLength: 8,
     maxLength: 11,
   },
+  password: {
+    type: String,
+    required: true,
+    minLength: 6,
+    maxLength: 200,
+  },
   email: {
     type: String,
     required: true,
@@ -24,7 +30,7 @@ const UserSchema = new mongoose.Schema({
   roles: {
     type: String,
     required: false,
-    enum: ["account Officer", "assstant manager", "dpo"],
+    enum: ["account Officer", "assistant manager", "dpo"],
     default: "account Officer",
 
   },
@@ -39,15 +45,19 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  passport: {
-    type: String,
-    required: false,
-  },
+  // passport: {
+  //   data: Buffer,
+  //   type: String,
+  // },
   status: {
     type: String,
-    enum: ["active", "inactive"]
+    enum: ["active", "inactive"],
+  default: "active"
  },
   
 }, {timestamps: true});
 
-module.exports = mongoose.model("UserModel", UserSchema);
+
+const User = mongoose.model("UserModel", userSchema);
+
+exports.User = User;

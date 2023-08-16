@@ -1,4 +1,4 @@
-const CustomerModel = require('../model/userModel');
+const CustomerModel = require('../model/customerModel');
 
 
 class CustomerService{
@@ -32,5 +32,3 @@ class CustomerService{
 }
 
 module.exports = new CustomerService()
-
-
