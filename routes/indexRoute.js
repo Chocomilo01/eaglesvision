@@ -11,11 +11,11 @@ const searchRoute = require('./searchRoute')
 router.use('/register',testmiddleware, userRoute)
 router.use('/login', testmiddleware, loginRoute)
 router.use('/customer', testmiddleware, customerRoute)
-router.use('/search', testmiddleware, searchRoute)
+//router.use('/search', testmiddleware, searchRoute)
 
 
 
 
 
 
-module.exports = router
+module.exports = router;
