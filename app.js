@@ -1,6 +1,8 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const rootRoute = require('./routes/indexRoute')
+const cors = require('cors');
+
 
 
 require('dotenv').config()
@@ -9,6 +11,11 @@ const app = express()
 
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
+
+app.use(cors({
+    origin: '*'
+
+}));
 
 app.use('/api/v1', rootRoute);
 

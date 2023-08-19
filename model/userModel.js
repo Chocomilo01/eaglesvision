@@ -30,8 +30,8 @@ const userSchema = new mongoose.Schema({
   roles: {
     type: String,
     required: false,
-    enum: ["account Officer", "assistant manager", "dpo"],
-    default: "account Officer",
+    enum: ["accountOfficer", "assistantManager", "dpo"],
+    default: "accountOfficer",
 
   },
   bvn: {
