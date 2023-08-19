@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const CustomerSchema = new mongoose.Schema({
-  name: { type: String, required: true, minLength: 3, maxLength: 30 },
+  name: { type: String, required: true, _id: mongoose.Types.ObjectId, minLength: 3, maxLength: 30 },
   middleName: { type: String, required: true,},
   occupation: { type: String, required: true,},
   placeOfBirth: { type: String, required: true,},

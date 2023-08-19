@@ -27,7 +27,7 @@ class CustomerController {
     }
 
 
-async updateCustomer(req, res){
+    async updateCustomer(req, res){
         const updateData = req.body
         const customerId = req.params.id
     
@@ -64,7 +64,7 @@ async updateCustomer(req, res){
         return res.status(200).json({
             success: true,
             message: 'Customer Fetched Successfully',
-            data: allProducts
+            data: allCustomers
         })
 
     }

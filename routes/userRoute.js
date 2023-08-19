@@ -1,21 +1,3 @@
-// const express = require('express');
-// const router = express.Router();
-
-// const { adminAuthorizer, authenticate }  = require('../middlewares/authentication');
-// const userController = require('../controller/userController');
-
-
-// router.post('/', userController.createUser)
-//  router.get('/:id', userController.fetchOneUser)
-//  router.patch('/:id', userController.updateUser)
-//  router.get('/', userController.fetchUsers)
-//  router.delete('/:id', userController.deleteUser)
-
-
-
-//  module.exports = router;
-
-
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
 const express = require("express");
@@ -84,13 +66,4 @@ firstName: req.body.firstName,
 
 })
 
-// router.get("/find/:id", async (req, res) => {
-//     try {
-//       const user = await User.findById(req.params.id);
-//       res.status(200).send(user);
-//     } catch (error) {
-//       res.status(500).send(error);
-//     }
-//   });
-  
  module.exports = router;

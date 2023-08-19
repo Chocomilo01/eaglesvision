@@ -4,7 +4,7 @@ const userRoute = require('./userRoute')
 const testmiddleware = require('../middlewares/test.middleware')
 const loginRoute = require('./loginRoute')
 const customerRoute = require('./customerRoute')
-const searchRoute = require('./searchRoute')
+//const searchRoute = require('./searchRoute')
 
 
 
