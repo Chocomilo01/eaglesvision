@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 
 const CustomerSchema = new mongoose.Schema({
-  name: { type: String, required: true, _id: mongoose.Types.ObjectId, minLength: 3, maxLength: 30 },
-  middleName: { type: String, required: true,},
-  occupation: { type: String, required: true,},
-  placeOfBirth: { type: String, required: true,},
+  name: { type: String, required: true,
+     _id: mongoose.Types.ObjectId,
+      minLength: 3, maxLength: 30 },
+  middleName: { type: String, required: true},
+  occupation: { type: String, required: true},
+  placeOfBirth: { type: String, required: true},
+  dateOfbirth: {type: String, required: true },
   sex: {
     type: String,
     enum: {
@@ -21,10 +24,6 @@ const CustomerSchema = new mongoose.Schema({
     minLength: 8,
     maxLength: 11,
   },
-  maritalStatus: {
-    type: String,
-    required: true,
-},
 spouseName: {
     type: String,
     required: false,
@@ -54,6 +53,10 @@ bankAccountName:{
     required: true,
 },
 nextOfKin:{
+    type: String,
+    required: true,
+},
+nextOfKinPhone:{
     type: String,
     required: true,
 },
