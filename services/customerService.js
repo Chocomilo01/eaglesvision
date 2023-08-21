@@ -2,6 +2,10 @@ const CustomerModel = require('../model/customerModel');
 
 
 class CustomerService{
+
+    // async generateAccountId() {
+    //     return await Math.floor(Math.random() * 10000);
+    //   }
     
     //Add a User
     async create(customerData){

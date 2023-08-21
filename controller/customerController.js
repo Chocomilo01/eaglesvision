@@ -3,7 +3,6 @@ const CustomerService = require("../services/customerService");
 
 
 class CustomerController {
-
   async createCustomer(req, res) {
     const body = req.body;
     console.log(body);
@@ -70,7 +69,7 @@ class CustomerController {
     }
 
     async fetchOneCustomer(req, res){
-        const customerId = parseInt(req.params.id)
+        const customerId = req.params.id;
         const customerToFetch = await CustomerService.fetchOne({_id: customerId});
 
         if(!customerToFetch) res.status(403).json({
