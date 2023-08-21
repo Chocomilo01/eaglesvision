@@ -65,11 +65,97 @@ firstName: req.body.firstName,
 });
 
 })
+
+router.get("/:id", async (req, res) => {
+    const userId = req.params.id;
   
+    // Check if the user ID is valid (e.g., it's in the correct format)
+    if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format",
+      });
+    }
+  
+    // Find the user by ID
+    try {
+      const user = await User.findById(userId).select("-password");
+  
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: "User Found Successfully",
+        data: user,
+      });
+    } catch (error) {
+      console.error("Error finding user:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  });
 
+  // Add this route to your existing router
+router.get("/", async (req, res) => {
+    try {
+      const users = await User.find().select("-password");
+  
+      res.status(200).json({
+        success: true,
+        message: "Users Fetched Successfully",
+        data: users,
+      });
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  });
 
-
-
-
-
+  // Add this route to your existing router
+router.delete("/:id", async (req, res) => {
+    const userId = req.params.id;
+  
+    // Check if the user ID is valid (e.g., it's in the correct format)
+    if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format",
+      });
+    }
+  
+    // Delete the user by ID
+    try {
+      const deletedUser = await User.findByIdAndDelete(userId);
+  
+      if (!deletedUser) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: "User Deleted Successfully",
+        data: deletedUser,
+      });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  });
+  
  module.exports = router;

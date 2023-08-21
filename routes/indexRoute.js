@@ -15,7 +15,4 @@ router.use('/customer', testmiddleware, customerRoute)
 
 
 
-
-
-
 module.exports = router;
