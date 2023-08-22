@@ -1,55 +1,50 @@
+const CustomerService = require("../services/customerService");
+const  { generateUniqueAccountNumber } = require("../utils/uniqueNumber")
 
+class TransactionController {
+async depositMoney(req, res) {
+  const customerId = req.params.id;
+  const { amount } = req.body;
 
-// // Function to generate a unique account ID
-// function generateAccountId() {
-//     return Math.floor(Math.random() * 10000);
-//   }
-// // Endpoint to create a new savings account
-// app.post('/', (req, res) => {
-//     const { customerId } = req.body;
-  
-//     if (!customerId) {
-//       return res.status(400).json({ error: 'Invalid request data' });
-//     }
-  
-//     // Generate a unique account ID
-//     const accountId = generateAccountId();
-  
-//     // Create a new savings account
-//     const savingsAccount = {
-//       id: accountId,
-//       customerId,
-//       balance: 0, // Initialize with a zero balance
-//     };
-  
-//     // Push the account into the array (simulated storage)
-//     savingsAccounts.push(savingsAccount);
-  
-//     res.status(201).json({ message: 'Savings account created successfully', account: savingsAccount });
-//   });
+  try {
+    // Fetch the customer
+    const customer = await CustomerService.fetchOne({ _id: customerId });
 
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: 'Customer not found',
+      });
+    }
 
-  
-    
-//   async createSavingsAccount(req, res) {
-//     const { customerId } = req.body;
+    // Ensure the amount to deposit is a positive number
+    if (amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid deposit amount',
+      });
+    }
 
-//     if (!customerId) {
-//       return res.status(400).json({ error: 'Invalid request data' });
-//     }
+    // Update the account balance
+    customer.accountBalance += amount;
 
-//     // Generate a unique account ID
-//     const accountId = await generateAccountId();
+    // Save the updated customer data
+    await customer.save();
 
-//     // Create a new savings account
-//     const savingsAccount = {
-//       id: accountId,
-//       customrId,
-//       balance: 0, // Initialize with a zero balance
-//     };
-
-//     // Push the account into the array (simulated storage)
-//     savingsAccounts.push(savingsAccount);
-
-//     res.status(201).json({ message: 'Savings account created successfully', account: savingsAccount });
-//   }
+    return res.status(200).json({
+      success: true,
+      message: 'Money deposited successfully',
+      data: {
+        accountBalance: customer.accountBalance,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+}
+ }
+module.exports = new TransactionController()

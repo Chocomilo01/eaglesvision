@@ -1,30 +1,37 @@
 const CustomerService = require("../services/customerService");
-
+const  { generateUniqueAccountNumber } = require("../utils/uniqueNumber")
 
 
 class CustomerController {
-  async createCustomer(req, res) {
-    const body = req.body;
-    console.log(body);
-
-    // Check if a customer is of that title already exist
-    // If not create the customer
-    const existingCustomer = await CustomerService.fetchOne({name: body.name.toLowerCase()})
-        if(existingCustomer) return res.status(403).json({
+    async createCustomer(req, res) {
+        const body = req.body;
+      
+        // Generate a unique account number
+        const accountNumber = generateUniqueAccountNumber();
+      
+        // Check if a customer with that account number already exists
+        const existingCustomer = await CustomerService.fetchOne({ accountNumber });
+      
+        if (existingCustomer) {
+          return res.status(403).json({
             success: false,
-            message: 'Customer already exist'
-        })
-
-        
-
-        const createdCustomer = await CustomerService.create(body)
-            return res.status(201).json({
-            success: true,
-            message: 'Customer Created Successfully',
-            data: createdCustomer
-        })
-    }
-
+            message: 'Customer with this account number already exists',
+          });
+        }
+      
+        // Add the account number to the customer data
+        body.accountNumber = accountNumber;
+      
+        // Create the customer with the updated data
+        const createdCustomer = await CustomerService.create(body);
+      
+        return res.status(201).json({
+          success: true,
+          message: 'Customer Created Successfully',
+          data: createdCustomer, accountNumber,
+          
+        });
+      }
 
     async updateCustomer(req, res){
         const updateData = req.body
@@ -84,7 +91,7 @@ class CustomerController {
         })
 
     }
-
+    
 
     async deleteCustomer(req, res){
         const customerId = req.params.id
@@ -104,6 +111,7 @@ class CustomerController {
         })
 
     }
+      
 }
 
 module.exports = new CustomerController()

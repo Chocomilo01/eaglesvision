@@ -69,6 +69,8 @@ maritalStatus:{
     type: String,
     required: true,
 },
+accountNumber: { String, 
+ },
   
 }, {timestamps: true});
 
