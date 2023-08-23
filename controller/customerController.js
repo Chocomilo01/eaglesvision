@@ -1,37 +1,50 @@
 const CustomerService = require("../services/customerService");
 const  { generateUniqueAccountNumber } = require("../utils/uniqueNumber")
+const CustomerModel = require("../model/customerModel")
 
 
 class CustomerController {
     async createCustomer(req, res) {
-        const body = req.body;
+      const body = req.body;
       
+      try {
         // Generate a unique account number
         const accountNumber = generateUniqueAccountNumber();
-      
+        console.log('Generated Account Number:', accountNumber);
+  
         // Check if a customer with that account number already exists
         const existingCustomer = await CustomerService.fetchOne({ accountNumber });
-      
+  
         if (existingCustomer) {
           return res.status(403).json({
             success: false,
             message: 'Customer with this account number already exists',
           });
         }
-      
+  
         // Add the account number to the customer data
         body.accountNumber = accountNumber;
-      
-        // Create the customer with the updated data
-        const createdCustomer = await CustomerService.create(body);
-      
+  
+        // Create a new customer document using the Mongoose model
+        const newCustomer = new CustomerModel(body);
+  
+        // Save the customer document to the database
+        const createdCustomer = await newCustomer.save();
+  
         return res.status(201).json({
           success: true,
           message: 'Customer Created Successfully',
-          data: createdCustomer, accountNumber,
-          
+          data: createdCustomer,
+          accountNumber,
+        });
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: 'Error creating customer',
+          error: error.message,
         });
       }
+    }
 
     async updateCustomer(req, res){
         const updateData = req.body

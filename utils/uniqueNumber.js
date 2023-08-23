@@ -1,6 +1,6 @@
-function generateUniqueAccountNumber(prefix = "SAV-") {
+function generateUniqueAccountNumber(prefix = "EAGLE-") {
     // Generate a random number (you can customize the range)
-    const randomNumber = Math.floor(Math.random() * 1000000);
+    const randomNumber = Math.floor(Math.random() * 10000000000);
   
     // Concatenate the prefix and random number to create the account number
     const accountNumber = `${prefix}${randomNumber}`;
