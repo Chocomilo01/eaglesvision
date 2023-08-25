@@ -87,8 +87,9 @@ const CustomerSchema = new mongoose.Schema(
     },
     accountBalance: {
       type: Number,
-      default: 0, // Initial balance is set to 0
+      default: 0, // Initial balance is set to 
     },
+    
   },
   { timestamps: true }
 );

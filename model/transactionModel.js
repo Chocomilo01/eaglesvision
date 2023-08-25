@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 
+
+
+
 const TransactionSchema = new mongoose.Schema(
   {
     type: {
@@ -16,6 +19,17 @@ const TransactionSchema = new mongoose.Schema(
       ref: "CustomerModel", // Reference to the Customer model
       required: true,
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "UserModel", // Reference to the User model
+    },
+    firstName: {
+      type: String,
+    },
+    middleName: {
+      type: String,
+    },
+   
   },
   { timestamps: true }
 );
