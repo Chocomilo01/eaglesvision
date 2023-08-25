@@ -31,7 +31,7 @@ class TransactionController {
       });
 
       // Update the customer's account balance
-      accountBalance += amount;
+      customer.accountBalance += amount;
       await customer.save();
       
 
