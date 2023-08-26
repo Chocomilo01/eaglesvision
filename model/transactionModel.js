@@ -29,6 +29,22 @@ const TransactionSchema = new mongoose.Schema(
     middleName: {
       type: String,
     },
+    choose: {
+      type: String, emum: ["debit", "credit"],
+    },
+    collectedBy: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
+    paymentDate: {
+      type: Number,
+    },
+    modeOfPayment: {
+      type: String, emum: ["cash", "transfer"],
+    },
+
    
   },
   { timestamps: true }

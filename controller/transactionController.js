@@ -2,65 +2,78 @@ const TransactionService = require("../services/transactionService");
 const CustomerService = require("../services/customerService");
 
 class TransactionController {
-  async createDeposit(req, res) {
-    try {
-      const { customerId, amount } = req.body;
-
-      // Verify that the customer exists
-      const customer = await CustomerService.fetchOne({ _id: customerId });
-
-      if (!customer) {
-        return res.status(404).json({
-          success: false,
-          message: "Customer not found",
-        });
-      }
-       // Fetch user information (user ID and user name) from your authentication system or user service
-    const userId = req.body.id; 
-    const firstName = req.body.firstNameame;
-    const middleName = req.body.middleNameame;
-
-      // Create a deposit transaction
-      const depositTransaction = await TransactionService.create({
-        type: "deposit",
-        amount,
-        customer: customer._id,
-        firstName,
-        middleName,
-
-      });
-
-      // Update the customer's account balance
-      customer.accountBalance += amount;
-      await customer.save();
+  
+// Inside the createDeposit method
+async createDeposit(req, res) {
+  try {
+    const { customerId, amount, description,
       
+      collectedBy,
+      modeOfPayment,
+      paymentDate, } = req.body;
+
+    // Verify that the customer exists
+    const customer = await CustomerService.fetchOne({ _id: customerId });
+
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer not found",
+      });
+    }
+
+    // Fetch user information (user ID and user name) from your authentication system or user service
+    const userId = req.body.id; 
+    const firstName = req.body.firstName;
+    const middleName = req.body.middleName;
+
+    // Convert the amount to a number
+    const depositAmount = parseFloat(amount);
+
+    // Create a deposit transaction
+    const depositTransaction = await TransactionService.create({
+      type: "deposit",
+      amount: depositAmount, // Use the parsed amount here
+      customer: customer._id,
+      firstName,
+      middleName,
+      description,
+      choose: "credit",
+      collectedBy,
+      modeOfPayment,
+      paymentDate,
+    });
+
+    // Update the customer's account balance by adding the deposit amount
+    customer.accountBalance += depositAmount;
+    await customer.save();
 
     const updatedBalance = customer.accountBalance;
     const responsePayload = {
-    transaction: depositTransaction,
-    balance: updatedBalance,
+      transaction: depositTransaction,
+      balance: updatedBalance,
       user: {
         id: userId,
         firstName: firstName,
         middleName: middleName,
-         // Include the updated balance
       },
     };
 
-      return res.status(201).json({
-        success: true,
-        message: "Deposit created successfully",
-        data: responsePayload,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error creating deposit",
-        error: error.message,
-      });
-    }
+    return res.status(201).json({
+      success: true,
+      message: "Deposit created successfully",
+      data: responsePayload,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error creating deposit",
+      error: error.message,
+    });
   }
-  // transactionController.js
+}
+
+
 
 async createWithdrawal(req, res) {
   try {
