@@ -35,8 +35,8 @@ async createDeposit(req, res) {
       type: "deposit",
       amount: depositAmount, // Use the parsed amount here
       customer: customer._id,
-      firstName,
-      middleName,
+      // firstName,
+      // middleName,
       description,
       choose: "credit",
       collectedBy,
