@@ -13,7 +13,26 @@ class TransactionService {
 async createWithdrawal(transactionData) {
     return await TransactionModel.create(transactionData);
   }
-  
+  async getAllDeposits() {
+    try {
+      const deposits = await TransactionModel.find({ type: "deposit" }).exec();
+      return deposits;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getDepositById(depositId) {
+    try {
+      const deposit = await TransactionModel.findById(depositId).exec();
+      if (!deposit) {
+        throw new Error("Deposit not found");
+      }
+      return deposit;
+    } catch (error) {
+      throw error;
+    }
+  }
   
 }
 

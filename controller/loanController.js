@@ -1,138 +1,261 @@
-// const TransactionService = require("../services/transactionService");
-// const CustomerService = require("../services/customerService");
+const LoanService = require("../services/loanService");
+const CustomerService = require("../services/customerService");
 
-// class TransactionController {
-//   async createDeposit(req, res) {
-//     try {
-//       const { customerId, amount } = req.body;
+class LoanController {
+  async createLoan(req, res) {
+    try {
+      const {
+        customerId,
+        amount,
+        loanTitle,
+        phoneNo1,
+        phoneNo2,
+        houseAddress,
+        officeAddress,
+        maritalStatus,
+        currentOccupationOfApplicant,
+        spousePhoneNo,
+        spouseName,
+        spouseOccupation,
+        spouseOfficeAddress,
+        LoanRequestedAmount,
+        firstGuarantorsName,
+        firstGuarantorsSex,
+        firstGuarantorsDateOfBirth,
+        firstGuarantorsPhoneNumber,
+        firstGuarantorsOccupation,
+        firstGuarantorsHouseAddress,
+        firstGuarantorsOfficeAddress,
+        secondGuarantorsName,
+        secondGuarantorsSex,
+        secondGuarantorsDateOfBirth,
+        secondGuarantorsPhoneNumber,
+        secondGuarantorsOccupation,
+        secondGuarantorsHouseAddress,
+        secondGuarantorsOfficeAddress,
+        status, 
+        interestRate,
+        loanDuration,
+        loanStartDate,
+        loanEndDate,
+        repaymentSchedule,
+        // ...other loan details...
+      } = req.body;
 
-//       // Verify that the customer exists
-//       const customer = await CustomerService.fetchOne({ _id: customerId });
+      // Verify that the customer exists
+      const customer = await CustomerService.fetchOne({ _id: customerId });
 
-//       if (!customer) {
-//         return res.status(404).json({
-//           success: false,
-//           message: "Customer not found",
-//         });
-//       }
-//        // Fetch user information (user ID and user name) from your authentication system or user service
-//     const userId = req.body.id; 
-//     const firstName = req.body.firstNameame;
-//     const middleName = req.body.middleNameame;
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message: "Customer not found",
+        });
+      }
 
-//       // Create a deposit transaction
-//       const depositTransaction = await TransactionService.create({
-//         type: "deposit",
-//         amount,
-//         customer: customer._id,
-//         firstName,
-//         middleName,
+      // Parse interest rate and loan amount as numbers
+      const disbursementInterestRate = parseFloat(interestRate);
+      const disbursementAmount = parseFloat(amount);
 
-//       });
+      if (isNaN(disbursementInterestRate) || isNaN(disbursementAmount)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid interest rate or loan amount",
+        });
+      }
 
-//       // Update the customer's account balance
-//       accountBalance += amount;
-//       await customer.save();
-      
+      // Calculate the interest amount based on the loan amount and interest rate
+      //const interestAmount = (parsedAmount * parsedInterestRate) / 100;
+      const interestAmount = disbursementInterestRate;
 
-//     const updatedBalance = customer.accountBalance;
-//     const responsePayload = {
-//     transaction: depositTransaction,
-//     balance: updatedBalance,
-//       user: {
-//         id: userId,
-//         firstName: firstName,
-//         middleName: middleName,
-//          // Include the updated balance
-//       },
-//     };
+      // Check if there is an existing loan for this customer
+      const existingLoan = await LoanService.fetchOne({ customer: customer._id });
 
-//       return res.status(201).json({
-//         success: true,
-//         message: "Deposit created successfully",
-//         data: responsePayload,
-//       });
-//     } catch (error) {
-//       return res.status(500).json({
-//         success: false,
-//         message: "Error creating deposit",
-//         error: error.message,
-//       });
-//     }
-//   }
-//   // transactionController.js
+      if (existingLoan) {
+        return res.status(400).json({
+          success: false,
+          message: "An existing loan already exists for this customer",
+        });
+      }
 
-// async createWithdrawal(req, res) {
-//   try {
-//     const { customerId, amount } = req.body;
+      // If there is no existing loan, create a new loan
+      const loan = await LoanService.create({
+        amount: disbursementAmount + interestAmount, // Add interest to the loan amount
+        type: "disbursement",
+        loanTitle,
+        phoneNo1,
+        phoneNo2,
+        houseAddress,
+        officeAddress,
+        maritalStatus,
+        currentOccupationOfApplicant,
+        spousePhoneNo,
+        spouseName,
+        spouseOccupation,
+        spouseOfficeAddress,
+        LoanRequestedAmount,
+        firstGuarantorsName,
+        firstGuarantorsSex,
+        firstGuarantorsDateOfBirth,
+        firstGuarantorsPhoneNumber,
+        firstGuarantorsOccupation,
+        firstGuarantorsHouseAddress,
+        firstGuarantorsOfficeAddress,
+        secondGuarantorsName,
+        secondGuarantorsSex,
+        secondGuarantorsDateOfBirth,
+        secondGuarantorsPhoneNumber,
+        secondGuarantorsOccupation,
+        secondGuarantorsHouseAddress,
+        secondGuarantorsOfficeAddress,
+        status, 
+        interestRate,
+        loanDuration,
+        loanStartDate,
+        loanEndDate,
+        repaymentSchedule,
+        customer: customer._id,
+      });
 
-//     // Verify that the customer exists
-//     const customer = await CustomerService.fetchOne({ _id: customerId });
+      return res.status(201).json({
+        success: true,
+        message: "Loan created and disbursed successfully",
+        data: loan,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error creating",
+        error: error.message,
+      });
+    }
+  }
+  async createRepayment(req, res) {
+    try {
+      const {
+        customerId, // ID of the customer making the repayment
+        repaymentAmount, // The amount being repaid
+        repaymentDate, // The date of the repayment
+        loanEndDate,
+        loanStartDate,
+        interestRate,
+      } = req.body;
 
-//     if (!customer) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Customer not found",
-//       });
-//     }
+      // Verify that the customer exists
+      const customer = await CustomerService.fetchOne({ _id: customerId });
 
-//     // Check if the customer has sufficient balance for the withdrawal
-//     if (customer.accountBalance < amount) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Insufficient funds for withdrawal",
-//       });
-//     }
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message: "Customer not found",
+        });
+      }
 
-//     // Fetch user information (user ID and user name) from your authentication system or user service
-//     const userId = req.body.id; 
-//     const firstName = req.body.firstNameame;
-//     const middleName = req.body.middleNameame; // Replace with how you retrieve the user name
+      // Create a repayment record
+      const repayment = await LoanService.create({
+        amount: repaymentAmount,
+        repaymentDate: new Date(repaymentDate),
+        customer: customer._id,
+        type: "repayment",
+        loanEndDate,
+        loanStartDate,
+        interestRate,
+        // ... Other repayment details ...
+      });
 
-//     // Create a withdrawal transaction with user information
-//     const withdrawalTransaction = await TransactionService.createWithdrawal({
-//       type: "withdrawal",
-//       amount,
-//       customer: customer._id,
-//       userId, // Include the user ID
-//       firstName, // Include the user name
-//       middleName,
-//     });
-
-//     // Update the customer's account balance
-//     customer.accountBalance -= amount;
-//     await customer.save();
-
-//     // Include user information in the response
-//     const updatedBalance = customer.accountBalance;
-//     const responsePayload = {
-//     transaction: withdrawalTransaction,
-//     balance: updatedBalance,
-//       user: {
-//         id: userId,
-//         firstName: firstName,
-//         middleName: middleName,
-//          // Include the updated balance
-//       },
-//     };
-    
-//     return res.status(201).json({
-//       success: true,
-//       message: "Withdrawal created successfully",
-//       data: responsePayload,
-//     });
+      return res.status(201).json({
+        success: true,
+        message: "Loan repayment created successfully",
+        data: repayment,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error creating loan repayment",
+        error: error.message,
+      });
+    }
+  }
   
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Error creating withdrawal",
-//       error: error.message,
-//     });
-//   }
-// }
+
+  async getLoans(req, res) {
+    try {
+      // Fetch all loans
+      const loans = await LoanService.fetch({});
+      
+      return res.status(200).json({
+        success: true,
+        message: "Loans retrieved successfully",
+        data: loans,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching loans",
+        error: error.message,
+      });
+    }
+  }
+  async getLoanById(req, res) {
+    try {
+      const { loanId } = req.params;
+
+      // Fetch the loan by ID
+      const loan = await LoanService.fetchOne({ _id: loanId });
+
+      if (!loan) {
+        return res.status(404).json({
+          success: false,
+          message: "Loan not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Loan retrieved successfully",
+        data: loan,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching loan",
+        error: error.message,
+      });
+    }
+  }
+
+  async deleteLoan(req, res) {
+    try {
+      const { loanId } = req.params;
+
+      // Delete the loan by ID
+      const deletedLoan = await LoanService.deleteOne({ _id: loanId });
+
+      if (!deletedLoan) {
+        return res.status(404).json({
+          success: false,
+          message: "Loan not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Loan deleted successfully",
+        data: deletedLoan,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error deleting loan",
+        error: error.message,
+      });
+    }
+  }
 
 
-//   // Implement similar methods for withdrawals, transaction history, etc.
-// }
 
-// module.exports = new TransactionController();
+
+  
+
+ }
+module.exports = new LoanController();
+

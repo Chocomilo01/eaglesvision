@@ -35,8 +35,7 @@ async createDeposit(req, res) {
       type: "deposit",
       amount: depositAmount, // Use the parsed amount here
       customer: customer._id,
-      // firstName,
-      // middleName,
+      
       description,
       choose: "credit",
       collectedBy,
@@ -143,9 +142,42 @@ async createWithdrawal(req, res) {
     });
   }
 }
+async getAllDeposits(req, res) {
+  try {
+    const deposits = await TransactionService.getAllDeposits();
+    return res.status(200).json({
+      success: true,
+      message: "Deposits retrieved successfully",
+      data: deposits,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error retrieving deposits",
+      error: error.message,
+    });
+  }
+}
 
+async getDepositById(req, res) {
+  try {
+    const depositId = req.params.depositId;
+    const deposit = await TransactionService.getDepositById(depositId);
+    return res.status(200).json({
+      success: true,
+      message: "Deposit retrieved successfully",
+      data: deposit,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      success: false,
+      message: "Deposit not found",
+      error: error.message,
+    });
+  }
+}
 
-  // Implement similar methods for withdrawals, transaction history, etc.
+  
 }
 
 module.exports = new TransactionController();
