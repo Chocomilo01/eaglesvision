@@ -177,6 +177,33 @@ async getDepositById(req, res) {
   }
 }
 
+  async getAllWithdrawals(req, res) {
+    const withdrawals = await TransactionService.getAllWithdrawals();
+
+    return res.status(200).json({
+      success: true,
+      message: "All withdrawals retrieved successfully",
+      data: withdrawals,
+    });
+  }
+  async getWithdrawalById(req, res) {
+    const withdrawalId = req.params.id;
+
+    const withdrawal = await TransactionService.getWithdrawalById(withdrawalId);
+
+    if (!withdrawal) {
+      return res.status(404).json({
+        success: false,
+        message: "Withdrawal not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Withdrawal retrieved successfully",
+      data: withdrawal,
+    });
+  }
   
 }
 

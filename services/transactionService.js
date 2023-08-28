@@ -33,6 +33,12 @@ async createWithdrawal(transactionData) {
       throw error;
     }
   }
+  async getAllWithdrawals() {
+    return TransactionModel.find({ type: "withdrawal" }).exec();
+  }
+  async getWithdrawalById(id) {
+    return TransactionModel.findById(id).exec();
+  }
   
 }
 
