@@ -1,3 +1,4 @@
+const cron = require('node-cron');
 const LoanService = require("../services/loanService");
 const CustomerService = require("../services/customerService");
 
@@ -32,8 +33,7 @@ class LoanController {
         secondGuarantorsPhoneNumber,
         secondGuarantorsOccupation,
         secondGuarantorsHouseAddress,
-        secondGuarantorsOfficeAddress,
-        status, 
+        secondGuarantorsOfficeAddress, 
         interestRate,
         loanDuration,
         loanStartDate,
@@ -107,7 +107,7 @@ class LoanController {
         secondGuarantorsOccupation,
         secondGuarantorsHouseAddress,
         secondGuarantorsOfficeAddress,
-        status, 
+        status: "disbursed",
         interestRate,
         loanDuration,
         loanStartDate,
@@ -159,8 +159,38 @@ class LoanController {
         loanEndDate,
         loanStartDate,
         interestRate,
+        status: "repaid",
         // ... Other repayment details ...
       });
+      
+
+    cron.schedule("0 0 * * *", async () => {
+  try {
+    const currentDate = new Date();
+
+    // Find loans with end dates in the past and status "disbursed"
+    const overdueLoans = await LoanModel.find({
+      loanEndDate: { $lt: currentDate },
+      status: "disbursed",
+    });
+
+    // Update the status of overdue loans to "defaulter"
+    await Promise.all(
+      overdueLoans.map(async (loan) => {
+        // Check if the loan amount is fully repaid
+        const totalRepayments = await LoanService.calculateTotalRepayments(loan._id);
+        if (totalRepayments < loan.amount) {
+          loan.status = "defaulter";
+          await loan.save();
+        }
+      })
+    );
+
+    console.log("Loan statuses updated successfully.");
+  } catch (error) {
+    console.error("Error updating loan statuses:", error.message);
+  }
+});
 
       return res.status(201).json({
         success: true,
@@ -175,6 +205,7 @@ class LoanController {
       });
     }
   }
+  
   
 
   async getLoans(req, res) {
@@ -222,39 +253,8 @@ class LoanController {
       });
     }
   }
-
-  async deleteLoan(req, res) {
-    try {
-      const { loanId } = req.params;
-
-      // Delete the loan by ID
-      const deletedLoan = await LoanService.deleteOne({ _id: loanId });
-
-      if (!deletedLoan) {
-        return res.status(404).json({
-          success: false,
-          message: "Loan not found",
-        });
-      }
-
-      return res.status(200).json({
-        success: true,
-        message: "Loan deleted successfully",
-        data: deletedLoan,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error deleting loan",
-        error: error.message,
-      });
-    }
-  }
-
-
-
-
   
+
 
  }
 module.exports = new LoanController();

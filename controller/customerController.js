@@ -124,6 +124,37 @@ class CustomerController {
         })
 
     }
+    //Search Engine
+
+    async searchCustomerByName(req, res) {
+      try {
+        const { name } = req.query;
+    
+        // Check if a name parameter is provided
+        if (!name) {
+          return res.status(400).json({
+            success: false,
+            message: 'Please provide a name for the search.',
+          });
+        }
+    
+        // Use the CustomerService to search customers by name (using the correct field)
+        const customers = await CustomerService.fetch({ name: { $regex: name, $options: 'i' } });
+    
+        return res.status(200).json({
+          success: true,
+          message: 'Customers found successfully',
+          data: customers,
+        });
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: 'Error searching for customers by name',
+          error: error.message,
+        });
+      }
+    }
+    
       
 }
 
