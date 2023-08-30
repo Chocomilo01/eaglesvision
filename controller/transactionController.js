@@ -7,10 +7,10 @@ class TransactionController {
 async createDeposit(req, res) {
   try {
     const { customerId, amount, description,
-      
       collectedBy,
       modeOfPayment,
-      paymentDate, } = req.body;
+      paymentDate,
+     } = req.body;
 
     // Verify that the customer exists
     const customer = await CustomerService.fetchOne({ _id: customerId });
@@ -35,12 +35,12 @@ async createDeposit(req, res) {
       type: "deposit",
       amount: depositAmount, // Use the parsed amount here
       customer: customer._id,
-      
       description,
       choose: "credit",
       collectedBy,
       modeOfPayment,
       paymentDate,
+      user: userId,
     });
 
     // Update the customer's account balance by adding the deposit amount
@@ -76,7 +76,9 @@ async createDeposit(req, res) {
 
 async createWithdrawal(req, res) {
   try {
-    const { customerId, amount } = req.body;
+    const { customerId, amount, description,
+      collectedBy,
+      paymentDate, } = req.body;
 
     // Verify that the customer exists
     const customer = await CustomerService.fetchOne({ _id: customerId });
@@ -109,6 +111,11 @@ async createWithdrawal(req, res) {
       userId, // Include the user ID
       firstName, // Include the user name
       middleName,
+      description,
+      choose: "Debit",
+      collectedBy,
+      paymentDate,
+      user: userId,
     });
 
     // Update the customer's account balance
@@ -142,96 +149,89 @@ async createWithdrawal(req, res) {
     });
   }
 }
+async getAllDeposits(req, res) {
+  try {
+    // Call the service to get all deposit transactions
+    const deposits = await TransactionService.getAllDeposits();
+
+    return res.status(200).json({
+      success: true,
+      message: 'All deposit transactions retrieved successfully',
+      data: deposits,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error retrieving deposit transactions',
+      error: error.message,
+    });
+  }
+}
+async getAllWithdrawals(req, res) {
+  // Call the service to get all withdrawal transactions
+  const withdrawals = await TransactionService.getAllWithdrawals();
+
+  return res.status(200).json({
+    success: true,
+    message: 'All withdrawal transactions retrieved successfully',
+    data: withdrawals,
+  });
+}
+async getWithdrawalById(req, res) {
+  try {
+    const withdrawalId = req.params.withdrawalId;
+
+    // Query the database for the withdrawal transaction with the specified ID
+    const withdrawal = await TransactionService.getWithdrawalById(withdrawalId);
+
+    if (!withdrawal) {
+      return res.status(404).json({
+        success: false,
+        message: "Withdrawal not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Withdrawal retrieved successfully",
+      data: withdrawal,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error retrieving withdrawal transaction",
+      error: error.message,
+    });
+  }
+}
+
+async getDepositById(req, res) {
+  try {
+    const depositId = req.params.depositId;
+    const deposit = await TransactionService.getDepositById(depositId);
+    
+    if (!deposit) {
+      return res.status(404).json({
+        success: false,
+        message: "Deposit not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Deposit retrieved successfully",
+      data: deposit,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error retrieving deposit",
+      error: error.message,
+    });
+  }
+}
 
 
-// async getDepositById(req, res) {
-//   try {
-//     const depositId = req.params.depositId;
-//     const deposit = await TransactionService.getDepositById(depositId);
-//     return res.status(200).json({
-//       success: true,
-//       message: "Deposit retrieved successfully",
-//       data: deposit,
-//     });
-//   } catch (error) {
-//     return res.status(404).json({
-//       success: false,
-//       message: "Deposit not found",
-//       error: error.message,
-//     });
-//   }
-// }
-
-  // async getAllWithdrawals(req, res) {
-  //   const withdrawals = await TransactionService.getAllWithdrawals();
-
-  //   return res.status(200).json({
-  //     success: true,
-  //     message: "All withdrawals retrieved successfully",
-  //     data: withdrawals,
-  //   });
-  // }
-  // async getWithdrawalById(req, res) {
-  //   const withdrawalId = req.params.id;
-
-  //   const withdrawal = await TransactionService.getWithdrawalById(withdrawalId);
-
-  //   if (!withdrawal) {
-  //     return res.status(404).json({
-  //       success: false,
-  //       message: "Withdrawal not found",
-  //     });
-  //   }
-
-  //   return res.status(200).json({
-  //     success: true,
-  //     message: "Withdrawal retrieved successfully",
-  //     data: withdrawal,
-  //   });
-  // }
-  // async getDepositsByDate(req, res) {
-  //   try {
-  //     const { date } = req.body;
-  
-  //     // Check if a date parameter is provided
-  //     if (!date) {
-  //       return res.status(400).json({
-  //         success: false,
-  //         message: "Please provide a date for the search.",
-  //       });
-  //     }
-  
-  //     // Convert the date string to a JavaScript Date object
-  //     const searchDate = new Date(date);
-  
-  //     // Get the end of the day by adding 1 day to the searchDate
-  //     const nextDay = new Date(searchDate);
-  //     nextDay.setDate(nextDay.getDate() + 1);
-  
-  //     // Query deposits with the provided date
-  //     const deposits = await TransactionService.fetch({
-  //       type: "deposit",
-  //       paymentDate: {
-  //         $gte: searchDate, // Greater than or equal to the provided date
-  //         $lt: nextDay,     // Less than the next day
-  //       },
-  //     });
-  
-  //     return res.status(200).json({
-  //       success: true,
-  //       message: "Deposits found successfully",
-  //       data: deposits,
-  //     });
-  //   } catch (error) {
-  //     return res.status(500).json({
-  //       success: false,
-  //       message: "Error fetching deposits by date",
-  //       error: error.message,
-  //     });
-  //   }
-  // }
-
-  
 }
 
 module.exports = new TransactionController();

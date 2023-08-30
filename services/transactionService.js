@@ -9,48 +9,52 @@ class TransactionService {
   async fetch(filter) {
     return await TransactionModel.find(filter)
   }
+  async getAllDeposits() {
+    try {
+      // Query all transactions with type "deposit"
+      const deposits = await TransactionModel.find({ type: 'deposit' });
 
+      return deposits;
+    } catch (error) {
+      throw new Error(`Error fetching deposit transactions: ${error.message}`);
+    }
+  }
+  async getDepositById(depositId) {
+    try {
+      const deposit = await TransactionModel.findById(depositId);
+      return deposit;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+  
+  // WITHDRAWALS
 async createWithdrawal(transactionData) {
     return await TransactionModel.create(transactionData);
   }
-  // async getAllDeposits() {
-  //   try {
-  //     const deposits = await TransactionModel.find({ type: "deposit" }).exec();
-  //     return deposits;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  async getAllWithdrawals() {
+    try {
+      // Query the database for all withdrawal transactions
+      const withdrawals = await TransactionModel.find({ type: 'withdrawal' });
 
-  // async getDepositById(depositId) {
-  //   try {
-  //     const deposit = await TransactionModel.findById(depositId).exec();
-  //     if (!deposit) {
-  //       throw new Error("Deposit not found");
-  //     }
-  //     return deposit;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-  // async getAllWithdrawals() {
-  //   return TransactionModel.find({ type: "withdrawal" }).exec();
-  // }
-  // async getWithdrawalById(id) {
-  //   return TransactionModel.findById(id).exec();
-  // }
-  // async getDepositsByDate(searchDate) {
-  //   try {
-  //     const deposits = await TransactionModel.find({
-  //       type: "deposit",
-  //       paymentDate: searchDate, // Adjust the field name as per your schema
-  //     }).exec();
-  //     return deposits;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  //}
-  
+      return withdrawals;
+    } catch (error) {
+      // Handle the error here if needed
+      throw error;
+    }
+  }
+  async getWithdrawalById(withdrawalId) {
+    try {
+      // Query the database for the withdrawal transaction by its ID
+      const withdrawal = await TransactionModel.findById(withdrawalId);
+
+      return withdrawal;
+    } catch (error) {
+      // Handle the error here if needed
+      throw error;
+    }
+  }
+  // ... other methods ...
 }
 
 module.exports = new TransactionService();

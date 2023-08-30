@@ -23,12 +23,6 @@ const TransactionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "UserModel", // Reference to the User model
     },
-    firstName: {
-      type: String,
-    },
-    middleName: {
-      type: String,
-    },
     choose: {
       type: String, emum: ["debit", "credit"],
     },
@@ -39,7 +33,7 @@ const TransactionSchema = new mongoose.Schema(
       type: String,
     },
     paymentDate: {
-      type: Number,
+      type: String,
     },
     modeOfPayment: {
       type: String, emum: ["cash", "transfer"],

@@ -5,18 +5,17 @@ const transactionController = require("../controller/transactionController");
 
 // Create a deposit
 router.post("/deposit", transactionController.createDeposit);
-router.post("/withdrawal", transactionController.createWithdrawal);
-// get a single withdrawal
-// router.get("/:id", transactionController.getWithdrawalById);
-// // Get all withdrawals
-// router.get("/withdrawals", transactionController.getAllWithdrawals);
-// //router.get("/deposits-by-date", transactionController.getDepositsByDate);
-
-
-
-
 // // Get all deposits
-// router.get("/deposits", transactionController.getAllDeposits);
+router.get('/deposits', transactionController.getAllDeposits);
+// GET single deposit
+router.get('/deposits/:depositId', transactionController.getDepositById);
+
+
+// create withdrawal
+router.post("/withdrawal", transactionController.createWithdrawal);
+// GET all withdrawals
+router.get('/withdrawals', transactionController.getAllWithdrawals);
+router.get('/withdrawals/:withdrawalId', transactionController.getWithdrawalById);
 
 
 
