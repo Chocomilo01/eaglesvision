@@ -40,7 +40,7 @@ async createDeposit(req, res) {
       collectedBy,
       modeOfPayment,
       paymentDate,
-      user: userId,
+      userId: userId, firstName, middleName,
     });
 
     // Update the customer's account balance by adding the deposit amount
@@ -77,7 +77,6 @@ async createDeposit(req, res) {
 async createWithdrawal(req, res) {
   try {
     const { customerId, amount, description,
-      collectedBy,
       paymentDate, } = req.body;
 
     // Verify that the customer exists
@@ -113,9 +112,9 @@ async createWithdrawal(req, res) {
       middleName,
       description,
       choose: "Debit",
-      collectedBy,
       paymentDate,
-      user: userId,
+      collectedBy,
+      user: userId, firstName, middleName,
     });
 
     // Update the customer's account balance
@@ -127,7 +126,7 @@ async createWithdrawal(req, res) {
     const responsePayload = {
     transaction: withdrawalTransaction,
     balance: updatedBalance,
-      user: {
+      collectedBy: {
         id: userId,
         firstName: firstName,
         middleName: middleName,

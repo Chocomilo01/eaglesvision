@@ -1,4 +1,5 @@
 const CustomerModel = require('../model/customerModel');
+const LoanService = require("./loanService");
 
 
 class CustomerService{
@@ -29,6 +30,17 @@ class CustomerService{
     async fetch(filter){
         return await CustomerModel.find(filter)
     }
+    async fetch(filter) {
+        const customers = await CustomerModel.find(filter);
+    
+        // Iterate through the customers and calculate loan balance for each
+        for (const customer of customers) {
+          const loanBalance = await LoanService.calculateTotalRepayments(customer._id);
+          customer.loanBalance = loanBalance;
+        }
+    
+        return customers;
+      }
 }
 
 

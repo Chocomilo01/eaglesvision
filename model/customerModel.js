@@ -39,6 +39,10 @@ const CustomerSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    loanBalance: {
+      type: Number,
+      default: 0
+    },
     meansOfIdentification: {
       type: String,
       required: false,
