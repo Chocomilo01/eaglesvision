@@ -39,6 +39,9 @@ const TransactionSchema = new mongoose.Schema(
     modeOfPayment: {
       type: String, emum: ["cash", "transfer"],
     },
+    balance: {
+      type: Number,
+    },
 
    
   },

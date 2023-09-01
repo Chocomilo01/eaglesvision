@@ -54,6 +54,27 @@ async createWithdrawal(transactionData) {
       throw error;
     }
   }
+ 
+  
+  async searchTransactionsByDate(date) {
+    try {
+      // Convert the date string to a JavaScript Date object
+      const searchDate = new Date(date);
+
+      // Query transactions with the provided date
+      const transactions = await TransactionModel.find({
+        paymentDate: {
+          $gte: searchDate, // Greater than or equal to the provided date
+          $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000), // Less than the next day
+        },
+      });
+
+      return transactions;
+    } catch (error) {
+      throw new Error(`Error fetching transactions by date: ${error.message}`);
+    }
+  }
+  
   // ... other methods ...
 }
 

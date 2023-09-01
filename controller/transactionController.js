@@ -230,6 +230,35 @@ async getDepositById(req, res) {
   }
 }
 
+async searchTransactionsByDate(req, res) {
+  try {
+    const { date } = req.query;
+
+    // Check if a date parameter is provided
+    if (!date) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a date for the search.",
+      });
+    }
+
+    // Use the TransactionService to search transactions by date
+    const transactions = await TransactionService.searchTransactionsByDate(date);
+
+    // Return the transactions in the response
+    return res.status(200).json({
+      success: true,
+      message: "Transactions found successfully",
+      data: transactions,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error retrieving transactions by date",
+      error: error.message,
+    });
+  }
+}
 
 }
 
