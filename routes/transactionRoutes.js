@@ -20,5 +20,6 @@ router.get('/withdrawals/:withdrawalId', transactionController.getWithdrawalById
 
 // To get the total transactions by date
 router.get("/search-by-date", transactionController.searchTransactionsByDate);
+router.get('/search-deposit-cash-by-date', transactionController.searchDepositCashByDate);
 
 module.exports = router;

@@ -56,26 +56,39 @@ async createWithdrawal(transactionData) {
   }
  
   
-  async searchTransactionsByDate(date) {
+  async searchTransactionsByDate(startDate, endDate) {
     try {
-      // Convert the date string to a JavaScript Date object
-      const searchDate = new Date(date);
-
-      // Query transactions with the provided date
+      // Query transactions within the provided date range
       const transactions = await TransactionModel.find({
         paymentDate: {
-          $gte: searchDate, // Greater than or equal to the provided date
-          $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000), // Less than the next day
+          $gte: startDate,
+          $lt: endDate,
         },
       });
-
+  
       return transactions;
     } catch (error) {
       throw new Error(`Error fetching transactions by date: ${error.message}`);
     }
   }
-  
-  // ... other methods ...
+  async searchDepositCashByDate(startDate, endDate) {
+  try {
+    // Query transactions within the provided date range and collected via cash
+    const transactions = await TransactionModel.find({
+      type: 'deposit',
+      modeOfPayment: 'cash', // Add this condition for cash transactions
+      paymentDate: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+
+    return transactions;
+  } catch (error) {
+    throw new Error(`Error searching deposit cash transactions by date: ${error.message}`);
+  }
+}
+
 }
 
 module.exports = new TransactionService();

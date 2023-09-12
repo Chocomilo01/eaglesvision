@@ -40,7 +40,7 @@ async createDeposit(req, res) {
       collectedBy,
       modeOfPayment,
       paymentDate,
-      userId: userId, firstName, middleName,
+      userId: userId,
     });
 
     // Update the customer's account balance by adding the deposit amount
@@ -233,28 +233,77 @@ async getDepositById(req, res) {
 async searchTransactionsByDate(req, res) {
   try {
     const { date } = req.query;
+    console.log("Received date:", date);
 
     // Check if a date parameter is provided
     if (!date) {
       return res.status(400).json({
         success: false,
-        message: "Please provide a date for the search.",
+        message: 'Please provide a date for the search.',
       });
     }
 
-    // Use the TransactionService to search transactions by date
-    const transactions = await TransactionService.searchTransactionsByDate(date);
+    // Parse the input date string into a JavaScript Date object
+    const searchDate = new Date(date);
+    console.log("Parsed date:", searchDate);
+
+    // Calculate the end date by adding one day to the search date
+    const endDate = new Date(searchDate);
+    endDate.setDate(searchDate.getDate() + 1);
+
+    // Use the TransactionService to search transactions by date range
+    const transactions = await TransactionService.searchTransactionsByDate(
+      searchDate,
+      endDate
+    );
 
     // Return the transactions in the response
     return res.status(200).json({
       success: true,
-      message: "Transactions found successfully",
+      message: 'Transactions found successfully',
       data: transactions,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Error retrieving transactions by date",
+      message: 'Error retrieving transactions by date',
+      error: error.message,
+    });
+  }
+}
+
+async searchDepositCashByDate(req, res) {
+  try {
+    const { startDate, endDate } = req.query;
+
+    // Check if startDate and endDate are provided
+    if (!startDate || !endDate) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide both startDate and endDate for the search.',
+      });
+    }
+
+    // Parse the input date strings into JavaScript Date objects
+    const parsedStartDate = new Date(startDate);
+    const parsedEndDate = new Date(endDate);
+
+    // Call the service method to search deposit transactions
+    const transactions = await TransactionService.searchDepositCashByDate(
+      parsedStartDate,
+      parsedEndDate
+    );
+
+    // Return the transactions in the response
+    return res.status(200).json({
+      success: true,
+      message: 'Deposit cash transactions found successfully',
+      data: transactions,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error searching deposit cash transactions by date',
       error: error.message,
     });
   }
