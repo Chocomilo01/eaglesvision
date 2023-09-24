@@ -154,8 +154,47 @@ class CustomerController {
         });
       }
     }
-    
-      
+   
+
+async searchCustomers(req, res) {
+  try {
+    const { name, accountNumber, phoneNumber, dateOfBirth } = req.query;
+
+    // Construct a query object based on the provided parameters
+    const query = {};
+
+    if (name) {
+      query.firstName = new RegExp(name, 'i'); // Case-insensitive search
+    }
+
+    if (accountNumber) {
+      query.lastName = new RegExp(accountNumber, 'i');
+    }
+
+    if (dateOfBirth) {
+      query.email = new RegExp(dateOfBirth, 'i');
+    }
+
+    if (phoneNumber) {
+      query.phoneNumber = new RegExp(phoneNumber, 'i');
+    }
+
+    // Call your CustomerService to search for customers using the query
+    const customers = await CustomerService.searchCustomers(query);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Customers found successfully',
+      data: customers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error retrieving customers',
+      error: error.message,
+    });
+  }
+ } 
 }
 
 module.exports = new CustomerController()

@@ -40,6 +40,12 @@ class CustomerService{
         }
     
         return customers;
+      }async searchCustomers(query) {
+        try {
+          return await CustomerModel.find(query);
+        } catch (error) {
+          throw new Error(`Error searching for customers: ${error.message}`);
+        }
       }
 }
 

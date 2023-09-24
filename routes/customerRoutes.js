@@ -10,6 +10,7 @@ router.post('/', customerController.createCustomer)
  router.patch('/:id', customerController.updateCustomer)
  router.get('/', customerController.fetchCustomers)
  router.delete('/:id', customerController.deleteCustomer)
+ router.get('/search', customerController.searchCustomers);
  
 
 
