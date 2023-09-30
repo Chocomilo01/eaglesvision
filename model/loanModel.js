@@ -2,13 +2,14 @@ const mongoose = require("mongoose");
 
 const LoanSchema = new mongoose.Schema(
   {
-    amount: { type: Number, required: true },
-    interestRate: { type: Number, required: true },
+    amount: { type: String, required: true },
+    interestRate: { type: String, required: true },
     loanDuration: { type: String },
     loanStartDate: { type: String, required: true },
     loanEndDate: { type: String, required: true },
     repaymentSchedule: { type: String },
-    customer: {
+    
+      customer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "CustomerModel", // Reference to the Customer model
       required: true,

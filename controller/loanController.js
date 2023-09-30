@@ -139,17 +139,39 @@ class LoanController {
         loanStartDate,
         interestRate,
       } = req.body;
-
+  
       // Verify that the customer exists
       const customer = await CustomerService.fetchOne({ _id: customerId });
-
+  
       if (!customer) {
         return res.status(404).json({
           success: false,
           message: "Customer not found",
         });
       }
+  
+      // Find the existing loan for the customer
+      const existingLoan = await LoanService.fetchOne({ customer: customer._id });
+  
+      if (!existingLoan) {
+        return res.status(404).json({
+          success: false,
+          message: "Loan not found for this customer",
+        });
+      }
 
+      // Calculate the remaining loan amount after deducting the repayment
+      const remainingLoanAmount = existingLoan.amount - repaymentAmount;
+  
+      // Check if the repayment amount is more than the remaining loan balance
+      if (repaymentAmount > existingLoan.amount) {
+        return res.status(400).json({
+          success: false,
+          message: "Repayment amount exceeds the remaining loan balance",
+          remainingLoanBalance: existingLoan.amount,
+        });
+      }
+  
       // Create a repayment record
       const repayment = await LoanService.create({
         amount: repaymentAmount,
@@ -162,41 +184,49 @@ class LoanController {
         status: "repaid",
         // ... Other repayment details ...
       });
-      
-
-    cron.schedule("0 0 * * *", async () => {
-  try {
-    const currentDate = new Date();
-
-    // Find loans with end dates in the past and status "disbursed"
-    const overdueLoans = await LoanModel.find({
-      loanEndDate: { $lt: currentDate },
-      status: "disbursed",
-    });
-
-    // Update the status of overdue loans to "defaulter"
-    await Promise.all(
-      overdueLoans.map(async (loan) => {
-        // Check if the loan amount is fully repaid
-        const totalRepayments = await LoanService.calculateTotalRepayments(loan._id);
-        if (totalRepayments < loan.amount) {
-          loan.status = "defaulter";
-          await loan.save();
+  
+      // Update the existing loan's amount to the remaining loan amount and save it to the database
+      existingLoan.amount = remainingLoanAmount;
+      await existingLoan.save();
+  
+      // Schedule the cron job to check for defaulters
+      cron.schedule("0 0 * * *", async () => {
+        try {
+          const currentDate = new Date();
+  
+          // Find loans with end dates in the past and status "disbursed"
+          const overdueLoans = await LoanModel.find({
+            loanEndDate: { $lt: currentDate },
+            status: "disbursed",
+          });
+  
+          // Update the status of overdue loans to "defaulter"
+          await Promise.all(
+            overdueLoans.map(async (loan) => {
+              // Check if the loan amount is fully repaid
+              const totalRepayments = await LoanService.calculateTotalRepayments(loan._id);
+              if (totalRepayments < loan.amount) {
+                loan.status = "defaulter";
+                await loan.save();
+              }
+            })
+          );
+  
+          console.log("Loan statuses updated successfully.");
+        } catch (error) {
+          console.error("Error updating loan statuses:", error.message);
         }
-      })
-    );
-
-    console.log("Loan statuses updated successfully.");
-  } catch (error) {
-    console.error("Error updating loan statuses:", error.message);
-  }
-});
-
-      return res.status(201).json({
+      });
+  
+      // Include the loan balance in the response data
+      const responseData = {
         success: true,
         message: "Loan repayment created successfully",
         data: repayment,
-      });
+        remainingLoanBalance: remainingLoanAmount, // Add the remaining loan balance
+      };
+  
+      return res.status(201).json(responseData);
     } catch (error) {
       return res.status(500).json({
         success: false,
@@ -207,6 +237,7 @@ class LoanController {
   }
   
   
+
 
   async getLoans(req, res) {
     try {
