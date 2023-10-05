@@ -1,4 +1,4 @@
-const cron = require('node-cron');
+const cron = require("node-cron");
 const LoanService = require("../services/loanService");
 const CustomerService = require("../services/customerService");
 
@@ -19,7 +19,7 @@ class LoanController {
         spouseName,
         spouseOccupation,
         spouseOfficeAddress,
-        LoanRequestedAmount,
+        loanRequestedAmount,
         firstGuarantorsName,
         firstGuarantorsSex,
         firstGuarantorsDateOfBirth,
@@ -33,7 +33,7 @@ class LoanController {
         secondGuarantorsPhoneNumber,
         secondGuarantorsOccupation,
         secondGuarantorsHouseAddress,
-        secondGuarantorsOfficeAddress, 
+        secondGuarantorsOfficeAddress,
         interestRate,
         loanDuration,
         loanStartDate,
@@ -64,11 +64,12 @@ class LoanController {
       }
 
       // Calculate the interest amount based on the loan amount and interest rate
-      //const interestAmount = (parsedAmount * parsedInterestRate) / 100;
       const interestAmount = disbursementInterestRate;
 
       // Check if there is an existing loan for this customer
-      const existingLoan = await LoanService.fetchOne({ customer: customer._id });
+      const existingLoan = await LoanService.fetchOne({
+        customer: customer._id,
+      });
 
       if (existingLoan) {
         return res.status(400).json({
@@ -92,7 +93,7 @@ class LoanController {
         spouseName,
         spouseOccupation,
         spouseOfficeAddress,
-        LoanRequestedAmount,
+        loanRequestedAmount,
         firstGuarantorsName,
         firstGuarantorsSex,
         firstGuarantorsDateOfBirth,
@@ -114,6 +115,7 @@ class LoanController {
         loanEndDate,
         repaymentSchedule,
         customer: customer._id,
+        balance: disbursementAmount + interestAmount,
       });
 
       return res.status(201).json({
@@ -129,30 +131,32 @@ class LoanController {
       });
     }
   }
-  async createRepayment(req, res) {
+
+  async createWithdrawal(req, res) {
     try {
       const {
-        customerId, // ID of the customer making the repayment
-        repaymentAmount, // The amount being repaid
-        repaymentDate, // The date of the repayment
+        customerId, // ID of the customer making the withdrawal
+        withdrawalAmount, // The amount being withdrawn
         loanEndDate,
         loanStartDate,
         interestRate,
       } = req.body;
-  
+
       // Verify that the customer exists
       const customer = await CustomerService.fetchOne({ _id: customerId });
-  
+
       if (!customer) {
         return res.status(404).json({
           success: false,
           message: "Customer not found",
         });
       }
-  
+
       // Find the existing loan for the customer
-      const existingLoan = await LoanService.fetchOne({ customer: customer._id });
-  
+      const existingLoan = await LoanService.fetchOne({
+        customer: customer._id,
+      });
+
       if (!existingLoan) {
         return res.status(404).json({
           success: false,
@@ -160,90 +164,146 @@ class LoanController {
         });
       }
 
-      // Calculate the remaining loan amount after deducting the repayment
-      const remainingLoanAmount = existingLoan.amount - repaymentAmount;
-  
-      // Check if the repayment amount is more than the remaining loan balance
-      if (repaymentAmount > existingLoan.amount) {
+      // Calculate the remaining loan balance after deducting the withdrawal amount
+      const remainingLoanBalance = existingLoan.balance - withdrawalAmount;
+
+      if (remainingLoanBalance < 0) {
         return res.status(400).json({
           success: false,
-          message: "Repayment amount exceeds the remaining loan balance",
-          remainingLoanBalance: existingLoan.amount,
+          message: "Withdrawal amount exceeds the remaining loan balance",
+          remainingLoanBalance: existingLoan.balance,
         });
       }
-  
-      // Create a repayment record
-      const repayment = await LoanService.create({
-        amount: repaymentAmount,
-        repaymentDate: new Date(repaymentDate),
+
+      // Create a withdrawal record
+      const withdrawal = await LoanService.create({
+        amount: withdrawalAmount,
+        repaymentDate: new Date(),
         customer: customer._id,
-        type: "repayment",
+        type: "withdrawal",
+        status: "withdrawn",
         loanEndDate,
         loanStartDate,
         interestRate,
-        status: "repaid",
-        // ... Other repayment details ...
+        balance: remainingLoanBalance,
+        // ... Other withdrawal details ...
       });
-  
-      // Update the existing loan's amount to the remaining loan amount and save it to the database
-      existingLoan.amount = remainingLoanAmount;
+
+      // Update the existing loan's balance to the remaining loan balance and save it to the database
+      existingLoan.balance = remainingLoanBalance;
       await existingLoan.save();
-  
-      // Schedule the cron job to check for defaulters
-      cron.schedule("0 0 * * *", async () => {
-        try {
-          const currentDate = new Date();
-  
-          // Find loans with end dates in the past and status "disbursed"
-          const overdueLoans = await LoanModel.find({
-            loanEndDate: { $lt: currentDate },
-            status: "disbursed",
-          });
-  
-          // Update the status of overdue loans to "defaulter"
-          await Promise.all(
-            overdueLoans.map(async (loan) => {
-              // Check if the loan amount is fully repaid
-              const totalRepayments = await LoanService.calculateTotalRepayments(loan._id);
-              if (totalRepayments < loan.amount) {
-                loan.status = "defaulter";
-                await loan.save();
-              }
-            })
-          );
-  
-          console.log("Loan statuses updated successfully.");
-        } catch (error) {
-          console.error("Error updating loan statuses:", error.message);
-        }
-      });
-  
-      // Include the loan balance in the response data
+
+      // Include the remaining loan balance in the response data
       const responseData = {
         success: true,
-        message: "Loan repayment created successfully",
-        data: repayment,
-        remainingLoanBalance: remainingLoanAmount, // Add the remaining loan balance
+        message: "Loan withdrawal created successfully",
+        data: withdrawal,
+        balance: remainingLoanBalance,
       };
-  
+
       return res.status(201).json(responseData);
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: "Error creating loan repayment",
+        message: "Error creating loan withdrawal",
         error: error.message,
       });
     }
   }
-  
-  
 
+  async createDeposit(req, res) {
+    try {
+      const {
+        customerId, // ID of the customer making the deposit
+        depositAmount, // The amount being deposited
+        loanEndDate,
+        loanStartDate,
+        interestRate,
+      } = req.body;
+
+      // Verify that the customer exists
+      const customer = await CustomerService.fetchOne({ _id: customerId });
+
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message: "Customer not found",
+        });
+      }
+
+      // Find the existing loan for the customer
+      const existingLoan = await LoanService.fetchOne({
+        customer: customer._id,
+      });
+
+      if (!existingLoan) {
+        return res.status(404).json({
+          success: false,
+          message: "Loan not found for this customer",
+        });
+      }
+      // Parse existingLoan.balance, depositAmount, and interestAmount as numbers
+      const existingBalance = parseFloat(existingLoan.balance);
+      const deposit = parseFloat(depositAmount);
+      const interest = parseFloat(interestRate);
+
+      // Check if any of the values is NaN (not a number)
+      if (isNaN(existingBalance) || isNaN(deposit) || isNaN(interest)) {
+        console.error("Invalid values for balance, deposit, or interest");
+        return res.status(500).json({
+          success: false,
+          message: "Error creating loan deposit",
+          error: "Invalid values for balance, deposit, or interest",
+        });
+      }
+
+      // Calculate the balance after the deposit
+      const balanceAfterDeposit = existingBalance + deposit + interest;
+      // Create a deposit record
+      const depositRecord = await LoanService.create({
+        amount: depositAmount,
+        repaymentDate: new Date(),
+        customer: customer._id,
+        type: "deposit",
+        status: "deposited",
+        loanEndDate,
+        loanStartDate,
+        interestRate,
+        balance: balanceAfterDeposit,
+
+        // ... Other deposit details ...
+      });
+
+      // Update the existing loan's balance by adding the deposit amount and save it to the database
+      // Update the existing loan's balance by adding the deposit amount and save it to the database
+      existingLoan.balance = balanceAfterDeposit;
+      await existingLoan.save();
+
+      // Include the remaining loan balance in the response data
+      const responseData = {
+        success: true,
+        message: "Loan deposit created successfully",
+        data: depositRecord,
+        balance: balanceAfterDeposit, // Include the updated balance in the response
+      };
+
+      return res.status(201).json(responseData);
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error creating loan deposit",
+        error: error.message,
+      });
+    }
+  }
 
   async getLoans(req, res) {
     try {
-      // Fetch all loans
-      const loans = await LoanService.fetch({});
-      
+      console.log("Fetching loans...");
+      // Fetch all loans using the LoanService
+      const loans = await LoanService.getLoans({});
+      console.log("Loans fetched successfully");
+
       return res.status(200).json({
         success: true,
         message: "Loans retrieved successfully",
@@ -257,11 +317,12 @@ class LoanController {
       });
     }
   }
+
   async getLoanById(req, res) {
     try {
-      const { loanId } = req.params;
+      const { loanId } = req.params; // Assuming the loanId is passed as a URL parameter
 
-      // Fetch the loan by ID
+      // Fetch the loan by its ID from the database
       const loan = await LoanService.fetchOne({ _id: loanId });
 
       if (!loan) {
@@ -271,7 +332,7 @@ class LoanController {
         });
       }
 
-      return res.status(200).json({
+      return res.status(200).jsofn({
         success: true,
         message: "Loan retrieved successfully",
         data: loan,
@@ -284,9 +345,5 @@ class LoanController {
       });
     }
   }
-  
-
-
- }
+}
 module.exports = new LoanController();
-
