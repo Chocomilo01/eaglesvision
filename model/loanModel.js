@@ -42,7 +42,7 @@ const LoanSchema = new mongoose.Schema(
     secondGuarantorsOfficeAddress: { type: String },
     status: {
       type: String,
-      enum: ["disbursed", "deposited", "withdrawn", "defaulter"],
+      enum: ["disbursed", "deposited", "withdrawn", "active", "defaulter"],
       required: true,
     },
     balance: {

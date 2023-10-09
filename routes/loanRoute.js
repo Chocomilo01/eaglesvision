@@ -14,6 +14,8 @@ router.get("/:loanId", loanController.getLoanById);
 // In your Express routes definition
 router.post("/withdrawals", loanController.createWithdrawal);
 router.post("/deposits", loanController.createDeposit);
+// Define a route to get defaulters
+router.get("/defaulters", loanController.getDefaulters);
 
 //router.post("/disbursement", loanController.createDisbursement);
 

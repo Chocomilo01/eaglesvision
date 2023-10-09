@@ -23,6 +23,16 @@ class LoanService {
       throw error;
     }
   }
+  
+  async getDefaulters() {
+    try {
+      const defaulters = await LoanModel.find({ status: 'defaulter' });
+
+      return defaulters;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = new LoanService();

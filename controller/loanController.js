@@ -37,8 +37,8 @@ class LoanController {
         interestRate,
         loanDuration,
         loanStartDate,
-        loanEndDate,
         repaymentSchedule,
+        loanEndDate,
         // ...other loan details...
       } = req.body;
 
@@ -116,6 +116,7 @@ class LoanController {
         repaymentSchedule,
         customer: customer._id,
         balance: disbursementAmount + interestAmount,
+        repaymentDate: loanEndDate,
       });
 
       return res.status(201).json({
@@ -136,7 +137,7 @@ class LoanController {
     try {
       const {
         customerId, // ID of the customer making the withdrawal
-        withdrawalAmount, // The amount being withdrawn
+        amount, // The amount being withdrawn
         loanEndDate,
         loanStartDate,
         interestRate,
@@ -165,7 +166,7 @@ class LoanController {
       }
 
       // Calculate the remaining loan balance after deducting the withdrawal amount
-      const remainingLoanBalance = existingLoan.balance - withdrawalAmount;
+      const remainingLoanBalance = existingLoan.balance - amount;
 
       if (remainingLoanBalance < 0) {
         return res.status(400).json({
@@ -177,7 +178,7 @@ class LoanController {
 
       // Create a withdrawal record
       const withdrawal = await LoanService.create({
-        amount: withdrawalAmount,
+        amount: amount,
         repaymentDate: new Date(),
         customer: customer._id,
         type: "withdrawal",
@@ -215,7 +216,7 @@ class LoanController {
     try {
       const {
         customerId, // ID of the customer making the deposit
-        depositAmount, // The amount being deposited
+        amount, // The amount being deposited
         loanEndDate,
         loanStartDate,
         interestRate,
@@ -244,7 +245,7 @@ class LoanController {
       }
       // Parse existingLoan.balance, depositAmount, and interestAmount as numbers
       const existingBalance = parseFloat(existingLoan.balance);
-      const deposit = parseFloat(depositAmount);
+      const deposit = parseFloat(amount);
       const interest = parseFloat(interestRate);
 
       // Check if any of the values is NaN (not a number)
@@ -261,7 +262,7 @@ class LoanController {
       const balanceAfterDeposit = existingBalance + deposit + interest;
       // Create a deposit record
       const depositRecord = await LoanService.create({
-        amount: depositAmount,
+        amount: amount,
         repaymentDate: new Date(),
         customer: customer._id,
         type: "deposit",
@@ -292,6 +293,24 @@ class LoanController {
       return res.status(500).json({
         success: false,
         message: "Error creating loan deposit",
+        error: error.message,
+      });
+    }
+  }
+  async getDefaulters(req, res) {
+    try {
+      // Find all loans with a status of "defaulter"
+      const defaulters = await LoanService.getDefaulters();
+
+      return res.status(200).json({
+        success: true,
+        message: "Defaulters retrieved successfully",
+        data: defaulters,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching defaulters",
         error: error.message,
       });
     }
@@ -332,7 +351,7 @@ class LoanController {
         });
       }
 
-      return res.status(200).jsofn({
+      return res.status(200).json({
         success: true,
         message: "Loan retrieved successfully",
         data: loan,
