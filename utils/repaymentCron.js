@@ -1,5 +1,3 @@
-// repaymentCron.js
-
 const cron = require('node-cron');
 const LoanService = require('../services/loanService');
 
@@ -9,10 +7,10 @@ cron.schedule('0 0 * * *', async () => {
     // Get the current date
     const currentDate = new Date();
 
-    // Find all loans with an "active" status and a repaymentDate in the past
+    // Find all loans that are overdue
     const overdueLoans = await LoanService.getOverdueLoans(currentDate);
 
-    // Update the status of overdue loans to "defaulter"
+    // Update the status of overdue loans to 'defaulter'
     for (const loan of overdueLoans) {
       loan.status = 'defaulter';
       await loan.save();

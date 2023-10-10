@@ -24,10 +24,23 @@ class LoanService {
     }
   }
   
+  async getOverdueLoans(currentDate) {
+    try {
+      // Find all loans with an "active" status and a repaymentDate in the past
+      const overdueLoans = await LoanModel.find({
+        status: 'active', // Adjust this based on your loan status criteria
+        repaymentDate: { $lt: currentDate },
+      });
+
+      return overdueLoans;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getDefaulters() {
     try {
       const defaulters = await LoanModel.find({ status: 'defaulter' });
-
       return defaulters;
     } catch (error) {
       throw error;

@@ -39,6 +39,7 @@ class LoanController {
         loanStartDate,
         repaymentSchedule,
         loanEndDate,
+        repaymentDate,
         // ...other loan details...
       } = req.body;
 
@@ -108,7 +109,7 @@ class LoanController {
         secondGuarantorsOccupation,
         secondGuarantorsHouseAddress,
         secondGuarantorsOfficeAddress,
-        status: "disbursed",
+        status:  "disbursed",
         interestRate,
         loanDuration,
         loanStartDate,
@@ -301,7 +302,7 @@ class LoanController {
     try {
       // Find all loans with a status of "defaulter"
       const defaulters = await LoanService.getDefaulters();
-
+  
       return res.status(200).json({
         success: true,
         message: "Defaulters retrieved successfully",
