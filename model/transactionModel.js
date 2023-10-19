@@ -30,6 +30,9 @@ const TransactionSchema = new mongoose.Schema(
     collectedBy: {
       type: String,
     },
+    AccountOfficer: {
+      type: String,
+    },
     description: {
       type: String,
     },
@@ -40,8 +43,7 @@ const TransactionSchema = new mongoose.Schema(
       type: String, emum: ["cash", "transfer"],
     },
     balance: {
-      type: Number,
-      default: 0
+      type: Number
     },
 
    

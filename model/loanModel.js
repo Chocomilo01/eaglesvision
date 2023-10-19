@@ -57,6 +57,7 @@ const LoanSchema = new mongoose.Schema(
       required: true,
     },
     repaymentDate: { type: String },
+    paymentDate: { type: String },
   },
   { timestamps: true }
 );

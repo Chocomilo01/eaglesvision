@@ -39,7 +39,7 @@ class LoanController {
         loanStartDate,
         repaymentSchedule,
         loanEndDate,
-        repaymentDate,
+        paymentDate,
         // ...other loan details...
       } = req.body;
 
@@ -109,12 +109,13 @@ class LoanController {
         secondGuarantorsOccupation,
         secondGuarantorsHouseAddress,
         secondGuarantorsOfficeAddress,
-        status:  "disbursed",
+        status:  "active",
         interestRate,
         loanDuration,
         loanStartDate,
         loanEndDate,
         repaymentSchedule,
+        paymentDate: new Date(),
         customer: customer._id,
         balance: disbursementAmount + interestAmount,
         repaymentDate: loanEndDate,
@@ -187,6 +188,7 @@ class LoanController {
         loanEndDate,
         loanStartDate,
         interestRate,
+        paymentDate: new Date(),
         balance: remainingLoanBalance,
         // ... Other withdrawal details ...
       });
@@ -221,6 +223,7 @@ class LoanController {
         loanEndDate,
         loanStartDate,
         interestRate,
+        paymentDate,
       } = req.body;
 
       // Verify that the customer exists
@@ -271,6 +274,7 @@ class LoanController {
         loanEndDate,
         loanStartDate,
         interestRate,
+        paymentDate: new Date(),
         balance: balanceAfterDeposit,
 
         // ... Other deposit details ...
@@ -298,6 +302,83 @@ class LoanController {
       });
     }
   }
+
+  async getLoansByPaymentDate(req, res) {
+    try {
+      const { startDate, endDate } = req.query;
+  
+      // Validate and process startDate and endDate as necessary
+  
+      // Create a date range query for the paymentDate field
+      const dateRangeQuery = {
+        paymentDate: {
+          $gte: startDate, // Greater than or equal to startDate
+          $lte: endDate,   // Less than or equal to endDate
+        },
+      };
+  
+      // Query the database to find loans within the specified date range
+      const loans = await LoanService.fetch(dateRangeQuery);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Loans retrieved by payment date range successfully",
+        data: loans,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching loans by payment date range",
+        error: error.message,
+      });
+    }
+  }
+  
+  async getTotalAmountByPaymentDate(req, res) {
+  try {
+    const { startDate, endDate } = req.query;
+
+    // Validate and process startDate and endDate as necessary
+
+    // Create a date range query for the paymentDate field
+    const dateRangeQuery = {
+      paymentDate: {
+        $gte: startDate, // Greater than or equal to startDate
+        $lte: endDate,   // Less than or equal to endDate
+      },
+    };
+
+    // Query the database to find loans within the specified date range
+    const loans = await LoanService.fetch(dateRangeQuery);
+
+    // Calculate the total amount for disbursements and deposits
+    let totalDisbursements = 0;
+    let totalDeposits = 0;
+
+    loans.forEach((loan) => {
+      if (loan.type === "disbursement") {
+        totalDisbursements += loan.amount;
+      } else if (loan.type === "deposit") {
+        totalDeposits += loan.amount;
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Total amount by payment date retrieved successfully",
+      totalDisbursements,
+      totalDeposits,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching total amount by payment date",
+      error: error.message,
+    });
+  }
+}
+
+
   async getDefaulters(req, res) {
     try {
       // Find all loans with a status of "defaulter"
@@ -361,6 +442,36 @@ class LoanController {
       return res.status(500).json({
         success: false,
         message: "Error fetching loan",
+        error: error.message,
+      });
+    }
+  }
+  async getCustomerLoans(req, res) {
+    try {
+      const { customerId } = req.params;
+  
+      // Verify that the customer exists
+      const customer = await CustomerService.fetchOne({ _id: customerId });
+  
+      if (!customer) {
+        return res.status(404).json({
+          success: false,
+          message: "Customer not found",
+        });
+      }
+  
+      // Query the database for loans associated with the customer
+      const customerLoans = await LoanService.fetch({ customer: customerId });
+  
+      return res.status(200).json({
+        success: true,
+        message: "Customer loans retrieved successfully",
+        data: customerLoans,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching customer loans",
         error: error.message,
       });
     }
