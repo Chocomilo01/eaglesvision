@@ -23,6 +23,29 @@ class LoanService {
       throw error;
     }
   }
+  async getLoansDepositedByCashAndPaymentDate(startDate, endDate) {
+    try {
+      // Create a date range query for the paymentDate field
+      const dateRangeQuery = {
+        paymentDate: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      };
+
+      // Query the database to find loans that are "deposits" and within the specified date range
+      const depositLoans = await LoanModel.find({
+        $and: [
+          { type: "deposit" },
+          dateRangeQuery,
+        ],
+      });
+
+      return depositLoans;
+    } catch (error) {
+      throw error;
+    }
+  }
   
   async getOverdueLoans(currentDate) {
     try {

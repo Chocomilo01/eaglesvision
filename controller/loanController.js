@@ -143,6 +143,7 @@ class LoanController {
         loanEndDate,
         loanStartDate,
         interestRate,
+        modeOfPayMent,
       } = req.body;
 
       // Verify that the customer exists
@@ -190,6 +191,7 @@ class LoanController {
         interestRate,
         paymentDate: new Date(),
         balance: remainingLoanBalance,
+        modeOfPayMent,
         // ... Other withdrawal details ...
       });
 
@@ -223,7 +225,7 @@ class LoanController {
         loanEndDate,
         loanStartDate,
         interestRate,
-        paymentDate,
+        modeOfPayMent,
       } = req.body;
 
       // Verify that the customer exists
@@ -274,6 +276,7 @@ class LoanController {
         loanEndDate,
         loanStartDate,
         interestRate,
+        modeOfPayMent,
         paymentDate: new Date(),
         balance: balanceAfterDeposit,
 
@@ -476,5 +479,28 @@ class LoanController {
       });
     }
   }
+  async getLoansDepositedByCashAndPaymentDate(req, res) {
+    try {
+      const { startDate, endDate } = req.query;
+  
+      // Validate and process startDate and endDate as necessary
+  
+      const depositLoans = await LoanService.getLoansDepositedByCashAndPaymentDate(startDate, endDate);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Loans deposited by cash retrieved successfully by payment date",
+        data: depositLoans,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching loans deposited by cash by payment date",
+        error: error.message,
+      });
+    }
+  }
+  
+
 }
 module.exports = new LoanController();

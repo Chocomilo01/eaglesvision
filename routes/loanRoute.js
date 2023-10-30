@@ -22,12 +22,15 @@ router.get("/by-payment-date", loanController.getLoansByPaymentDate);
 router.get("/total-amount-by-payment-date", loanController.getTotalAmountByPaymentDate);
 
 router.get("/defaulters", loanController.getDefaulters);
-
+// Define a route for getting loans deposited by cash within a date range
+router.get('/loans/depositsByCashAndPaymentDate', loanController.getLoansDepositedByCashAndPaymentDate);
 // Define a route to get a loan by its ID
 router.get("/:loanId", loanController.getLoanById);
 // In your Express routes definition (loanRoute.js)
 router.get("/customer/:customerId/loans", loanController.getCustomerLoans);
 ///api/loans/customer/:customerId/loans
+
+
 
 //router.post("/disbursement", loanController.createDisbursement);
 
