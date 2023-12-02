@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
   
@@ -55,53 +56,28 @@ const userSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["active", "inactive"],
-  default: "active"
- },
+    default: "active"
+  },
  
 }, {timestamps: true});
 
+// Encrypt password before pushing to database
+userSchema.pre('save', async function (next) {
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+})
 
-const User = mongoose.model("UserModel", userSchema);
+userSchema.methods.matchPassword  = async function (password) {
+  if(!password) throw new Error("Password is missing, can not compare")
 
+  try{
+      const result = await bcrypt.compare(password, this.password)
+      return result;
+  } catch (e) {
+      return res.json({ Success: false, message: 'Error while comparing password!', error: e.message})
+  }
+}
+const userModel = mongoose.model("UserModel", userSchema);
 
-//const mongoose = require("mongoose");
-
-// const userSchema = new mongoose.Schema({
-//   firstName: { type: String, required: true, minlength: 3, maxlength: 30 },
-//   middleName: { type: String, required: true, minlength: 3, maxlength: 30 },
-//   lastName: { type: String, required: true, minlength: 3, maxlength: 30 },
-//   sex: { type: String, required: true },
-//   phone: { type: String, required: true, minlength: 8, maxlength: 11 },
-//   password: { type: String, required: true, minlength: 6, maxlength: 200 },
-//   email: {
-//     type: String,
-//     required: true,
-//     minlength: 3,
-//     maxlength: 266,
-//     unique: true,
-//     validate: {
-//       validator: (value) => {
-//         // Use a regular expression or validator library to validate email format
-//         // Return true for valid emails, false otherwise
-//       },
-//       message: "Invalid email address",
-//     },
-//   },
-//   roles: {
-//     type: [String],
-//     required: false,
-//     enum: ["accountOfficer", "assistantManager", "dpo"],
-//     default: ["accountOfficer"],
-//   },
-//   bvn: { type: String, required: true, unique: true, minlength: 10, maxlength: 10 },
-//   homeAddress: { type: String, required: true },
-//   passport: { type: String }, // Store reference to the image file
-//   isActive: { type: Boolean, default: true }, // Use a boolean for status
-// }, { timestamps: true });
-
-// const User = mongoose.model("UserModel", userSchema);
-
-// exports.User = User;
-
-
-exports.User = User;
+module.exports = userModel;

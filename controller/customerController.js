@@ -1,6 +1,7 @@
 const CustomerService = require("../services/customerService");
 const  { generateUniqueAccountNumber } = require("../utils/uniqueNumber")
-const CustomerModel = require("../model/customerModel")
+const CustomerModel = require("../model/customerModel");
+const customerService = require("../services/customerService");
 
 
 class CustomerController {
@@ -15,6 +16,8 @@ class CustomerController {
         // Check if a customer with that account number already exists
         const existingCustomer = await CustomerService.fetchOne({ accountNumber });
   
+        // this setting is wrong if an acc number is already selected \
+        //    another one should be generated on auto
         if (existingCustomer) {
           return res.status(403).json({
             success: false,
@@ -25,11 +28,8 @@ class CustomerController {
         // Add the account number to the customer data
         body.accountNumber = accountNumber;
   
-        // Create a new customer document using the Mongoose model
-        const newCustomer = new CustomerModel(body);
-  
-        // Save the customer document to the database
-        const createdCustomer = await newCustomer.save();
+        // Create a new customer document using the Mongoose service
+        const createdCustomer = customerService.create({...body})
   
         return res.status(201).json({
           success: true,
@@ -38,11 +38,11 @@ class CustomerController {
           accountNumber,
         });
       } catch (error) {
-        return res.status(500).json({
-          success: false,
-          message: 'Error creating customer',
-          error: error.message,
-        });
+          return res.status(500).json({
+            success: false,
+            message: 'Error creating customer',
+            error: error.message,
+          });
       }
     }
 
@@ -77,7 +77,7 @@ class CustomerController {
      }
 
     async fetchCustomers(req, res){
-        console.log('I am now done with authentication')
+        // console.log('I am now done with authentication')
         const allCustomers = await  CustomerService.fetch({});
 
         return res.status(200).json({
@@ -120,7 +120,7 @@ class CustomerController {
         return res.status(200).json({
             success: true,
             message: 'Customer Deleted Successfully',
-            data: deletedCustomer
+            // data: deletedCustomer
         })
 
     }
@@ -155,46 +155,46 @@ class CustomerController {
       }
     }
    
+    // Currently Doesn't work
+    async searchCustomers(req, res) {
+      try {
+        const { name, accountNumber, phoneNumber, dateOfBirth } = req.query;
 
-async searchCustomers(req, res) {
-  try {
-    const { name, accountNumber, phoneNumber, dateOfBirth } = req.query;
+        // Construct a query object based on the provided parameters
+        const query = {};
 
-    // Construct a query object based on the provided parameters
-    const query = {};
+        if (name) {
+          query.firstName = new RegExp(name, 'i'); // Case-insensitive search
+        }
 
-    if (name) {
-      query.firstName = new RegExp(name, 'i'); // Case-insensitive search
-    }
+        if (accountNumber) {
+          query.lastName = new RegExp(accountNumber, 'i');
+        }
 
-    if (accountNumber) {
-      query.lastName = new RegExp(accountNumber, 'i');
-    }
+        if (dateOfBirth) {
+          query.email = new RegExp(dateOfBirth, 'i');
+        }
 
-    if (dateOfBirth) {
-      query.email = new RegExp(dateOfBirth, 'i');
-    }
+        if (phoneNumber) {
+          query.phoneNumber = new RegExp(phoneNumber, 'i');
+        }
 
-    if (phoneNumber) {
-      query.phoneNumber = new RegExp(phoneNumber, 'i');
-    }
+        // Call your CustomerService to search for customers using the query
+        const customers = await CustomerService.searchCustomers(query);
 
-    // Call your CustomerService to search for customers using the query
-    const customers = await CustomerService.searchCustomers(query);
-
-    return res.status(200).json({
-      success: true,
-      message: 'Customers found successfully',
-      data: customers,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Error retrieving customers',
-      error: error.message,
-    });
-  }
- } 
+        return res.status(200).json({
+          success: true,
+          message: 'Customers found successfully',
+          data: customers
+        });
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: 'Error retrieving customers',
+          error: error.message,
+        });
+      }
+    } 
 }
 
 module.exports = new CustomerController()

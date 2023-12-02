@@ -39,7 +39,7 @@ class CustomerService {
 
     return customers;
   }
-  async searchCustomers(query) {
+async searchCustomers(query) {
     try {
       return await CustomerModel.find(query);
     } catch (error) {

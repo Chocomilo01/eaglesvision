@@ -10,11 +10,11 @@ const loanRoutes = require("./loanRoute");
 
 
 
-router.use('/register',testmiddleware, userRoute)
-router.use('/login', testmiddleware, loginRoute)
-router.use("/customers", testmiddleware, customerRoutes);
-router.use("/transactions", testmiddleware, transactionRoutes);
-router.use("/loans", testmiddleware, loanRoutes);
+router.use('/register', userRoute)
+router.use('/login', loginRoute)
+router.use("/customers", customerRoutes);
+router.use("/transactions", transactionRoutes);
+router.use("/loans", loanRoutes);
 //router.use('/search', testmiddleware, searchRoute)
 
 
