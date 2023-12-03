@@ -25,6 +25,8 @@ class TransactionController {
       }
 
       // Fetch user information (user ID and user name) from your authentication system or user service
+      
+      // The information here would be better gotten from the jwt token
       const userId = req.body.id;
       const firstName = req.body.firstName;
       const middleName = req.body.middleName;
@@ -63,20 +65,20 @@ class TransactionController {
       return res.status(201).json({
         success: true,
         message: "Deposit created successfully",
-        data: responsePayload,
+        data: responsePayload
       });
     } catch (error) {
       return res.status(500).json({
         success: false,
         message: "Error creating deposit",
-        error: error.message,
+        error: error.message
       });
     }
   }
 
   async createWithdrawal(req, res) {
     try {
-      const { customerId, amount, description, paymentDate,  balance,collectedBy } = req.body;
+      const { customerId, amount, description, paymentDate, balance, collectedBy } = req.body;
 
       // Verify that the customer exists
       const customer = await CustomerService.fetchOne({ _id: customerId });
@@ -97,6 +99,7 @@ class TransactionController {
       }
 
       // Fetch user information (user ID and user name) from your authentication system or user service
+      // Get user identity from jwt
       const userId = req.body.id;
       const firstName = req.body.firstNameame;
       const middleName = req.body.middleNameame; // Replace with how you retrieve the user name
@@ -127,6 +130,7 @@ class TransactionController {
       const responsePayload = {
         transaction: withdrawalTransaction,
         balance: updatedBalance,
+        // This aspect won't work cause the info wasn't passed in well
         user: {
           id: userId,
           firstName: firstName,
