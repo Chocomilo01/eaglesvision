@@ -1,22 +1,34 @@
-const jwt = require("jsonwebtoken"); 
+const jwt = require('jsonwebtoken');
+const jwt_decode = require('jwt-decode')
+require('dotenv').config()
 
-const genAuthToken = (user) => {
-    const secretKey = process.env.JWT_SECRET_KEY
+const genAuthToken = function (obj) {
+	// 1 hour
+	const jwtToken = jwt.sign(obj,
+					process.env.JWT_SECRET_KEY,
+					{ expiresIn: '1h' }
+				);
+	return jwtToken;
+}
 
-    const token = jwt.sign(
-        {
-           
-        _id: user._id, 
-        firstName: user.firstName,
-        middleName: user.middleName,
-        lastName: user.lastName,
-        email: user.email,
-        roles: user.roles,
-        userId: user.userId
-    },
-     secretKey
-    );
-    return token;
-};
+const verifyToken = (token) => {
+	try {
+		const decoded = jwt.verify(token, JWT_SECRET);
+		return {
+		  expired: false,
+		  decoded,
+	};
+	} catch (e) { 
+			return {
+				expired: e.message === 'jwt expired',
+				decoded: null,
+	  	};
+	}
+}
+  
+const decodeToken = (token) => {
+	const id = jwt_decode(token)._id
+	return id
+}
 
-module.exports = genAuthToken
+module.exports = { genAuthToken, verifyToken, decodeToken } 

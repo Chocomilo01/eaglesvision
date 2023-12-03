@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const rootRoute = require('./routes/indexRoute');
 const cors = require('cors');
 const loggingMiddleware = require('./middlewares/loggingMiddleware'); // Import the logging middleware
+const errorHandler = require('./middlewares/test.middleware');
 
 
 require('dotenv').config();
@@ -18,13 +19,15 @@ app.use(express.json());
 app.use(cors({
     origin: '*'
 }));
+app.use(errorHandler)
 
 app.use('/api/v1', rootRoute);
 
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+ mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true, 
+  useUnifiedTopology: true,
+  family: 4,
+})
     .then(() => {
       console.log('Connected to the database');
     })
