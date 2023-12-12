@@ -21,7 +21,7 @@ class userService {
 
     // find a user by their id
     async findOne(filter){
-        return await userModel.findOne(filter).select('-password')
+        return await userModel.findOne(filter)
     } 
 
     // find a user by their id

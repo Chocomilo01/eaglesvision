@@ -36,6 +36,37 @@ exports.registerUser = async (req, res) => {
     }
 };
 
+exports.loginUser = async (req, res) => {
+    // This Endpoint Login A User.
+    try {
+        // Check if the user already exists
+        const { email, password } = req.body
+
+        console.log(password)
+        const user = await userService.findOne({ email });
+        if(!user) return res.status(400).send("user not registered...");
+        
+        const checkPassword = await user.matchPassword(password)
+        console.log("Problem Solved: 1")
+        if (!checkPassword) return res.status(400).json({ message: "Incorrect Password" });
+
+        const token = genAuthToken({ _id: user._id, roles: user.roles });
+
+        res.status(200).json({
+            message: "Login Successful",
+            data: { user, token },
+            success: true
+        });
+    } catch (error) {
+        console.error("Error during user registration:", error);
+        res.status(500).json({
+            success: false,
+            message: `Internal server error: ${error.message}`,
+        });
+    }
+};
+
+
 exports.getByID = async (req, res) => {
     // This Endpoint Gets A User By ID
     
