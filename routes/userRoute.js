@@ -1,23 +1,24 @@
 const bcrypt = require("bcryptjs");
-const Joi = require("joi");
 const express = require("express");
 const { User } = require("../model/userModel");
 const { authenticate } = require('../middlewares/authentication');
-const genAuthToken = require("../utils/genAuthToken");
 const validate = require("../middlewares/validate.middleware");
 const registerSchema = require("../schema/user.schema");
-const { registerUser, getByID, deleteUser, getAllUsers } = require("../controller/user.controller");
+const { registerUser,
+        getByID, 
+        deleteUser, 
+        getAllUsers, 
+        loginUser } = require("../controller/user.controller");
+const loginSchema = require("../schema/login.schema");
 
 
 
 const router = express.Router()
 
-router.post("/", validate(registerSchema), registerUser)
-
+router.post("/register", validate(registerSchema), registerUser)
+router.post("/login", validate(loginSchema), loginUser)
 router.get("/", getAllUsers)
-
 router.get("/:id", getByID)
-
 router.delete("/:id", deleteUser)
   
 // Add a new route for changing passwords

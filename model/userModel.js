@@ -68,16 +68,18 @@ userSchema.pre('save', async function (next) {
   next();
 })
 
-userSchema.methods.matchPassword  = async function (password) {
-  if(!password) throw new Error("Password is missing, can not compare")
+userSchema.methods.matchPassword = async function (password) {
+  if(!password) throw new Error("Password is missing, can not compare");
 
   try{
+      console.log(this.password, password)
       const result = await bcrypt.compare(password, this.password)
       return result;
   } catch (e) {
-      return res.json({ Success: false, message: 'Error while comparing password!', error: e.message})
+      throw new Error('Error while comparing password: ' + e.message);
   }
-}
+};
+
 const userModel = mongoose.model("UserModel", userSchema);
 
 module.exports = userModel;
