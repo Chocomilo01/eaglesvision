@@ -316,42 +316,6 @@ class TransactionController {
     }
   }
 
-  // async searchDepositCashByDate(req, res) {
-  //   try {
-  //     const { startDate, endDate } = req.query;
-
-  //     // Check if startDate and endDate are provided
-  //     if (!startDate || !endDate) {
-  //       return res.status(400).json({
-  //         success: false,
-  //         message: "Please provide both startDate and endDate for the search.",
-  //       });
-  //     }
-
-  //     // Parse the input date strings into JavaScript Date objects
-  //     const parsedStartDate = new Date(startDate);
-  //     const parsedEndDate = new Date(endDate);
-
-  //     // Call the service method to search deposit transactions
-  //     const transactions = await TransactionService.searchDepositCashByDate(
-  //       parsedStartDate,
-  //       parsedEndDate
-  //     );
-
-  //     // Return the transactions in the response
-  //     return res.status(200).json({
-  //       success: true,
-  //       message: "Deposit cash transactions found successfully",
-  //       data: transactions,
-  //     });
-  //   } catch (error) {
-  //     return res.status(500).json({
-  //       success: false,
-  //       message: "Error searching deposit cash transactions by date",
-  //       error: error.message,
-  //     });
-  //   }
-  // }
   async getTotalDepositByTransferByPaymentDate(req, res) {
     try {
       const { startDate, endDate } = req.query;
@@ -368,7 +332,7 @@ class TransactionController {
       const parsedStartDate = new Date(startDate);
       const parsedEndDate = new Date(endDate);
 
-      // Call the new service method to retrieve total deposit transactions made by transfer by payment date
+      // Call the service method to retrieve total deposit transactions made by transfer by payment date
       const totalDepositAmount = await TransactionService.getTotalDepositByTransferByPaymentDate(
         parsedStartDate,
         parsedEndDate
@@ -386,45 +350,6 @@ class TransactionController {
       return res.status(500).json({
         success: false,
         message: "Error retrieving total deposit transactions by transfer by payment date",
-        error: error.message,
-      });
-    }
-  }
-
-  async getTotalDepositByCashByPaymentDate(req, res) {
-    try {
-      const { startDate, endDate } = req.query;
-
-      // Check if startDate and endDate are provided
-      if (!startDate || !endDate) {
-        return res.status(400).json({
-          success: false,
-          message: "Please provide both startDate and endDate for the search.",
-        });
-      }
-
-      // Parse the input date strings into JavaScript Date objects
-      const parsedStartDate = new Date(startDate);
-      const parsedEndDate = new Date(endDate);
-
-      // Call the new service method to retrieve total deposit transactions made by transfer by payment date
-      const totalDepositAmount = await TransactionService.getTotalDepositByCashByPaymentDate(
-        parsedStartDate,
-        parsedEndDate
-      );
-
-      // Return the total deposit amount in the response
-      return res.status(200).json({
-        success: true,
-        message: "Total deposit transactions made by cash retrieved successfully",
-        data: {
-          totalDepositAmount,
-        },
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error retrieving total deposit transactions by cash by payment date",
         error: error.message,
       });
     }
