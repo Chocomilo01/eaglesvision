@@ -171,6 +171,33 @@ async getTotalDepositByTransferByPaymentDate(startDate, endDate) {
   }
 }
 
+async getTotalDepositByCashByPaymentDate(startDate, endDate) {
+  try {
+    const totalDepositAmount = await TransactionModel.aggregate([
+      {
+        $match: {
+          type: 'deposit',
+          modeOfPayment: 'cash',
+          paymentDate: { $gte: startDate, $lt: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    if (totalDepositAmount.length > 0) {
+      return totalDepositAmount[0].total;
+    } else {
+      return 0;
+    }
+  } catch (error) {
+    throw new Error(`Error retrieving total deposit transactions by cash by payment date: ${error.message}`);
+  }
+}
 
 // }
   // New method to retrieve all withdrawal transactions by payment date
