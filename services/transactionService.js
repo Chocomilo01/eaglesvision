@@ -187,7 +187,7 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
     } catch (error) {
       throw new Error(`Error retrieving total withdrawal transactions by cash by payment date: ${error.message}`);
     }
-  }
+  }s
 
 
   async getTotalWithdrawalsByTransferByPaymentDate(startDate, endDate) {
@@ -236,6 +236,45 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
     }
   }
 
+  async getTotalDepositByPaymentDate(startDate, endDate) {
+    try {
+      const totalDepositAmount = await TransactionModel.aggregate([
+        {
+          $match: {
+            type: 'deposit',
+            choose: 'credit', // Assuming 'credit' indicates a deposit
+            paymentDate: { $gte: startDate, $lt: endDate },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$amount' },
+          },
+        },
+      ]);
+
+      if (totalDepositAmount.length > 0) {
+        return totalDepositAmount[0].total;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      throw new Error(`Error retrieving total deposit transactions by payment date: ${error.message}`);
+    }
+  }
+  async getAllTransactionsByCustomer(customerId) {
+    try {
+      const transactions = await TransactionModel.find({ customerId });
+
+      return transactions;
+    } catch (error) {
+      throw new Error(`Error retrieving transactions for customer: ${error.message}`);
+    }
+  }
+
+
 }
+
 
 module.exports = new TransactionService();

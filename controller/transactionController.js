@@ -503,6 +503,72 @@ class TransactionController {
       });
     }
   }
+  async getTotalDepositByPaymentDate(req, res) {
+    try {
+      const { startDate, endDate } = req.query;
+
+      // Check if startDate and endDate are provided
+      if (!startDate || !endDate) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide both startDate and endDate for the search.",
+        });
+      }
+
+      // Parse the input date strings into JavaScript Date objects
+      const parsedStartDate = new Date(startDate);
+      const parsedEndDate = new Date(endDate);
+
+      // Call the service method to retrieve total deposit transactions by payment date
+      const totalDepositAmount = await TransactionService.getTotalDepositByPaymentDate(
+        parsedStartDate,
+        parsedEndDate
+      );
+
+      // Return the total deposit amount in the response
+      return res.status(200).json({
+        success: true,
+        message: "Total deposit transactions retrieved successfully",
+        data: {
+          totalDepositAmount,
+        },
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error retrieving total deposit transactions by payment date",
+        error: error.message,
+      });
+    }
+  }
+  async getAllTransactionsByCustomer(req, res) {
+    try {
+      const { customerId } = req.params;
+
+      // Check if customerId is provided
+      if (!customerId) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide a customerId for the search.",
+        });
+      }
+
+      // Call the service method to retrieve all transactions for a customer
+      const transactions = await TransactionService.getAllTransactionsByCustomer(customerId);
+
+      return res.status(200).json({
+        success: true,
+        message: "Transactions retrieved successfully",
+        data: transactions,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error retrieving transactions for customer",
+        error: error.message,
+      });
+    }
+  }
 
 
 }

@@ -10,6 +10,7 @@ router.post("/deposit", validate(paymentSchema), transactionController.createDep
 router.get('/deposits', transactionController.getAllDeposits);
 // GET single deposit
 router.get('/deposits/:depositId', transactionController.getDepositById);
+router.get("/customer/:customerId/transactions", transactionController.getAllTransactionsByCustomer);
 
 
 // create withdrawal
@@ -24,6 +25,8 @@ router.get("/totalDepositByTransferByPaymentDate", transactionController.getTota
 router.get("/totalDepositByCashByPaymentDate", transactionController.getTotalDepositByCashByPaymentDate);
 router.get("/totalWithdrawalsByCashByPaymentDate", transactionController.getTotalWithdrawalsByCashByPaymentDate);
 router.get("/totalWithdrawalsByTransferByPaymentDate", transactionController.getTotalWithdrawalsByTransferByPaymentDate);
+router.get("/totalDepositByPaymentDate", transactionController.getTotalDepositByPaymentDate);
+
 // Define a route to get all withdrawals by payment date
 router.get("/withdrawalsByPaymentDate", transactionController.getAllWithdrawalsByPaymentDate);
 // To get the total transactions by date
