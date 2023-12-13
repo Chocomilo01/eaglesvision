@@ -89,44 +89,7 @@ async createWithdrawal(transactionData) {
 //   }
 // }
 
-async getTotalDepositByTransferByPaymentDate(req, res) {
-    try {
-      const { startDate, endDate } = req.query;
 
-      // Check if startDate and endDate are provided
-      if (!startDate || !endDate) {
-        return res.status(400).json({
-          success: false,
-          message: "Please provide both startDate and endDate for the search.",
-        });
-      }
-
-      // Parse the input date strings into JavaScript Date objects
-      const parsedStartDate = new Date(startDate);
-      const parsedEndDate = new Date(endDate);
-
-      // Call the service method to retrieve total deposit transactions made by transfer by payment date
-      const totalDepositAmount = await TransactionService.getTotalDepositByTransferByPaymentDate(
-        parsedStartDate,
-        parsedEndDate
-      );
-
-      // Return the total deposit amount in the response
-      return res.status(200).json({
-        success: true,
-        message: "Total deposit transactions made by transfer retrieved successfully",
-        data: {
-          totalDepositAmount,
-        },
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error retrieving total deposit transactions by transfer by payment date",
-        error: error.message,
-      });
-    }
-  }
 
 async searchTransactionsByPaymentDate(startDate, endDate) {
   try {
@@ -172,33 +135,88 @@ async getTotalDepositByTransferByPaymentDate(startDate, endDate) {
 }
 
 async getTotalDepositByCashByPaymentDate(startDate, endDate) {
-  try {
-    const totalDepositAmount = await TransactionModel.aggregate([
-      {
-        $match: {
-          type: 'deposit',
-          modeOfPayment: 'cash',
-          paymentDate: { $gte: startDate, $lt: endDate },
+    try {
+      const totalDepositAmount = await TransactionModel.aggregate([
+        {
+          $match: {
+            type: 'deposit',
+            modeOfPayment: 'cash',
+            paymentDate: { $gte: startDate, $lt: endDate },
+          },
         },
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: '$amount' },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$amount' },
+          },
         },
-      },
-    ]);
+      ]);
 
-    if (totalDepositAmount.length > 0) {
-      return totalDepositAmount[0].total;
-    } else {
-      return 0;
+      if (totalDepositAmount.length > 0) {
+        return totalDepositAmount[0].total;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      throw new Error(`Error retrieving total deposit transactions by cash by payment date: ${error.message}`);
     }
-  } catch (error) {
-    throw new Error(`Error retrieving total deposit transactions by cash by payment date: ${error.message}`);
   }
-}
+  async getTotalWithdrawalsByCashByPaymentDate(startDate, endDate) {
+    try {
+      const totalWithdrawalsAmount = await TransactionModel.aggregate([
+        {
+          $match: {
+            type: 'withdrawal',
+            modeOfPayment: 'cash',
+            paymentDate: { $gte: startDate, $lt: endDate },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$amount' },
+          },
+        },
+      ]);
 
+      if (totalWithdrawalsAmount.length > 0) {
+        return totalWithdrawalsAmount[0].total;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      throw new Error(`Error retrieving total withdrawal transactions by cash by payment date: ${error.message}`);
+    }
+  }
+
+
+  async getTotalWithdrawalsByTransferByPaymentDate(startDate, endDate) {
+    try {
+      const totalWithdrawalsAmount = await TransactionModel.aggregate([
+        {
+          $match: {
+            type: 'withdrawal',
+            choose: 'Debit',
+            paymentDate: { $gte: startDate, $lt: endDate },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$amount' },
+          },
+        },
+      ]);
+
+      if (totalWithdrawalsAmount.length > 0) {
+        return totalWithdrawalsAmount[0].total;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      throw new Error(`Error retrieving total withdrawal transactions by transfer by payment date: ${error.message}`);
+    }
+  }
 // }
   // New method to retrieve all withdrawal transactions by payment date
   async getAllWithdrawalsByPaymentDate(startDate, endDate) {
@@ -217,41 +235,6 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
       throw new Error(`Error retrieving all withdrawal transactions by payment date: ${error.message}`);
     }
   }
-
-
-// async getTotalDepositsByTransfer(startDate, endDate) {
-//   try {
-//     // Query deposit transactions with modeOfPayment set to 'transfer' and paymentDate within the specified range
-//     const totalDeposits = await TransactionModel.aggregate([
-//       {
-//         $match: {
-//           type: 'deposit',
-//           modeOfPayment: 'transfer',
-//           paymentDate: {
-//             $gte: new Date(startDate),
-//             $lte: new Date(endDate),
-//           },
-//         },
-//       },
-//       {
-//         $group: {
-//           _id: null,
-//           totalAmount: { $sum: '$amount' },
-//         },
-//       },
-//     ]);
-
-//     // If there are results, return the total deposit amount; otherwise, return 0.
-//     if (totalDeposits.length > 0) {
-//       return totalDeposits[0].totalAmount;
-//     } else {
-//       return 0;
-//     }
-//   } catch (error) {
-//     throw new Error(`Error retrieving total deposit transactions: ${error.message}`);
-//   }
-// }
-
 
 }
 

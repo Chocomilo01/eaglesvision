@@ -393,6 +393,80 @@ class TransactionController {
       });
     }
   }
+
+
+    async getTotalWithdrawalsByTransferByPaymentDate(req, res) {
+      try {
+        const { startDate, endDate } = req.query;
+  
+        if (!startDate || !endDate) {
+          return res.status(400).json({
+            success: false,
+            message: "Please provide both startDate and endDate for the search.",
+          });
+        }
+  
+        const totalWithdrawalsAmount = await TransactionService.getTotalWithdrawalsByTransferByPaymentDate(
+          new Date(startDate),
+          new Date(endDate)
+        );
+  
+        return res.status(200).json({
+          success: true,
+          message: "Total withdrawal transactions made by transfer retrieved successfully",
+          data: {
+            totalWithdrawalsAmount,
+          },
+        });
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: "Error retrieving total withdrawal transactions by transfer by payment date",
+          error: error.message,
+        });
+      }
+    }
+
+    async getTotalWithdrawalsByCashByPaymentDate(req, res) {
+      try {
+        const { startDate, endDate } = req.query;
+  
+        // Check if startDate and endDate are provided
+        if (!startDate || !endDate) {
+          return res.status(400).json({
+            success: false,
+            message: "Please provide both startDate and endDate for the search.",
+          });
+        }
+  
+        // Parse the input date strings into JavaScript Date objects
+        const parsedStartDate = new Date(startDate);
+        const parsedEndDate = new Date(endDate);
+  
+        // Call the service method to retrieve total withdrawal transactions made by cash by payment date
+        const totalWithdrawalsAmount = await TransactionService.getTotalWithdrawalsByCashByPaymentDate(
+          parsedStartDate,
+          parsedEndDate
+        );
+  
+        // Return the total withdrawal amount in the response
+        return res.status(200).json({
+          success: true,
+          message: "Total withdrawal transactions made by cash retrieved successfully",
+          data: {
+            totalWithdrawalsAmount,
+          },
+        });
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: "Error retrieving total withdrawal transactions by cash by payment date",
+          error: error.message,
+        });
+      }
+    }
+  
+  
   async getAllWithdrawalsByPaymentDate(req, res) {
     try {
       const { startDate, endDate } = req.query;

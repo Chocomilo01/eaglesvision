@@ -22,7 +22,8 @@ router.get('/withdrawals/:withdrawalId', transactionController.getWithdrawalById
 router.get("/searchTransactionsByPaymentDate", transactionController.searchTransactionsByPaymentDate);
 router.get("/totalDepositByTransferByPaymentDate", transactionController.getTotalDepositByTransferByPaymentDate);
 router.get("/totalDepositByCashByPaymentDate", transactionController.getTotalDepositByCashByPaymentDate);
-
+router.get("/totalWithdrawalsByCashByPaymentDate", transactionController.getTotalWithdrawalsByCashByPaymentDate);
+router.get("/totalWithdrawalsByTransferByPaymentDate", transactionController.getTotalWithdrawalsByTransferByPaymentDate);
 // Define a route to get all withdrawals by payment date
 router.get("/withdrawalsByPaymentDate", transactionController.getAllWithdrawalsByPaymentDate);
 // To get the total transactions by date
