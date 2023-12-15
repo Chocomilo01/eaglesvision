@@ -602,24 +602,15 @@ class LoanController {
   }
   
 
-  // async getTotalDepositsByTransfer(req, res) {
-  //   try {
-  //     // Call the service method to get the total deposits made via transfer
-  //     const totalTransferDeposits = await LoanService.getTotalDepositsByTransfer();
-
-  //     return res.status(200).json({
-  //       success: true,
-  //       message: "Total deposits made via transfer retrieved successfully",
-  //       totalTransferDeposits,
-  //     });
-  //   } catch (error) {
-  //     return res.status(500).json({
-  //       success: false,
-  //       message: "Error fetching total deposits made via transfer",
-  //       error: error.message,
-  //     });
-  //   }
-  // }
+  async getCustomerLoans(req, res, next) {
+    try {
+      const customerId = req.params.customerId;
+      const customerLoans = await LoanService.getCustomerLoans(customerId);
+      res.status(200).json(customerLoans);
+    } catch (error) {
+      next(error);
+    }
+  }
   
 
 }

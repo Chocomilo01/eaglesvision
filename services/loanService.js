@@ -148,6 +148,15 @@ class LoanService {
   //     throw error;
   //   }
   // }
+
+  async getCustomerLoans(customerId) {
+    try {
+      const customerLoans = await LoanModel.find({ customer: customerId });
+      return customerLoans;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 

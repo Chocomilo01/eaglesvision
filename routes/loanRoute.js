@@ -15,6 +15,7 @@ router.delete("/:loanId", loanController.deleteLoan)
 // In your Express routes definition
 router.post("/withdrawals", loanController.createWithdrawal);
 router.post("/deposits", loanController.createDeposit);
+router.get("/customer/:customerId/loans", loanController.getCustomerLoans);
 // Define a route to get defaulters
 // router.get("/defaulters", loanController.getDefaulters);
 router.get("/total-deposit-amount-by-cash", loanController.getTotalDepositAmountByCash);
@@ -30,7 +31,7 @@ router.get('/loans/depositsByCashAndPaymentDate', loanController.getLoansDeposit
 // Define a route to get a loan by its ID
 router.get("/:loanId", loanController.getLoanById);
 // In your Express routes definition (loanRoute.js)
-router.get("/customer/:customerId/loans", loanController.getCustomerLoans);
+//router.get("/customer/:customerId/loans", loanController.getCustomerLoans);
 ///api/loans/customer/:customerId/loans
 
 
