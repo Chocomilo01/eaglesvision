@@ -10,6 +10,7 @@ const loanController = require("../controller/loanController");
 router.post("/disbursement", loanController.createLoan);
 //router.post("/repayments", loanController.createRepayment);
 router.get("/", loanController.getLoans);
+router.delete("/:loanId", loanController.deleteLoan)
 // router.get("/:loanId", loanController.getLoanById);
 // In your Express routes definition
 router.post("/withdrawals", loanController.createWithdrawal);

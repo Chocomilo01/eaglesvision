@@ -135,6 +135,33 @@ class LoanController {
     }
   }
 
+  async deleteLoan(req, res) {
+    try {
+      const { loanId } = req.params;
+  
+      // Use LoanService to delete the loan
+      const result = await LoanService.delete({ _id: loanId });
+  
+      if (result.deletedCount === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Loan not found",
+        });
+      }
+  
+      return res.status(200).json({
+        success: true,
+        message: "Loan deleted successfully",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error deleting loan",
+        error: error.message,
+      });
+    }
+  }
+
   async createWithdrawal(req, res) {
     try {
       const {
