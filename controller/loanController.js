@@ -527,6 +527,99 @@ class LoanController {
       });
     }
   }
+
+  async getTotalDepositAmountByCash(req, res) {
+    try {
+      const { startDate, endDate } = req.query;
+
+      if (!startDate || !endDate) {
+        return res.status(400).json({
+          success: false,
+          message: "Start date and end date are required",
+        });
+      }
+
+      const totalDepositAmount = await LoanService.getTotalDepositAmountByCashAndDateRange(
+        startDate,
+        endDate
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Total deposit amount via cash retrieved successfully",
+        totalDepositAmount,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching total deposit amount via cash",
+        error: error.message,
+      });
+    }
+  }
+
+  async getLoansDepositedByTransfer(req, res) {
+    try {
+      const { startDate, endDate } = req.query;
+  
+      // Validate and process startDate and endDate as necessary
+  
+      // Create a date range query for the paymentDate field
+      const dateRangeQuery = {
+        paymentDate: {
+          $gte: startDate, // Greater than or equal to startDate
+          $lte: endDate,   // Less than or equal to endDate
+        },
+      };
+  
+      // Query the database to find loans that are "deposits" and via "transfer" within the specified date range
+      const depositLoans = await LoanService.fetch({
+        $and: [
+          { type: "deposit" },
+          { modeOfPayMent: "transfer" },
+          dateRangeQuery,
+        ],
+      });
+  
+      // Calculate the total deposit amount
+      let totalDeposits = 0;
+      depositLoans.forEach((loan) => {
+        totalDeposits += loan.amount;
+      });
+  
+      return res.status(200).json({
+        success: true,
+        message: "Total loan deposits via transfer retrieved successfully",
+        totalDeposits,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching total loan deposits via transfer",
+        error: error.message,
+      });
+    }
+  }
+  
+
+  // async getTotalDepositsByTransfer(req, res) {
+  //   try {
+  //     // Call the service method to get the total deposits made via transfer
+  //     const totalTransferDeposits = await LoanService.getTotalDepositsByTransfer();
+
+  //     return res.status(200).json({
+  //       success: true,
+  //       message: "Total deposits made via transfer retrieved successfully",
+  //       totalTransferDeposits,
+  //     });
+  //   } catch (error) {
+  //     return res.status(500).json({
+  //       success: false,
+  //       message: "Error fetching total deposits made via transfer",
+  //       error: error.message,
+  //     });
+  //   }
+  // }
   
 
 }

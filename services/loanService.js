@@ -69,6 +69,87 @@ class LoanService {
       throw error;
     }
   }
+  async getTotalDepositAmountByCashAndDateRange(startDate, endDate) {
+    try {
+      const dateRangeQuery = {
+        paymentDate: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      };
+
+      const totalDepositAmount = await LoanModel.aggregate([
+        {
+          $match: {
+            $and: [
+              { type: "deposit" },
+              { modeOfPayment: "cash" },
+              dateRangeQuery,
+            ],
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalAmount: { $sum: "$amount" },
+          },
+        },
+      ]);
+
+      return totalDepositAmount.length > 0
+        ? totalDepositAmount[0].totalAmount
+        : 0;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getLoansDepositedByTransfer(startDate, endDate) {
+    try {
+      // Create a date range query for the paymentDate field
+      const dateRangeQuery = {
+        paymentDate: {
+          $gte: startDate,
+          $lte: endDate,
+        },
+      };
+
+      // Query the database to find loans that are "deposits" and via "transfer" within the specified date range
+      const depositLoans = await LoanModel.find({
+        $and: [
+          { type: "deposit" },
+          { modeOfPayment: "transfer" },
+          dateRangeQuery,
+        ],
+      });
+
+      return depositLoans;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // async getTotalDepositsByTransfer() {
+  //   try {
+  //     // Query the database to find deposits that are made via transfer
+  //     const transferDeposits = await LoanModel.find({
+  //       type: "deposit",
+  //       modeOfPayment: "transfer",
+  //     });
+
+  //     // Calculate the total amount of deposits made via transfer
+  //     const totalTransferDeposits = transferDeposits.reduce(
+  //       (total, deposit) => total + deposit.amount,
+  //       0
+  //     );
+
+  //     return totalTransferDeposits;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }
+
+
 
 module.exports = new LoanService();

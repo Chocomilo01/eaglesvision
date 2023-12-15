@@ -236,31 +236,34 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
     }
   }
 
-  async getTotalDepositByPaymentDate(startDate, endDate) {
+  async getLoansDepositedByTransfer(startDate, endDate) {
     try {
-      const totalDepositAmount = await TransactionModel.aggregate([
-        {
-          $match: {
-            type: 'deposit',
-            choose: 'credit', // Assuming 'credit' indicates a deposit
-            paymentDate: { $gte: startDate, $lt: endDate },
-          },
+      // Create a date range query for the paymentDate field
+      const dateRangeQuery = {
+        paymentDate: {
+          $gte: startDate,
+          $lte: endDate,
         },
-        {
-          $group: {
-            _id: null,
-            total: { $sum: '$amount' },
-          },
-        },
-      ]);
-
-      if (totalDepositAmount.length > 0) {
-        return totalDepositAmount[0].total;
-      } else {
-        return 0;
-      }
+      };
+  
+      // Query the database to find loans that are "deposits" via transfer and within the specified date range
+      const transferDepositLoans = await LoanModel.find({
+        $and: [
+          { type: "deposit" },
+          { modeOfPayment: "transfer" },
+          dateRangeQuery,
+        ],
+      });
+  
+      // Calculate the total deposit amount
+      const totalDepositAmount = transferDepositLoans.reduce(
+        (total, loan) => total + loan.amount,
+        0
+      );
+  
+      return totalDepositAmount;
     } catch (error) {
-      throw new Error(`Error retrieving total deposit transactions by payment date: ${error.message}`);
+      throw error;
     }
   }
   async getAllTransactionsByCustomer(customerId) {

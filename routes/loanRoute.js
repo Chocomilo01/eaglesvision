@@ -17,7 +17,9 @@ router.post("/withdrawals", loanController.createWithdrawal);
 router.post("/deposits", loanController.createDeposit);
 // Define a route to get defaulters
 // router.get("/defaulters", loanController.getDefaulters);
-// Define a route to get defaulters
+router.get("/total-deposit-amount-by-cash", loanController.getTotalDepositAmountByCash);
+router.get('/loans/depositsByTransfer', loanController.getLoansDepositedByTransfer);
+//router.get("/total-deposits/transfer", loanController.getTotalDepositsByTransfer)
 router.get("/by-payment-date", loanController.getLoansByPaymentDate);
 // In loanRoute.js
 router.get("/total-amount-by-payment-date", loanController.getTotalAmountByPaymentDate);
