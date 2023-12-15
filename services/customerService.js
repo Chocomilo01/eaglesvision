@@ -1,4 +1,5 @@
 const CustomerModel = require("../model/customerModel");
+const TransactionModel = require("../model/transactionModel");
 const LoanService = require("./loanService");
 
 class CustomerService {
@@ -39,6 +40,16 @@ class CustomerService {
 
     return customers;
   }
+
+  async getCustomerTransactions(customerId) {
+    try {
+      const transactions = await TransactionModel.find({ customer: customerId });
+      return transactions;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
 async searchCustomers(query) {
     try {
       return await CustomerModel.find(query);
@@ -46,6 +57,20 @@ async searchCustomers(query) {
       throw new Error(`Error searching for customers: ${error.message}`);
     }
   }
+
+  // async getSavingsTransactions(customerId) {
+  //   try {
+  //     // Filter transactions based on customer ID and type "savings"
+  //     const savingsTransactions = await TransactionModel.find({
+  //       customer: customerId,
+  //       type: "savings",
+  //     });
+
+  //     return savingsTransactions;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }
 
 module.exports = new CustomerService();

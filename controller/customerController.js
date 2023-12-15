@@ -124,8 +124,17 @@ class CustomerController {
         })
 
     }
-    //Search Engine
 
+    async getCustomerTransactions(req, res, next) {
+      try {
+        const customerId = req.params.customerId;
+        const transactions = await customerService.getCustomerTransactions(customerId);
+        res.status(200).json(transactions);
+      } catch (error) {
+        next(error);
+      }
+    }
+    //Search Engine
     async searchCustomerByName(req, res) {
       try {
         const { name } = req.query;
@@ -152,6 +161,20 @@ class CustomerController {
           message: 'Error searching for customers by name',
           error: error.message,
         });
+      }
+    }
+
+    async getSavingsTransactions(customerId) {
+      try {
+        // Filter transactions based on customer ID and type "savings"
+        const savingsTransactions = await TransactionModel.find({
+          customer: customerId,
+          type: "savings",
+        });
+  
+        return savingsTransactions;
+      } catch (error) {
+        throw error;
       }
     }
    
@@ -195,6 +218,17 @@ class CustomerController {
         });
       }
     } 
+
+    // async getSavingsTransactions(req, res, next) {
+    //   try {
+    //     const customerId = req.params.customerId;
+    //     const savingsTransactions = await CustomerService.getSavingsTransactions(customerId);
+    //     res.status(200).json(savingsTransactions);
+    //   } catch (error) {
+    //     next(error);
+    //   }
+    // }
+  
 }
 
 module.exports = new CustomerController()

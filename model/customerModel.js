@@ -93,6 +93,9 @@ const CustomerSchema = new mongoose.Schema(
       type: Number,
       default: 0, // Initial balance is set to 
     },
+    officerIncharge: {
+      type: String,
+    },
     
   },
   { timestamps: true }

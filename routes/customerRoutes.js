@@ -13,7 +13,8 @@ router.get('/search', customerController.searchCustomers);
 router.get('/:id', customerController.fetchOneCustomer)
 router.patch('/:id', customerController.updateCustomer)
 router.delete('/:id', customerController.deleteCustomer)
- 
+router.get("/:customerId/transactions", customerController.getCustomerTransactions);
+//router.get("/:customerId/savings-transactions", customerController.getSavingsTransactions);
 
 
  module.exports = router;
