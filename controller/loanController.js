@@ -170,7 +170,7 @@ class LoanController {
         loanEndDate,
         loanStartDate,
         interestRate,
-        modeOfPayMent,
+        modeOfPayment,
       } = req.body;
 
       // Verify that the customer exists
@@ -218,7 +218,7 @@ class LoanController {
         interestRate,
         paymentDate: new Date(),
         balance: remainingLoanBalance,
-        modeOfPayMent,
+        modeOfPayment,
         // ... Other withdrawal details ...
       });
 
