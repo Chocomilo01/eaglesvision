@@ -12,6 +12,7 @@ router.get('/deposits', transactionController.getAllDeposits);
 router.get('/deposits/:depositId', transactionController.getDepositById);
 router.get("/transactions", transactionController.getAllTransactions);
 router.get('/transactions/cash', transactionController.getAllTransactionsByCash);
+router.get('/transactions/transfer', transactionController.getAllTransactionsByTransfer);
 router.get("/customer/:customerId/transactions", transactionController.getAllTransactionsByCustomer);
 
 

@@ -579,6 +579,25 @@ async getAllTransactionsByCash(req, res) {
   }
 }
 
+async getAllTransactionsByTransfer(req, res) {
+  try {
+    // Call the service to get all transactions with modeOfPayment set to 'transfer'
+    const transferTransactions = await TransactionService.getAllTransactionsByTransfer();
+
+    return res.status(200).json({
+      success: true,
+      message: "All transactions by transfer retrieved successfully",
+      data: transferTransactions,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error retrieving transactions by transfer",
+      error: error.message,
+    });
+  }
+}
+
   async getAllTransactionsByCustomer(req, res) {
     try {
       const { customerId } = req.params;
