@@ -560,6 +560,24 @@ class TransactionController {
       });
     }
 }
+async getAllTransactionsByCash(req, res) {
+  try {
+    // Call the service to get all transactions with modeOfPayment set to 'cash'
+    const cashTransactions = await TransactionService.getAllTransactionsByCash();
+
+    return res.status(200).json({
+      success: true,
+      message: "All transactions by cash retrieved successfully",
+      data: cashTransactions,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error retrieving transactions by cash",
+      error: error.message,
+    });
+  }
+}
 
   async getAllTransactionsByCustomer(req, res) {
     try {
@@ -589,8 +607,10 @@ class TransactionController {
       });
     }
   }
+  
 
 
 }
+
 
 module.exports = new TransactionController();

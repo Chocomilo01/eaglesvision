@@ -284,6 +284,16 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
       throw new Error(`Error retrieving all transactions: ${error.message}`);
     }
   }
+  async getAllTransactionsByCash() {
+    try {
+      // Query the database for all transactions with modeOfPayment set to 'cash'
+      const cashTransactions = await TransactionModel.find({ modeOfPayment: 'cash' });
+
+      return cashTransactions;
+    } catch (error) {
+      throw new Error(`Error retrieving transactions by cash: ${error.message}`);
+    }
+  }
 }
 
 

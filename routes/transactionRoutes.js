@@ -11,6 +11,7 @@ router.get('/deposits', transactionController.getAllDeposits);
 // GET single deposit
 router.get('/deposits/:depositId', transactionController.getDepositById);
 router.get("/transactions", transactionController.getAllTransactions);
+router.get('/transactions/cash', transactionController.getAllTransactionsByCash);
 router.get("/customer/:customerId/transactions", transactionController.getAllTransactionsByCustomer);
 
 
