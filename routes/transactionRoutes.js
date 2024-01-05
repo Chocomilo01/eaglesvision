@@ -10,6 +10,7 @@ router.post("/deposit", validate(paymentSchema), transactionController.createDep
 router.get('/deposits', transactionController.getAllDeposits);
 // GET single deposit
 router.get('/deposits/:depositId', transactionController.getDepositById);
+router.get("/transactions", transactionController.getAllTransactions);
 router.get("/customer/:customerId/transactions", transactionController.getAllTransactionsByCustomer);
 
 

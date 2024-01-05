@@ -541,6 +541,26 @@ class TransactionController {
       });
     }
   }
+
+
+  async getAllTransactions(req, res) {
+    try {
+      const transactions = await TransactionService.getAllTransactions();
+  
+      return res.status(200).json({
+        success: true,
+        message: "All transactions retrieved successfully",
+        data: transactions,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error retrieving all transactions",
+        error: error.message,
+      });
+    }
+}
+
   async getAllTransactionsByCustomer(req, res) {
     try {
       const { customerId } = req.params;

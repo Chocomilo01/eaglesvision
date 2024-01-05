@@ -276,7 +276,14 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
     }
   }
 
-
+  async getAllTransactions() {
+    try {
+      const transactions = await TransactionModel.find();
+      return transactions;
+    } catch (error) {
+      throw new Error(`Error retrieving all transactions: ${error.message}`);
+    }
+  }
 }
 
 
