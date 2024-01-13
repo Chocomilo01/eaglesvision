@@ -148,6 +148,23 @@ class LoanService {
   //     throw error;
   //   }
   // }
+  async update(filter, updateData) {
+    try {
+      //  i use findOneAndUpdate to find the loan based on the filter and update its data
+      const updatedLoan = await LoanModel.findOneAndUpdate(filter, updateData, {
+        new: true, // Return the updated document
+        runValidators: true, // Run validators to ensure updated data is valid
+      });
+
+      if (!updatedLoan) {
+        throw new Error("Loan not found");
+      }
+
+      return updatedLoan;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async getCustomerLoans(customerId) {
     try {

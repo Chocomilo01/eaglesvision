@@ -39,6 +39,7 @@ class LoanController {
         loanStartDate,
         repaymentSchedule,
         loanEndDate,
+        description,
         paymentDate,
         // ...other loan details...
       } = req.body;
@@ -114,6 +115,7 @@ class LoanController {
         loanDuration,
         loanStartDate,
         loanEndDate,
+        description,
         repaymentSchedule,
         paymentDate: new Date(),
         customer: customer._id,
@@ -130,6 +132,28 @@ class LoanController {
       return res.status(500).json({
         success: false,
         message: "Error creating",
+        error: error.message,
+      });
+    }
+  }
+
+  async updateLoan(req, res) {
+    try {
+      const { loanId } = req.params;
+      const updateData = req.body;
+  
+      // Update the loan using the LoanService
+      const updatedLoan = await LoanService.update({ _id: loanId }, updateData);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Loan updated successfully",
+        data: updatedLoan,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error updating loan",
         error: error.message,
       });
     }
@@ -172,6 +196,7 @@ class LoanController {
         interestRate,
         modeOfPayment,
         collectedBy,
+        description,
       } = req.body;
 
       // Verify that the customer exists
@@ -214,6 +239,7 @@ class LoanController {
         customer: customer._id,
         type: "withdrawal",
         status: "withdrawn",
+        description,
         loanEndDate,
         loanStartDate,
         interestRate,
@@ -255,6 +281,7 @@ class LoanController {
         loanStartDate,
         interestRate,
         modeOfPayment,
+        description,
         collectedBy,
       } = req.body;
 
@@ -306,6 +333,7 @@ class LoanController {
         loanEndDate,
         loanStartDate,
         interestRate,
+        description,
         modeOfPayment,
         collectedBy,
         paymentDate: new Date(),
@@ -336,6 +364,8 @@ class LoanController {
       });
     }
   }
+
+
 
   async getLoansByPaymentDate(req, res) {
     try {
