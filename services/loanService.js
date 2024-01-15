@@ -153,7 +153,6 @@ class LoanService {
       //  i use findOneAndUpdate to find the loan based on the filter and update its data
       const updatedLoan = await LoanModel.findOneAndUpdate(filter, updateData, {
         new: true, // Return the updated document
-        runValidators: true, // Run validators to ensure updated data is valid
       });
 
       if (!updatedLoan) {
