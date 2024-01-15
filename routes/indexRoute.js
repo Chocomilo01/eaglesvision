@@ -8,6 +8,9 @@ const loanRoutes = require("./loanRoute");
 //const searchRoute = require('./searchRoute')
 
 
+router.get("/healthcheck", (req, res) => {
+    res.status(200).json({ message: "Server ok" });
+});
 
 router.use('/users', userRoute)
 router.use("/customers", customerRoutes);
