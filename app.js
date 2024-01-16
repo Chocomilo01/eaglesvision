@@ -16,9 +16,20 @@ app.use(loggingMiddleware);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use(cors({
-    origin: '*'
-}));
+app.use(
+  cors({
+    origin: "*", // Replace * with the client's domain if necessary
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: [
+      "Origin",
+      "X-Requested-With",
+      "Content-Type",
+      "Accept",
+      "Authorization",
+    ],
+    credentials: true,
+  }),
+);
 app.use(errorHandler)
 
 app.use('/api/v1', rootRoute);
