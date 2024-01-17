@@ -34,7 +34,12 @@ class TransactionController {
       // Convert the amount to a number
       const depositAmount = parseFloat(amount);
 
-      // Create a deposit transaction
+      customer.accountBalance += depositAmount;
+      await customer.save();
+
+      const updatedBalance = customer.accountBalance;
+
+       // Create a deposit transaction
       const depositTransaction = await TransactionService.create({
         type: "deposit",
         amount: depositAmount, // Use the parsed amount here
@@ -45,13 +50,9 @@ class TransactionController {
         modeOfPayment,
         paymentDate,
         userId: userId,
+        balance: updatedBalance,
       });
 
-      // Update the customer's account balance by adding the deposit amount
-      customer.accountBalance += depositAmount;
-      await customer.save();
-
-      const updatedBalance = customer.accountBalance;
       const responsePayload = {
         transaction: depositTransaction,
         balance: updatedBalance,
@@ -78,7 +79,7 @@ class TransactionController {
 
   async createWithdrawal(req, res) {
     try {
-      const { customerId, amount, description, paymentDate, balance, collectedBy } = req.body;
+      const { customerId, amount, description, paymentDate, collectedBy } = req.body;
 
       // Verify that the customer exists
       const customer = await CustomerService.fetchOne({ _id: customerId });
@@ -104,6 +105,13 @@ class TransactionController {
       const firstName = req.body.firstNameame;
       const middleName = req.body.middleNameame; // Replace with how you retrieve the user name
 
+
+      // Update the customer's account balance
+      customer.accountBalance -= amount;
+      await customer.save();
+
+      const updatedBalance = customer.accountBalance;
+
       // Create a withdrawal transaction with user information
       const withdrawalTransaction = await TransactionService.createWithdrawal({
         type: "withdrawal",
@@ -116,17 +124,11 @@ class TransactionController {
         choose: "Debit",
         paymentDate,
         collectedBy,
-        balance,
+        balance: updatedBalance,
         //AccountOfficer: userId,
-        
       });
 
-      // Update the customer's account balance
-      customer.accountBalance -= amount;
-      await customer.save();
-
       // Include user information in the response
-      const updatedBalance = customer.accountBalance;
       const responsePayload = {
         transaction: withdrawalTransaction,
         balance: updatedBalance,
