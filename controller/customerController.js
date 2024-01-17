@@ -92,12 +92,14 @@ class CustomerController {
         const customerId = req.params.id;
         const customerToFetch = await CustomerService.fetchOne({_id: customerId});
 
-        if(!customerToFetch) res.status(403).json({
+        if(!customerToFetch) {
+          return res.status(404).json({
             success: false,
             message: 'customer not found'
-        })
+          })
+        }
 
-         res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: 'customer Fetched Successfully',
             data: customerToFetch
