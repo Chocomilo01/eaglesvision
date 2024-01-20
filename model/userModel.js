@@ -33,9 +33,8 @@ const userSchema = new mongoose.Schema({
   roles: {
     type: String,
     required: false,
-    enum: ["accountOfficer", "assistantManager", "dpo"],
+    enum: ["superAdmin", "manager", "accountManager", "accountOfficer", "dpo"],
     default: "accountOfficer",
-
   },
   bvn: {
     type: Number,
@@ -52,7 +51,6 @@ const userSchema = new mongoose.Schema({
     data: Buffer,
      type: String,
   },
-
   status: {
     type: String,
     enum: ["active", "inactive"],
@@ -72,9 +70,9 @@ userSchema.methods.matchPassword = async function (password) {
   if(!password) throw new Error("Password is missing, can not compare");
 
   try{
-      console.log(this.password, password)
-      const result = await bcrypt.compare(password, this.password)
-      return result;
+    const result = await bcrypt.compare(password, this.password)
+    console.log(result)
+    return result;
   } catch (e) {
       throw new Error('Error while comparing password: ' + e.message);
   }

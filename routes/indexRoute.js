@@ -5,6 +5,7 @@ const testmiddleware = require('../middlewares/test.middleware')
 const customerRoutes = require("./customerRoutes");
 const transactionRoutes = require("./transactionRoutes");
 const loanRoutes = require("./loanRoute");
+const { authenticate } = require('../middlewares/authentication');
 //const searchRoute = require('./searchRoute')
 
 
@@ -13,11 +14,9 @@ router.get("/healthcheck", (req, res) => {
 });
 
 router.use('/users', userRoute)
-router.use("/customers", customerRoutes);
-router.use("/transactions", transactionRoutes);
-router.use("/loans", loanRoutes);
+router.use("/customers", authenticate, customerRoutes);
+router.use("/transactions", authenticate, transactionRoutes);
+router.use("/loans", authenticate, loanRoutes);
 //router.use('/search', testmiddleware, searchRoute)
-
-
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const express = require("express");
 const { User } = require("../model/userModel");
-const { authenticate } = require('../middlewares/authentication');
+const { authenticate, adminAuthorizer, admin_managerAuthorizer } = require('../middlewares/authentication');
 const validate = require("../middlewares/validate.middleware");
 const registerSchema = require("../schema/user.schema");
 const { registerUser,
@@ -15,11 +15,12 @@ const loginSchema = require("../schema/login.schema");
 
 const router = express.Router()
 
+// router.post("/register", authenticate, admin_managerAuthorizer, validate(registerSchema), registerUser)
 router.post("/register", validate(registerSchema), registerUser)
 router.post("/login", validate(loginSchema), loginUser)
-router.get("/", getAllUsers)
-router.get("/:id", getByID)
-router.delete("/:id", deleteUser)
+router.get("/", authenticate, getAllUsers)
+router.get("/:id", authenticate, adminAuthorizer, getByID)
+router.delete("/:id", authenticate, adminAuthorizer, deleteUser)
   
 // Add a new route for changing passwords
 router.post("/change-password", authenticate, async (req, res) => {

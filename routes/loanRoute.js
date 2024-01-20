@@ -3,15 +3,16 @@ const router = express.Router();
 const {
   adminAuthorizer,
   authenticate,
+  admin_managerAuthorizer,
 } = require("../middlewares/authentication");
 const loanController = require("../controller/loanController");
 
 // Create a deposit
 router.post("/disbursement", loanController.createLoan);
 //router.post("/repayments", loanController.createRepayment);
-router.patch("/:loanId", loanController.updateLoan);
+router.patch("/:loanId", admin_managerAuthorizer, loanController.updateLoan);
 router.get("/", loanController.getLoans);
-router.delete("/:loanId", loanController.deleteLoan)
+router.delete("/:loanId", adminAuthorizer, loanController.deleteLoan)
 // router.get("/:loanId", loanController.getLoanById);
 // In your Express routes definition
 router.post("/withdrawals", loanController.createWithdrawal);

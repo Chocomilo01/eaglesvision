@@ -42,12 +42,11 @@ exports.loginUser = async (req, res) => {
         // Check if the user already exists
         const { email, password } = req.body
 
-        console.log(password)
         const user = await userService.findOne({ email });
+        console.log(user)
         if(!user) return res.status(400).send("user not registered...");
         
         const checkPassword = await user.matchPassword(password)
-        console.log("Problem Solved: 1")
         if (!checkPassword) return res.status(400).json({ message: "Incorrect Password" });
 
         const token = genAuthToken({ _id: user._id, roles: user.roles });
