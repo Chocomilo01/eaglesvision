@@ -46,57 +46,72 @@ const authenticate = (req, res, next) => {
 // };
 //authorization & Permission "account Officer", "assistant manager", "dpo"
 const adminAuthorizer = (req, res, next) => {
-  const token = req.headers["authorization"].split(" ")[1];
-  const jwtUser = jwt.decode(token);
-  console.log(jwtUser);
-  if (jwtUser.roles !== "admin") {
-    return res
-      .status(401)
-      .json({ message: "Not authorized to access resource", success: false });
-  }
-  next();
+  const value = "superAdmin"
+  if (req.user.roles == value) next()
+  
+  else return res.status(401).json({
+    message: `Sorry your, Not an ${value}`, 
+    success: false
+  })
+};
+//authorization & Permission
+const admin_managerAuthorizer = (req, res, next) => {
+  
+  const value = ["accountOfficer", "manager"]
+  if (req.user.roles == value[0] || req.user.roles == value[1] ) next()
+  
+  else return res.status(401).json({
+    message: `Sorry your, Not an ${value}`, 
+    success: false
+  })
 };
 //authorization & Permission
 const accountOfficerAuthorizer = (req, res, next) => {
-  const token = req.headers["authorization"].split(" ")[1];
-  const jwtUser = jwt.decode(token);
-  console.log(jwtUser);
-  if (jwtUser.roles !== "account Officer") {
-    return res
-      .status(401)
-      .json({ message: "Not authorized to access resource", success: false });
-  }
-  next();
+  const value = "accountOfficer"
+  if (req.user.roles == value) next()
+  
+  else return res.status(401).json({
+    message: `Sorry your, Not an ${value}`, 
+    success: false
+  })
 };
 //authorization & Permission
 const managerAuthorizer = (req, res, next) => {
-  const token = req.headers["authorization"].split(" ")[1];
-  const jwtUser = jwt.decode(token);
-  console.log(jwtUser);
-  if (jwtUser.roles !== "assistant manager") {
-    return res
-      .status(401)
-      .json({ message: "Not authorized to access resource", success: false });
-  }
-  next();
+  const value = "manager"
+  if (req.user.roles == value) next()
+  
+  else return res.status(401).json({
+    message: `Sorry your, Not an ${value}`, 
+    success: false
+  })
+};
+//authorization & Permission
+const accountManagerAuthorizer = (req, res, next) => {
+  const value = "accountManager"
+  if (req.user.roles == value) next()
+  
+  else return res.status(401).json({
+    message: `Sorry your, Not an ${value}`, 
+    success: false
+  })
 };
 //authorization & Permission dpo
 const dpoAuthorizer = (req, res, next) => {
-  const token = req.headers["authorization"].split(" ")[1];
-  const jwtUser = jwt.decode(token);
-  console.log(jwtUser);
-  if (jwtUser.roles !== "dpo") {
-    return res
-      .status(401)
-      .json({ message: "Not authorized to access resource", success: false });
-  }
-  next();
+  const value = "dpo"
+  if (req.user.roles == value) next()
+  
+  else return res.status(401).json({
+    message: `Sorry your, Not an ${value}`, 
+    success: false
+  })
 };
 
 module.exports = {
   authenticate,
   adminAuthorizer,
   accountOfficerAuthorizer,
+  admin_managerAuthorizer,
   managerAuthorizer,
+  accountManagerAuthorizer,
   dpoAuthorizer,
 };
