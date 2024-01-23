@@ -43,7 +43,7 @@ exports.loginUser = async (req, res) => {
         const { email, password } = req.body
 
         const user = await userService.findOne({ email });
-        console.log(user)
+
         if(!user) return res.status(400).send("user not registered...");
         
         const checkPassword = await user.matchPassword(password)
