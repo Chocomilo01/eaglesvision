@@ -1,6 +1,7 @@
 const cron = require("node-cron");
 const LoanService = require("../services/loanService");
 const CustomerService = require("../services/customerService");
+const loanModel = require("../model/loanModel");
 
 class LoanController {
   async createLoan(req, res) {
@@ -210,9 +211,9 @@ class LoanController {
       }
 
       // // Find the existing loan for the customer
-      const existingLoan = await LoanService.fetchOne({
+      const existingLoan = await loanModel.findOne({
         customer: customer._id,
-      });
+      }).sort({ createdAt: -1 }).exec();
 
       if (!existingLoan) {
         return res.status(404).json({
@@ -223,6 +224,8 @@ class LoanController {
 
       // Calculate the remaining loan balance after deducting the withdrawal amount
       const remainingLoanBalance = existingLoan.balance - amount;
+      const loan_repaid = existingLoan.totalLoanRePaid + amount;
+      
 
       if (remainingLoanBalance < 0) {
         return res.status(400).json({
@@ -245,6 +248,7 @@ class LoanController {
         interestRate,
         paymentDate: new Date(),
         balance: remainingLoanBalance,
+        totalLoanRePaid: loan_repaid,
         modeOfPayment,
         collectedBy,
         // ... Other withdrawal details ...
@@ -296,9 +300,9 @@ class LoanController {
       }
 
       // Find the existing loan for the customer
-      const existingLoan = await LoanService.fetchOne({
+      const existingLoan = await loanModel.findOne({
         customer: customer._id,
-      });
+      }).sort({ createdAt: -1 }).exec();
 
       if (!existingLoan) {
         return res.status(404).json({
@@ -310,6 +314,7 @@ class LoanController {
       const existingBalance = parseFloat(existingLoan.balance);
       const deposit = parseFloat(amount);
       const interest = parseFloat(interestRate);
+      console.log(existingBalance, deposit, interest)
 
       // Check if any of the values is NaN (not a number)
       if (isNaN(existingBalance) || isNaN(deposit) || isNaN(interest)) {
@@ -323,6 +328,8 @@ class LoanController {
 
       // Calculate the balance after the deposit
       const balanceAfterDeposit = existingBalance + deposit + interest;
+      const loan_recieved = existingLoan.totalLoanRecieved + deposit + interest;
+
       // Create a deposit record
       const depositRecord = await LoanService.create({
         amount: amount,
@@ -338,6 +345,7 @@ class LoanController {
         collectedBy,
         paymentDate: new Date(),
         balance: balanceAfterDeposit,
+        totalLoanRecieved: loan_recieved,
 
         // ... Other deposit details ...
       });
@@ -364,8 +372,6 @@ class LoanController {
       });
     }
   }
-
-
 
   async getLoansByPaymentDate(req, res) {
     try {
@@ -442,7 +448,6 @@ class LoanController {
   }
 }
 
-
   async getDefaulters(req, res) {
     try {
       // Find all loans with a status of "defaulter"
@@ -510,6 +515,7 @@ class LoanController {
       });
     }
   }
+
   async getCustomerLoans(req, res) {
     try {
       const { customerId } = req.params;
@@ -540,6 +546,7 @@ class LoanController {
       });
     }
   }
+
   async getLoansDepositedByCashAndPaymentDate(req, res) {
     try {
       const { startDate, endDate } = req.query;
@@ -635,7 +642,6 @@ class LoanController {
     }
   }
   
-
   async getCustomerLoans(req, res, next) {
     try {
       const customerId = req.params.customerId;
@@ -645,7 +651,6 @@ class LoanController {
       next(error);
     }
   }
-  
 
 }
 module.exports = new LoanController();
