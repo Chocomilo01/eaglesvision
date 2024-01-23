@@ -344,8 +344,8 @@ class LoanController {
 
       // Update the existing loan's balance by adding the deposit amount and save it to the database
       // Update the existing loan's balance by adding the deposit amount and save it to the database
-      existingLoan.balance = balanceAfterDeposit;
-      await existingLoan.save();
+      // existingLoan.balance = balanceAfterDeposit;
+      // await existingLoan.save();
 
       // Include the remaining loan balance in the response data
       const responseData = {
