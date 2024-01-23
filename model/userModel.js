@@ -71,7 +71,6 @@ userSchema.methods.matchPassword = async function (password) {
 
   try{
     const result = await bcrypt.compare(password, this.password)
-    console.log(result)
     return result;
   } catch (e) {
       throw new Error('Error while comparing password: ' + e.message);

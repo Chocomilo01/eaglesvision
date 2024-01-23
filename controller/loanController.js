@@ -209,7 +209,7 @@ class LoanController {
         });
       }
 
-      // Find the existing loan for the customer
+      // // Find the existing loan for the customer
       const existingLoan = await LoanService.fetchOne({
         customer: customer._id,
       });
@@ -251,8 +251,8 @@ class LoanController {
       });
 
       // Update the existing loan's balance to the remaining loan balance and save it to the database
-      existingLoan.balance = remainingLoanBalance;
-      await existingLoan.save();
+      // existingLoan.balance = remainingLoanBalance;
+      // await existingLoan.save();
 
       // Include the remaining loan balance in the response data
       const responseData = {
@@ -344,8 +344,8 @@ class LoanController {
 
       // Update the existing loan's balance by adding the deposit amount and save it to the database
       // Update the existing loan's balance by adding the deposit amount and save it to the database
-      existingLoan.balance = balanceAfterDeposit;
-      await existingLoan.save();
+      // existingLoan.balance = balanceAfterDeposit;
+      // await existingLoan.save();
 
       // Include the remaining loan balance in the response data
       const responseData = {
