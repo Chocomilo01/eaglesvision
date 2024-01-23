@@ -121,6 +121,7 @@ class LoanController {
         paymentDate: new Date(),
         customer: customer._id,
         balance: disbursementAmount + interestAmount,
+        totalLoanRecieved: disbursementAmount + interestAmount,
         repaymentDate: loanEndDate,
       });
 
