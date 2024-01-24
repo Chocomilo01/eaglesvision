@@ -123,6 +123,7 @@ class LoanController {
         customer: customer._id,
         balance: disbursementAmount + interestAmount,
         totalLoanRecieved: disbursementAmount + interestAmount,
+        // totalLoanRePaid: existingLoan.totalLoanRePaid,
         repaymentDate: loanEndDate,
         uploadedBy,
       });
@@ -252,7 +253,8 @@ class LoanController {
         interestRate,
         paymentDate: new Date(),
         balance: remainingLoanBalance,
-        totalLoanRePaid:existingLoan.totalLoanRecieved,
+        totalLoanRePaid: loan_repaid,
+        totalLoanRecieved: existingLoan.totalLoanRecieved,
         modeOfPayment,
         collectedBy,
         uploadedBy,
@@ -352,7 +354,8 @@ class LoanController {
         uploadedBy,
         paymentDate: new Date(),
         balance: balanceAfterDeposit,
-        totalLoanRecieved: existingLoan.totalLoanRePaid,
+        totalLoanRecieved: loan_recieved,
+        totalLoanRePaid: existingLoan.totalLoanRePaid,
 
         // ... Other deposit details ...
       });
