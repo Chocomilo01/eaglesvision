@@ -41,6 +41,7 @@ class LoanController {
         repaymentSchedule,
         loanEndDate,
         description,
+        uploadedBy,
         paymentDate,
         // ...other loan details...
       } = req.body;
@@ -124,6 +125,7 @@ class LoanController {
         totalLoanRecieved: disbursementAmount + interestAmount,
         // totalLoanRePaid: existingLoan.totalLoanRePaid,
         repaymentDate: loanEndDate,
+        uploadedBy,
       });
 
       return res.status(201).json({
@@ -200,6 +202,7 @@ class LoanController {
         modeOfPayment,
         collectedBy,
         description,
+        uploadedBy,
       } = req.body;
 
       // Verify that the customer exists
@@ -254,6 +257,7 @@ class LoanController {
         totalLoanRecieved: existingLoan.totalLoanRecieved,
         modeOfPayment,
         collectedBy,
+        uploadedBy,
         // ... Other withdrawal details ...
       });
 
@@ -290,6 +294,7 @@ class LoanController {
         modeOfPayment,
         description,
         collectedBy,
+        uploadedBy,
       } = req.body;
 
       // Verify that the customer exists
@@ -346,6 +351,7 @@ class LoanController {
         description,
         modeOfPayment,
         collectedBy,
+        uploadedBy,
         paymentDate: new Date(),
         balance: balanceAfterDeposit,
         totalLoanRecieved: loan_recieved,
