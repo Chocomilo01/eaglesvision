@@ -65,6 +65,9 @@ const LoanSchema = new mongoose.Schema(
     description: {
       type: String,
     },
+    upploadedBy: {
+      type: String,
+    },
 
     type: {
       type: String,
