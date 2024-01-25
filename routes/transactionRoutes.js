@@ -15,7 +15,7 @@ router.get('/transactions/cash', transactionController.getAllTransactionsByCash)
 router.get('/transactions/transfer', transactionController.getAllTransactionsByTransfer);
 router.get("/customer/:customerId/transactions", transactionController.getAllTransactionsByCustomer);
 
-
+router.get('/getAllTransactionsByCollector', transactionController.getAllTransactionsByCollector);
 // create withdrawal
 router.post("/withdrawal", validate(paymentSchema), transactionController.createWithdrawal);
 // GET all withdrawals

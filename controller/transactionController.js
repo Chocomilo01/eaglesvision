@@ -599,6 +599,35 @@ async getAllTransactionsByTransfer(req, res) {
     });
   }
 }
+async getAllTransactionsByCollector(req, res) {
+  try {
+    const { collectedBy } = req.query;
+
+    // Check if collectedBy is provided
+    if (!collectedBy) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a collectedBy value for the search.',
+      });
+    }
+
+    // Call the service method to retrieve all transactions with a specific collectedBy value
+    const transactions = await TransactionService.getAllTransactionsByCollector(collectedBy);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Transactions retrieved successfully',
+      data: transactions,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error retrieving transactions by collector',
+      error: error.message,
+    });
+  }
+}
+
 
   async getAllTransactionsByCustomer(req, res) {
     try {

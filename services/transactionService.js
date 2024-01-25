@@ -306,6 +306,14 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
       throw new Error(`Error retrieving transactions by transfer: ${error.message}`);
     }
   }
+  async getAllTransactionsByCollector(collectedBy) {
+    try {
+      const transactions = await TransactionModel.find({ collectedBy }).exec();
+      return transactions;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
 
 

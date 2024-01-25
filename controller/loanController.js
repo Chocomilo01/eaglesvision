@@ -42,6 +42,7 @@ class LoanController {
         loanEndDate,
         description,
         uploadedBy,
+        collectedBy,
         paymentDate,
         // ...other loan details...
       } = req.body;
@@ -126,6 +127,7 @@ class LoanController {
         // totalLoanRePaid: existingLoan.totalLoanRePaid,
         repaymentDate: loanEndDate,
         uploadedBy,
+        collectedBy,
       });
 
       return res.status(201).json({
@@ -647,6 +649,26 @@ class LoanController {
       return res.status(500).json({
         success: false,
         message: "Error fetching total loan deposits via transfer",
+        error: error.message,
+      });
+    }
+  }
+  async getLoansByCollector(req, res) {
+    try {
+      const { collectorName } = req.params;
+  
+      // Query the database to find loans collected by the specified collectorName
+      const loans = await LoanService.getLoansByCollector(collectorName);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Loans retrieved successfully",
+        data: loans,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching loans",
         error: error.message,
       });
     }
