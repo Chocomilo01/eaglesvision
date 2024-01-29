@@ -112,7 +112,8 @@ async getTotalDepositByTransferByPaymentDate(startDate, endDate) {
       {
         $match: {
           type: 'deposit',
-          choose: 'credit',
+          // choose: 'credit',
+          modeOfPayment: "transfer",
           paymentDate: { $gte: startDate, $lt: endDate },
         },
       },
