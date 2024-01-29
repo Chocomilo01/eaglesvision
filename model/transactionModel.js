@@ -43,8 +43,6 @@ const TransactionSchema = new mongoose.Schema(
     balance: {
       type: Number
     },
-
-   
   },
   { timestamps: true }
 );

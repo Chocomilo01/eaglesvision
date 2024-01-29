@@ -79,7 +79,10 @@ class TransactionController {
 
   async createWithdrawal(req, res) {
     try {
-      const { customerId, amount, description, paymentDate, collectedBy } = req.body;
+      const { 
+        customerId, 
+        amount, 
+        description, paymentDate, collectedBy, modeOfPayment } = req.body;
 
       // Verify that the customer exists
       const customer = await CustomerService.fetchOne({ _id: customerId });
@@ -122,6 +125,7 @@ class TransactionController {
         middleName,
         description,
         choose: "Debit",
+        modeOfPayment: modeOfPayment,
         paymentDate,
         collectedBy,
         balance: updatedBalance,
@@ -444,6 +448,7 @@ class TransactionController {
         // Parse the input date strings into JavaScript Date objects
         const parsedStartDate = new Date(startDate);
         const parsedEndDate = new Date(endDate);
+        console.log(parsedStartDate, parsedEndDate)
   
         // Call the service method to retrieve total withdrawal transactions made by cash by payment date
         const totalWithdrawalsAmount = await TransactionService.getTotalWithdrawalsByCashByPaymentDate(
