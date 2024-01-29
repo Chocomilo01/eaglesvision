@@ -197,7 +197,8 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
         {
           $match: {
             type: 'withdrawal',
-            choose: 'Debit',
+            // choose: 'Debit',
+            modeOfPayment: 'transfer',
             paymentDate: { $gte: startDate, $lt: endDate },
           },
         },
