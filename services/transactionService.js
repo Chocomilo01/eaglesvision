@@ -179,7 +179,7 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
           },
         },
       ]);
-
+      console.log(totalWithdrawalsAmount)
       if (totalWithdrawalsAmount.length > 0) {
         return totalWithdrawalsAmount[0].total;
       } else {
@@ -188,7 +188,7 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
     } catch (error) {
       throw new Error(`Error retrieving total withdrawal transactions by cash by payment date: ${error.message}`);
     }
-  }s
+  }
 
 
   async getTotalWithdrawalsByTransferByPaymentDate(startDate, endDate) {
