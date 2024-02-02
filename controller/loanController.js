@@ -85,7 +85,8 @@ class LoanController {
 
       // If there is no existing loan, create a new loan
       const loan = await LoanService.create({
-        amount: disbursementAmount + interestAmount, // Add interest to the loan amount
+        //amount: disbursementAmount + interestAmount, // Add interest to the loan amount
+        amount: disbursementAmount,
         type: "disbursement",
         loanTitle,
         phoneNo1,
@@ -123,7 +124,7 @@ class LoanController {
         paymentDate: new Date(),
         customer: customer._id,
         balance: disbursementAmount + interestAmount,
-        totalLoanRecieved: disbursementAmount + interestAmount,
+        totalLoanRecieved: disbursementAmount,
         // totalLoanRePaid: existingLoan.totalLoanRePaid,
         repaymentDate: loanEndDate,
         uploadedBy,
@@ -228,6 +229,10 @@ class LoanController {
           message: "Loan not found for this customer",
         });
       }
+      
+
+
+
 
       // Calculate the remaining loan balance after deducting the withdrawal amount
       const remainingLoanBalance = existingLoan.balance - amount;
@@ -338,7 +343,8 @@ class LoanController {
 
       // Calculate the balance after the deposit
       const balanceAfterDeposit = existingBalance + deposit + interest;
-      const loan_recieved = existingLoan.totalLoanRecieved + deposit + interest;
+      // const loan_recieved = existingLoan.totalLoanRecieved + deposit + interest;
+      const loan_recieved = existingLoan.totalLoanRecieved + deposit;
 
       // Create a deposit record
       const depositRecord = await LoanService.create({
@@ -459,6 +465,7 @@ class LoanController {
     });
   }
 }
+
 
   async getDefaulters(req, res) {
     try {
