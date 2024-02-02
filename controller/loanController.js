@@ -662,5 +662,15 @@ class LoanController {
     }
   }
 
+  async getTotalloanRecievedOnDB(req, res, next) {
+    try {
+      const totals = await LoanService.getLoansTotals();
+      res.status(200).json({
+        success: true, message: "total loan approved fetched", data: totals});
+    } catch (error) {
+      next(error);
+    }
+  }
+
 }
 module.exports = new LoanController();

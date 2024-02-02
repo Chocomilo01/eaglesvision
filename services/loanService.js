@@ -173,6 +173,24 @@ class LoanService {
       throw error;
     }
   }
+
+  async getLoansTotals() {
+    try {
+      const loans = await LoanModel.find(); // Find all loans in the database
+
+      totalLoanRecieved = 0
+      totalInterestAccured = 0
+      loans.forEach((loan) =>{
+        totalLoanRecieved += loan.totalLoanRecieved
+        totalInterestAccured += loan.interestRate
+      })
+      
+      return { totalLoanRecieved, totalInterestAccured };
+
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 
