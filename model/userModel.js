@@ -5,15 +5,13 @@ const userSchema = new mongoose.Schema({
   
   
   firstName: { type: String, required: true, minLength: 3, maxLength: 30 },
-  middleName: { type: String, required: true, minLength: 3, maxLength: 30 },
-  lastName: { type: String, required: true, minLength: 3, maxLength: 30 },
+  middleName: { type: String, minLength: 3, maxLength: 30 },
+  lastName: { type: String, minLength: 3, maxLength: 30 },
   sex: {
     type: String,
-    required: true,
   },
   phone: {
     type: Number,
-    required: true,
     minLength: 8,
     maxLength: 11,
   },
@@ -38,14 +36,12 @@ const userSchema = new mongoose.Schema({
   },
   bvn: {
     type: Number,
-    required: true,
     unique: true,
     minLength: 10,
     maxLength: 10,
   },
   homeAddress: {
     type: String,
-    required: true,
   },
   passport: {
     data: Buffer,
