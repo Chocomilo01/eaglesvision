@@ -183,6 +183,25 @@ class LoanService {
       throw error;
     }
   }
+
+  async getLoansTotals() {
+    try {
+      // Find all loans Given by the bank in the database
+      const loans = await LoanModel.find({ type: {$in: ["deposit", "disbursement"]} });
+
+      let totalLoanRecieved = 0
+      let totalInterestAccured = 0
+      loans.forEach((loan) =>{
+        totalLoanRecieved += parseFloat(loan.amount)
+        // totalInterestAccured += loan.interestRate
+      })
+
+      return { totalLoanRecieved, totalInterestAccured };
+
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 
