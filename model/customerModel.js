@@ -3,10 +3,18 @@ const { generateUniqueAccountNumber } = require("../utils/uniqueNumber");
 
 const CustomerSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    occupation: { type: String, required: true },
-    placeOfBirth: { type: String, required: true },
-    dateOfBirth: { type: String, required: true },
+    name: { type: String, 
+      required: true 
+    },
+    occupation: { type: String, 
+      // required: true 
+    },
+    placeOfBirth: { type: String, 
+      // required: true 
+    },
+    dateOfBirth: { type: String,
+      //  required: true 
+      },
     sex: {
       type: String,
       enum: {
@@ -15,11 +23,11 @@ const CustomerSchema = new mongoose.Schema(
       },
       accountNumber: {
         type: String,
-        required: true,
+        // required: true,
       },
       amount: {
         type: Number,
-        required: true,
+        // required: true,
       },
     },
     zip: {
@@ -27,7 +35,7 @@ const CustomerSchema = new mongoose.Schema(
     },
     customersPhoneNo: {
       type: String,
-      required: true,
+      // required: true,
       minLength: 8,
       maxLength: 11,
     },
@@ -53,36 +61,36 @@ const CustomerSchema = new mongoose.Schema(
     },
     bankName: {
       type: String,
-      required: true,
+      // required: true,
     },
     bankAccountNo: {
       type: String,
-      required: true,
+      // required: true,
     },
     bankAccountName: {
       type: String,
-      required: true,
+      // required: true,
     },
     nextOfKin: {
       type: String,
-      required: true,
+      // required: true,
     },
     nextOfKinPhone: {
       type: String,
-      required: true,
+      // required: true,
     },
     contactAddress: {
       type: String,
-      required: true,
+      // required: true,
     },
     bvn: {
       type: String,
-      required: true,
+      // required: true,
       unique: true,
     },
     maritalStatus: {
       type: String,
-      required: true,
+      // required: true,
     },
     accountNumber: {
       type: String,
