@@ -42,6 +42,7 @@ class LoanController {
         loanEndDate,
         description,
         uploadedBy,
+        collectedBy,
         paymentDate,
         // ...other loan details...
       } = req.body;
@@ -84,7 +85,8 @@ class LoanController {
 
       // If there is no existing loan, create a new loan
       const loan = await LoanService.create({
-        amount: disbursementAmount + interestAmount, // Add interest to the loan amount
+        //amount: disbursementAmount + interestAmount, // Add interest to the loan amount
+        amount: disbursementAmount,
         type: "disbursement",
         loanTitle,
         phoneNo1,
@@ -122,10 +124,11 @@ class LoanController {
         paymentDate: new Date(),
         customer: customer._id,
         balance: disbursementAmount + interestAmount,
-        totalLoanRecieved: disbursementAmount + interestAmount,
+        totalLoanRecieved: disbursementAmount,
         // totalLoanRePaid: existingLoan.totalLoanRePaid,
         repaymentDate: loanEndDate,
         uploadedBy,
+        collectedBy,
       });
 
       return res.status(201).json({
@@ -226,6 +229,10 @@ class LoanController {
           message: "Loan not found for this customer",
         });
       }
+      
+
+
+
 
       // Calculate the remaining loan balance after deducting the withdrawal amount
       const remainingLoanBalance = existingLoan.balance - amount;
@@ -336,7 +343,8 @@ class LoanController {
 
       // Calculate the balance after the deposit
       const balanceAfterDeposit = existingBalance + deposit + interest;
-      const loan_recieved = existingLoan.totalLoanRecieved + deposit + interest;
+      // const loan_recieved = existingLoan.totalLoanRecieved + deposit + interest;
+      const loan_recieved = existingLoan.totalLoanRecieved + deposit;
 
       // Create a deposit record
       const depositRecord = await LoanService.create({
@@ -457,6 +465,7 @@ class LoanController {
     });
   }
 }
+
 
   async getDefaulters(req, res) {
     try {
@@ -647,6 +656,26 @@ class LoanController {
       return res.status(500).json({
         success: false,
         message: "Error fetching total loan deposits via transfer",
+        error: error.message,
+      });
+    }
+  }
+  async getLoansByCollector(req, res) {
+    try {
+      const { collectorName } = req.params;
+  
+      // Query the database to find loans collected by the specified collectorName
+      const loans = await LoanService.getLoansByCollector(collectorName);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Loans retrieved successfully",
+        data: loans,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching loans",
         error: error.message,
       });
     }

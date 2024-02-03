@@ -24,7 +24,7 @@ router.get("/total-deposit-amount-by-cash", loanController.getTotalDepositAmount
 router.get('/loans/depositsByTransfer', loanController.getLoansDepositedByTransfer);
 //router.get("/total-deposits/transfer", loanController.getTotalDepositsByTransfer)
 router.get("/by-payment-date", loanController.getLoansByPaymentDate);
-// In loanRoute.js
+router.get('/byCollector/:collectorName', loanController.getLoansByCollector);
 router.get("/total-amount-by-payment-date", loanController.getTotalAmountByPaymentDate);
 
 router.get("/defaulters", loanController.getDefaulters);

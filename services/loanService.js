@@ -165,6 +165,16 @@ class LoanService {
     }
   }
 
+  async getLoansByCollector(collectorName) {
+    try {
+      // Query the database to find loans collected by the specified collectorName
+      const loans = await LoanModel.find({ collectedBy: collectorName }).exec();
+      return loans;
+    } catch (error) {
+      throw new Error(`Error fetching loans by collector: ${error.message}`);
+    }
+  }
+
   async getCustomerLoans(customerId) {
     try {
       const customerLoans = await LoanModel.find({ customer: customerId });

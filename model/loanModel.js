@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 const LoanSchema = new mongoose.Schema(
   {
     amount: { type: String, required: true },
-    interestRate: { type: String, required: true },
+    interestRate: {
+      type: Number,
+      default: 0, 
+    }, // Set a default value of 0 for balance
     loanDuration: { type: String },
     loanStartDate: { type: String, required: true },
     loanEndDate: { type: String, required: true },
@@ -58,14 +61,17 @@ const LoanSchema = new mongoose.Schema(
       type: Number,
       default: 0, // Set a default value of 0 for balance
     },
-    balance: {
-      type: Number,
-      default: 0, // Set a default value of 0 for balance
-    },
+    // balance: {
+    //   type: Number,
+    //   default: 0, // Set a default value of 0 for balance
+    // },
     description: {
       type: String,
     },
     upploadedBy: {
+      type: String,
+    },
+    collectedBy: {
       type: String,
     },
 
