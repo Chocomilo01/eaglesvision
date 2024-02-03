@@ -27,10 +27,11 @@ class CustomerController {
   
         // Add the account number to the customer data
         body.accountNumber = accountNumber;
-  
+        console.log(body)
+        
         // Create a new customer document using the Mongoose service
-        const createdCustomer = customerService.create({...body})
-  
+        const createdCustomer = await customerService.create({...body})
+        console.log(createdCustomer)
         return res.status(201).json({
           success: true,
           message: 'Customer Created Successfully',
