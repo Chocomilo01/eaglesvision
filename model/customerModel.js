@@ -85,8 +85,9 @@ const CustomerSchema = new mongoose.Schema(
     },
     bvn: {
       type: String,
-      required: true,
-      unique: true,
+      // unique: true,
+      // sparse: true,
+      // required: false,
     },
     maritalStatus: {
       type: String,

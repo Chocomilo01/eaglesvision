@@ -3,7 +3,7 @@ const Joi = require("joi");
 const customerSchema = Joi.object({
     phone: Joi.string().pattern(/^[0-9]+$/).min(10).max(15),
     sex: Joi.string().valid('male', 'female', 'other'),
-    bvn: Joi.string().pattern(/^[0-9]+$/).min(10).max(11).required(),
+    bvn: Joi.string().pattern(/^[0-9]+$/).min(10).max(11),
     homeAddress: Joi.string().min(3).max(300),
     passport: Joi.string().min(3).max(50),
     maritalStatus: Joi.string().valid('Single', 'Married', 'Divorced', 'Widowed'),
