@@ -6,7 +6,7 @@ const customerService = require("../services/customerService");
 
 class CustomerController {
     async createCustomer(req, res) {
-      const body = req.body;
+      const customer = req.body;
       
       try {
         // Generate a unique account number
@@ -26,12 +26,12 @@ class CustomerController {
         }
   
         // Add the account number to the customer data
-        body.accountNumber = accountNumber;
-        console.log(body)
+        customer.accountNumber = accountNumber;
+        console.log(customer)
         
         // Create a new customer document using the Mongoose service
-        const createdCustomer = await customerService.create({...body})
-        console.log(createdCustomer)
+        const createdCustomer = await customerService.create({...customer})
+
         return res.status(201).json({
           success: true,
           message: 'Customer Created Successfully',
@@ -80,13 +80,12 @@ class CustomerController {
     async fetchCustomers(req, res){
         // console.log('I am now done with authentication')
         const allCustomers = await  CustomerService.fetch({});
-
+        console.log(allCustomers)
         return res.status(200).json({
             success: true,
             message: 'Customer Fetched Successfully',
             data: allCustomers
         })
-
     }
 
     async fetchOneCustomer(req, res){
@@ -110,8 +109,7 @@ class CustomerController {
             data: customerToFetch
         })
 
-    }
-    
+    }   
 
     async deleteCustomer(req, res){
         const customerId = req.params.id
