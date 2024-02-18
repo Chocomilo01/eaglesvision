@@ -2,49 +2,41 @@ const CustomerService = require("../services/customerService");
 const  { generateUniqueAccountNumber } = require("../utils/uniqueNumber")
 const CustomerModel = require("../model/customerModel");
 const customerService = require("../services/customerService");
-const { data } = require("./customers");
 
 
 class CustomerController {
     async createCustomer(req, res) {
-      // const body = req.body;
+      const customer = req.body;
       
       try {
-        const customers = data
-        const reg_customers = []
-        for (const customer of customers) {
-          // Generate a unique account number
-          // const accountNumber = generateUniqueAccountNumber();
-          // console.log('Generated Account Number:', accountNumber);
-    
-          // Check if a customer with that account number already exists
-          // const existingCustomer = await CustomerService.fetchOne({ accountNumber });
-    
-          // this setting is wrong if an acc number is already selected \
-          //    another one should be generated on auto
-          // if (existingCustomer) {
-          //   return res.status(403).json({
-          //     success: false,
-          //     message: 'Customer with this account number already exists',
-          //   });
-          // }
-    
-          // Add the account number to the customer data
-          // customer.accountNumber = accountNumber;
-          // console.log(customer)
-          
-          // Create a new customer document using the Mongoose service
-          const createdCustomer = await customerService.create({...customer})
-
-          reg_customers.push(createdCustomer)
+        // Generate a unique account number
+        const accountNumber = generateUniqueAccountNumber();
+        console.log('Generated Account Number:', accountNumber);
+  
+        // Check if a customer with that account number already exists
+        const existingCustomer = await CustomerService.fetchOne({ accountNumber });
+  
+        // this setting is wrong if an acc number is already selected \
+        //    another one should be generated on auto
+        if (existingCustomer) {
+          return res.status(403).json({
+            success: false,
+            message: 'Customer with this account number already exists',
+          });
         }
+  
+        // Add the account number to the customer data
+        customer.accountNumber = accountNumber;
+        console.log(customer)
         
-        console.log(createdCustomer)
+        // Create a new customer document using the Mongoose service
+        const createdCustomer = await customerService.create({...customer})
+
         return res.status(201).json({
           success: true,
           message: 'Customer Created Successfully',
-          data: reg_customers,
-          // accountNumber,
+          data: createdCustomer,
+          accountNumber,
         });
       } catch (error) {
           return res.status(500).json({

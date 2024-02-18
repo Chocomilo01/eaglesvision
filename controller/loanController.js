@@ -231,15 +231,10 @@ class LoanController {
         });
       }
       
-
-
-
-
       // Calculate the remaining loan balance after deducting the withdrawal amount
       const remainingLoanBalance = existingLoan.balance - amount;
       const loan_repaid = existingLoan.totalLoanRePaid + amount;
       
-
       if (remainingLoanBalance < 0) {
         return res.status(400).json({
           success: false,
