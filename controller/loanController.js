@@ -125,6 +125,7 @@ class LoanController {
         customer: customer._id,
         balance: disbursementAmount + interestAmount,
         totalLoanRecieved: disbursementAmount,
+        totalInterestAccured: interestAmount,
         // totalLoanRePaid: existingLoan.totalLoanRePaid,
         repaymentDate: loanEndDate,
         uploadedBy,
@@ -262,6 +263,7 @@ class LoanController {
         balance: remainingLoanBalance,
         totalLoanRePaid: loan_repaid,
         totalLoanRecieved: existingLoan.totalLoanRecieved,
+        totalInterestAccured: existingLoan.totalInterestAccured,
         modeOfPayment,
         collectedBy,
         uploadedBy,
@@ -345,6 +347,7 @@ class LoanController {
       const balanceAfterDeposit = existingBalance + deposit + interest;
       // const loan_recieved = existingLoan.totalLoanRecieved + deposit + interest;
       const loan_recieved = existingLoan.totalLoanRecieved + deposit;
+      const interest_recieved = existingLoan.totalInterestAccured + interest;
 
       // Create a deposit record
       const depositRecord = await LoanService.create({
@@ -364,6 +367,7 @@ class LoanController {
         balance: balanceAfterDeposit,
         totalLoanRecieved: loan_recieved,
         totalLoanRePaid: existingLoan.totalLoanRePaid,
+        totalInterestAccured: interest_recieved
 
         // ... Other deposit details ...
       });
