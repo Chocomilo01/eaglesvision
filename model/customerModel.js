@@ -105,7 +105,10 @@ const CustomerSchema = new mongoose.Schema(
     officerIncharge: {
       type: String,
     },
-    
+    // officerIncharge_id: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "User",
+    // },
   },
   { timestamps: true }
 );
