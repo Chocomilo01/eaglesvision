@@ -1,4 +1,4 @@
-const userService = require("../services/user.service")
+const userService = require("../services/user.service");
 const { genAuthToken } = require("../utils/genAuthToken");
 
 exports.registerUser = async (req, res) => {
@@ -64,7 +64,6 @@ exports.loginUser = async (req, res) => {
         });
     }
 };
-
 
 exports.getByID = async (req, res) => {
     // This Endpoint Gets A User By ID

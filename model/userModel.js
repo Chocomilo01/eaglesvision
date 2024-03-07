@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema({
   },
   passport: {
     data: Buffer,
-     type: String,
+    type: String,
   },
   status: {
     type: String,

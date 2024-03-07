@@ -326,7 +326,7 @@ class LoanController {
       const existingBalance = parseFloat(existingLoan.balance);
       const deposit = parseFloat(amount);
       const interest = parseFloat(interestRate);
-      console.log(existingBalance, deposit, interest)
+      // console.log(existingBalance, deposit, interest)
 
       // Check if any of the values is NaN (not a number)
       if (isNaN(existingBalance) || isNaN(deposit) || isNaN(interest)) {
@@ -463,8 +463,7 @@ class LoanController {
       error: error.message,
     });
   }
-}
-
+  } 
 
   async getDefaulters(req, res) {
     try {
