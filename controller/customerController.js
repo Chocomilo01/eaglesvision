@@ -27,7 +27,6 @@ class CustomerController {
   
         // Add the account number to the customer data
         customer.accountNumber = accountNumber;
-        console.log(customer)
         
         // Create a new customer document using the Mongoose service
         const createdCustomer = await customerService.create({...customer})
@@ -80,7 +79,6 @@ class CustomerController {
     async fetchCustomers(req, res){
         // console.log('I am now done with authentication')
         const allCustomers = await  CustomerService.fetch({});
-        console.log(allCustomers)
         return res.status(200).json({
             success: true,
             message: 'Customer Fetched Successfully',
