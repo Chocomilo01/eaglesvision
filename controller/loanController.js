@@ -699,5 +699,31 @@ class LoanController {
     }
   }
 
+  async getTotalLoanBalance(req, res) {
+    try {
+      // Fetch all loans using the LoanService
+      const loans = await LoanService.getLoans({});
+
+      // Calculate the total loan balance
+      let totalBalance = 0;
+      loans.forEach((loan) => {
+        totalBalance += loan.balance;
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Total loan balance retrieved successfully",
+        totalBalance: totalBalance.toFixed(2), // Optionally round to 2 decimal places
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching total loan balance",
+        error: error.message,
+      });
+    }
+  }
+
+
 }
 module.exports = new LoanController();
