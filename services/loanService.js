@@ -23,6 +23,7 @@ class LoanService {
       throw error;
     }
   }
+  
   async getLoansDepositedByCashAndPaymentDate(startDate, endDate) {
     try {
       // Create a date range query for the paymentDate field
@@ -209,6 +210,8 @@ class LoanService {
       throw error;
     }
   }
+
+
 }
 
 

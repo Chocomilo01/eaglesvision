@@ -10,6 +10,7 @@ class TransactionController {
         amount,
         description,
         collectedBy,
+        uploadedBy,
         modeOfPayment,
         paymentDate,
       } = req.body;
@@ -47,6 +48,7 @@ class TransactionController {
         description,
         choose: "credit",
         collectedBy,
+        uploadedBy,
         modeOfPayment,
         paymentDate,
         userId: userId,
@@ -82,7 +84,7 @@ class TransactionController {
       const { 
         customerId, 
         amount, 
-        description, paymentDate, collectedBy, modeOfPayment } = req.body;
+        description, paymentDate, collectedBy, uploadedBy, modeOfPayment } = req.body;
 
       // Verify that the customer exists
       const customer = await CustomerService.fetchOne({ _id: customerId });
@@ -128,6 +130,7 @@ class TransactionController {
         modeOfPayment: modeOfPayment,
         paymentDate,
         collectedBy,
+        uploadedBy,
         balance: updatedBalance,
         //AccountOfficer: userId,
       });

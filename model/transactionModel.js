@@ -28,6 +28,9 @@ const TransactionSchema = new mongoose.Schema(
     collectedBy: {
       type: String,
     },
+    uploadedBy: {
+      type: String,
+    },
     AccountOfficer: {
       type: String,
     },
