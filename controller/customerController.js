@@ -60,7 +60,7 @@ class CustomerController {
             const existingCustomerWithUpdateName = await CustomerService.fetchOne({
             name: updateData.name.toLowerCase()
         })
-        if(existingCustomerWithUpdateName._id.toString() !== customertId){
+        if(existingCustomerWithUpdateName._id.toString() !== customerId){
             return res.status(403).json({
          success: false,
          message: 'Customer with that title already exist'
