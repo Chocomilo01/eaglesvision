@@ -18,7 +18,8 @@ const customerSchema = Joi.object({
     placeOfBirth: Joi.string().min(3).max(100),
     occupation: Joi.string().min(3).max(100),
     name: Joi.string().min(3).max(100).required(),
-    officerIncharge: Joi.string().min(3).max(100).required(),
+    officerIncharge: Joi.string().required(),
+    uploadedBy: Joi.string(),
 });
 
 module.exports = customerSchema

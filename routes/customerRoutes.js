@@ -11,7 +11,7 @@ router.post('/', validate(customerSchema), customerController.createCustomer) //
 router.get('/', customerController.fetchCustomers) // Role : dpo
 router.get('/search', customerController.searchCustomers); // role: user
 router.get('/:id', customerController.fetchOneCustomer) // Everybodyz
-router.patch('/:id', admin_managerAuthorizer, customerController.updateCustomer)
+router.patch('/:id', admin_managerAuthorizer, adminAuthorizer, customerController.updateCustomer)
 router.delete('/:id', adminAuthorizer, customerController.deleteCustomer)
 router.get("/:customerId/transactions", customerController.getCustomerTransactions);
 //router.get("/:customerId/savings-transactions", customerController.getSavingsTransactions);

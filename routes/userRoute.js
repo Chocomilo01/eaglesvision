@@ -19,7 +19,7 @@ const router = express.Router()
 router.post("/register", validate(registerSchema), registerUser)
 router.post("/login", validate(loginSchema), loginUser)
 router.get("/", authenticate, getAllUsers)
-router.get("/:id", authenticate, adminAuthorizer, getByID)
+router.get("/:id", authenticate, getByID)
 router.delete("/:id", authenticate, adminAuthorizer, deleteUser)
   
 // Add a new route for changing passwords
