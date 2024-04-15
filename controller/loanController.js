@@ -8,6 +8,7 @@ class LoanController {
     try {
       const {
         customerId,
+        name,
         amount,
         loanTitle,
         phoneNo1,
@@ -88,6 +89,7 @@ class LoanController {
         //amount: disbursementAmount + interestAmount, // Add interest to the loan amount
         amount: disbursementAmount,
         type: "disbursement",
+        name,
         loanTitle,
         phoneNo1,
         phoneNo2,

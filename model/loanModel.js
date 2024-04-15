@@ -17,6 +17,7 @@ const LoanSchema = new mongoose.Schema(
       ref: "CustomerModel", // Reference to the Customer model
       required: true,
     },
+    name: {type: String, required: true},
     loanTitle: { type: String },
     phoneNo1: { type: String },
     phoneNo2: { type: String },
