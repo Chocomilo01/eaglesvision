@@ -234,8 +234,9 @@ class LoanController {
       }
       
       // Calculate the remaining loan balance after deducting the withdrawal amount
-      const remainingLoanBalance = existingLoan.balance - amount;
-      const loan_repaid = existingLoan.totalLoanRePaid + amount;
+      // Calculate the remaining loan balance after deducting the withdrawal amount
+const remainingLoanBalance = existingLoan.balance - amount;
+const loan_repaid = parseFloat(existingLoan.totalLoanRePaid) + parseFloat(amount); // Ensure numeric addition
       
       if (remainingLoanBalance < 0) {
         return res.status(400).json({
@@ -261,6 +262,7 @@ class LoanController {
         totalLoanRePaid: loan_repaid,
         totalLoanRecieved: existingLoan.totalLoanRecieved,
         totalInterestAccured: existingLoan.totalInterestAccured,
+        description,
         modeOfPayment,
         collectedBy,
         uploadedBy,
