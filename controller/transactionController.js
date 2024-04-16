@@ -256,7 +256,7 @@ class TransactionController {
           message: "Please provide both startDate and endDate for the search.",
         });
       }
-  
+          
       // Parse the input date strings into JavaScript Date objects
       const parsedStartDate = new Date(startDate);
       const parsedEndDate = new Date(endDate);
