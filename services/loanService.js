@@ -185,29 +185,58 @@ class LoanService {
     }
   }
 
+  // async getLoansTotals() {
+  //   try {
+  //     // Find all loans Given by the bank in the database
+  //     const loans = await LoanModel.find({ type: {$in: ["deposit", "disbursement"]} });
+  //     const repays = await LoanModel.find({ type: {$in: ["withdrawal"]} });
+
+  //     let totalLoanRecieved = 0
+  //     let totalInterestAccured = 0
+  //     let totalLoanRepaid = 0
+  //     loans.forEach((loan) =>{
+  //       totalLoanRecieved += parseFloat(loan.amount)
+  //       // totalInterestAccured += loan.interestRate
+  //     })
+
+  //     repays.forEach((repay) =>{
+  //       totalLoanRepaid += parseFloat(repay.amount)
+  //       // totalInterestAccured += loan.interestRate
+  //     })
+
+  //     totalLoanRecieved -= 18000000;
+
+  //     return { totalLoanRecieved, totalInterestAccured, totalLoanRepaid };
+
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
   async getLoansTotals() {
     try {
       // Find all loans Given by the bank in the database
       const loans = await LoanModel.find({ type: {$in: ["deposit", "disbursement"]} });
       const repays = await LoanModel.find({ type: {$in: ["withdrawal"]} });
-
-      let totalLoanRecieved = 0
-      let totalInterestAccured = 0
-      let totalLoanRepaid = 0
-      loans.forEach((loan) =>{
-        totalLoanRecieved += parseFloat(loan.amount)
-        // totalInterestAccured += loan.interestRate
-      })
-
-      repays.forEach((repay) =>{
-        totalLoanRepaid += parseFloat(repay.amount)
-        // totalInterestAccured += loan.interestRate
-      })
-
-      totalLoanRecieved -= 18000000;
-
+  
+      let totalLoanRecieved = 0;
+      let totalInterestAccured = 0;
+      let totalLoanRepaid = 0;
+  
+      loans.forEach((loan) => {
+        totalLoanRecieved += parseFloat(loan.amount);
+        // totalInterestAccured += loan.interestRate;
+      });
+  
+      repays.forEach((repay) => {
+        totalLoanRepaid += parseFloat(repay.amount);
+        // totalInterestAccured += loan.interestRate;
+      });
+  
+      totalLoanRecieved -= 18000000;  // Subtract 18,000,000 from totalLoanReceived
+  
       return { totalLoanRecieved, totalInterestAccured, totalLoanRepaid };
-
+  
     } catch (error) {
       throw error;
     }

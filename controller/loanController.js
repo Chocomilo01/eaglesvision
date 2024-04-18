@@ -148,10 +148,41 @@ class LoanController {
     }
   }
 
+  // async updateLoan(req, res) {
+  //   try {
+  //     const { loanId } = req.params;
+  //     const updateData = req.body;
+  
+  //     // Update the loan using the LoanService
+  //     const updatedLoan = await LoanService.update({ _id: loanId }, updateData);
+  
+  //     return res.status(200).json({
+  //       success: true,
+  //       message: "Loan updated successfully",
+  //       data: updatedLoan,
+  //     });
+  //   } catch (error) {
+  //     return res.status(500).json({
+  //       success: false,
+  //       message: "Error updating loan",
+  //       error: error.message,
+  //     });
+  //   }
+  // }
   async updateLoan(req, res) {
     try {
       const { loanId } = req.params;
       const updateData = req.body;
+  
+      // Check if the loan exists
+      const existingLoan = await LoanService.fetchOne({ _id: loanId });
+  
+      if (!existingLoan) {
+        return res.status(404).json({
+          success: false,
+          message: "Loan not found",
+        });
+      }
   
       // Update the loan using the LoanService
       const updatedLoan = await LoanService.update({ _id: loanId }, updateData);
