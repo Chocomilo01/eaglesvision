@@ -11,7 +11,7 @@ const loanController = require("../controller/loanController");
 // Create a deposit
 router.post("/disbursement", loanController.createLoan);
 //router.post("/repayments", loanController.createRepayment);
-router.patch("/:loanId", loanController.updateLoan);
+router.patch("/:loanId", adminAuthorizer, loanController.updateLoan);
 router.get("/", loanController.getLoans);
 router.delete("/:loanId", adminAuthorizer, loanController.deleteLoan)
 // router.get("/:loanId", loanController.getLoanById);
