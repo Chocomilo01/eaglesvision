@@ -204,6 +204,8 @@ class LoanService {
         // totalInterestAccured += loan.interestRate
       })
 
+      totalLoanRecieved -= 18000000;
+
       return { totalLoanRecieved, totalInterestAccured, totalLoanRepaid };
 
     } catch (error) {

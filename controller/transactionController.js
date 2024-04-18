@@ -161,6 +161,28 @@ class TransactionController {
       });
     }
   }
+
+  async updateTransaction(req, res) {
+    try {
+      const { id } = req.params; // Transaction ID
+      const updateData = req.body; // Data to update
+  
+      // Call the service to update the transaction
+      const updatedTransaction = await TransactionService.updateTransaction(id, updateData);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Transaction updated successfully",
+        data: updatedTransaction,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error updating transaction",
+        error: error.message,
+      });
+    }
+  }
   async getAllDeposits(req, res) {
     try {
       // Call the service to get all deposit transactions

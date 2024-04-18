@@ -21,6 +21,7 @@ router.post("/withdrawal", validate(paymentSchema), transactionController.create
 // GET all withdrawals
 router.get('/withdrawals', transactionController.getAllWithdrawals);
 router.get('/withdrawals/:withdrawals', transactionController.getWithdrawalById);
+router.put('/transactions/:id', transactionController.updateTransaction);
 
 // Define a route to search transactions by payment date
 router.get("/searchTransactionsByPaymentDate", transactionController.searchTransactionsByPaymentDate);

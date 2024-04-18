@@ -54,6 +54,25 @@ async createWithdrawal(transactionData) {
       throw error;
     }
   }
+
+  async updateTransaction(id, updateData) {
+    try {
+      // Find the transaction by ID and update it
+      const updatedTransaction = await TransactionModel.findByIdAndUpdate(
+        id,
+        updateData,
+        { new: true } // Return the updated document
+      );
+  
+      if (!updatedTransaction) {
+        throw new Error("Transaction not found");
+      }
+  
+      return updatedTransaction;
+    } catch (error) {
+      throw new Error(`Error updating transaction: ${error.message}`);
+    }
+  }
  
   
 //   async searchTransactionsByDate(startDate, endDate) {
