@@ -91,51 +91,48 @@ async createWithdrawal(transactionData) {
 
 
 
-async searchTransactionsByPaymentDate(startDate, endDate) {
-  try {
-    // Use the "Transaction" model to query the database for transactions within the date range
-    const transactions = await TransactionModel.find({
-      paymentDate: {
-        $gte: startDate,
-        $lt: endDate,
-      },
-    });
-
-    return transactions;
-  } catch (error) {
-    throw error;
-  }
-}
-async getTotalDepositByTransferByPaymentDate(startDate, endDate) {
-  try {
-    const totalDepositAmount = await TransactionModel.aggregate([
-      {
-        $match: {
-          type: 'deposit',
-          // choose: 'credit',
-          modeOfPayment: "transfer",
-          paymentDate: { $gte: startDate, $lt: endDate },
+  async searchTransactionsByPaymentDate(startDate, endDate) {
+    try {
+      // Use the "Transaction" model to query the database for transactions within the date range
+      const transactions = await TransactionModel.find({
+        paymentDate: {
+          $gte: startDate,
+          $lt: endDate,
         },
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: '$amount' },
-        },
-      },
-    ]);
+      });
 
-    if (totalDepositAmount.length > 0) {
-      return totalDepositAmount[0].total;
-    } else {
-      return 0;
+      return transactions;
+    } catch (error) {
+      throw error;
     }
-  } catch (error) {
-    throw new Error(`Error calculating total deposit amount: ${error.message}`);
   }
-}
+  async getTotalDepositByTransferByPaymentDate(startDate, endDate) {
+    try {
+      const totalDepositTransactions = await TransactionModel.find({
+        type: 'deposit',
+        modeOfPayment: "transfer",
+        paymentDate: { $gte: startDate, $lt: endDate }
+      });
 
-async getTotalDepositByCashByPaymentDate(startDate, endDate) {
+      console.log("Hello World")
+      console.log(totalDepositTransactions)
+
+      let totalDepositAmount = 0
+      totalDepositTransactions.forEach(transaction => {
+        totalDepositAmount += transaction.amount
+      })
+      
+      if (totalDepositTransactions.length > 0) {
+        return totalDepositAmount;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      throw new Error(`Error calculating total deposit amount: ${error.message}`);
+    }
+  }
+
+  async getTotalDepositByCashByPaymentDate(startDate, endDate) {
     try {
       const totalDepositAmount = await TransactionModel.aggregate([
         {
@@ -190,7 +187,6 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
     }
   }
 
-
   async getTotalWithdrawalsByTransferByPaymentDate(startDate, endDate) {
     try {
       const totalWithdrawalsAmount = await TransactionModel.aggregate([
@@ -219,7 +215,6 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
       throw new Error(`Error retrieving total withdrawal transactions by transfer by payment date: ${error.message}`);
     }
   }
-// }
   // New method to retrieve all withdrawal transactions by payment date
   async getAllWithdrawalsByPaymentDate(startDate, endDate) {
     try {
@@ -237,7 +232,6 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
       throw new Error(`Error retrieving all withdrawal transactions by payment date: ${error.message}`);
     }
   }
-
   async getLoansDepositedByTransfer(startDate, endDate) {
     try {
       // Create a date range query for the paymentDate field
@@ -277,10 +271,11 @@ async getTotalDepositByCashByPaymentDate(startDate, endDate) {
       throw new Error(`Error retrieving transactions for customer: ${error.message}`);
     }
   }
-
   async getAllTransactions() {
     try {
+      console.log("Hello World!")
       const transactions = await TransactionModel.find();
+
       return transactions;
     } catch (error) {
       throw new Error(`Error retrieving all transactions: ${error.message}`);
