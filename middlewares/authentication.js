@@ -57,7 +57,7 @@ const adminAuthorizer = (req, res, next) => {
 //authorization & Permission
 const admin_managerAuthorizer = (req, res, next) => {
   
-  const value = ["accountOfficer", "manager"]
+  const value = ["superAdmin", "manager"]
   if (req.user.roles == value[0] || req.user.roles == value[1] ) next()
   
   else return res.status(401).json({
