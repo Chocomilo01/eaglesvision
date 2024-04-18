@@ -17,6 +17,9 @@ const TransactionSchema = new mongoose.Schema(
       ref: "CustomerModel", // Reference to the Customer model
       required: true,
     },
+    name: {
+      type: String,
+    },
     
     userId: {
       type: mongoose.Schema.Types.ObjectId,

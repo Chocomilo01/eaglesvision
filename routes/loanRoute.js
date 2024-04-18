@@ -4,13 +4,14 @@ const {
   adminAuthorizer,
   authenticate,
   admin_managerAuthorizer,
+  managerAuthorizer,
 } = require("../middlewares/authentication");
 const loanController = require("../controller/loanController");
 
 // Create a deposit
 router.post("/disbursement", loanController.createLoan);
 //router.post("/repayments", loanController.createRepayment);
-router.patch("/:loanId", admin_managerAuthorizer, loanController.updateLoan);
+router.patch("/:loanId", adminAuthorizer, managerAuthorizer, loanController.updateLoan);
 router.get("/", loanController.getLoans);
 router.delete("/:loanId", adminAuthorizer, loanController.deleteLoan)
 // router.get("/:loanId", loanController.getLoanById);
