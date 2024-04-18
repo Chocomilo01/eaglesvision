@@ -256,7 +256,7 @@ class TransactionController {
           message: "Please provide both startDate and endDate for the search.",
         });
       }
-  
+
       // Parse the input date strings into JavaScript Date objects
       const parsedStartDate = new Date(startDate);
       const parsedEndDate = new Date(endDate);
@@ -328,7 +328,7 @@ class TransactionController {
   async getTotalDepositByTransferByPaymentDate(req, res) {
     try {
       const { startDate, endDate } = req.query;
-
+      
       // Check if startDate and endDate are provided
       if (!startDate || !endDate) {
         return res.status(400).json({
@@ -340,7 +340,7 @@ class TransactionController {
       // Parse the input date strings into JavaScript Date objects
       const parsedStartDate = new Date(startDate);
       const parsedEndDate = new Date(endDate);
-
+      
       // Call the service method to retrieve total deposit transactions made by transfer by payment date
       const totalDepositAmount = await TransactionService.getTotalDepositByTransferByPaymentDate(
         parsedStartDate,

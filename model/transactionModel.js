@@ -38,7 +38,8 @@ const TransactionSchema = new mongoose.Schema(
       type: String,
     },
     paymentDate: {
-      type: String, // Change the type to Date
+      // type: String, // Change the type to Date
+      type: Date,
     },
     modeOfPayment: {
       type: String, emum: ["cash", "transfer"],
