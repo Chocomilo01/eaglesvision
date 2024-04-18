@@ -13,6 +13,7 @@ class TransactionController {
         uploadedBy,
         modeOfPayment,
         paymentDate,
+        name,
       } = req.body;
 
       // Verify that the customer exists
@@ -53,6 +54,7 @@ class TransactionController {
         paymentDate,
         userId: userId,
         balance: updatedBalance,
+        name,
       });
 
       const responsePayload = {
@@ -84,7 +86,7 @@ class TransactionController {
       const { 
         customerId, 
         amount, 
-        description, paymentDate, collectedBy, uploadedBy, modeOfPayment } = req.body;
+        description, paymentDate, collectedBy, uploadedBy, modeOfPayment, name } = req.body;
 
       // Verify that the customer exists
       const customer = await CustomerService.fetchOne({ _id: customerId });
@@ -132,6 +134,7 @@ class TransactionController {
         collectedBy,
         uploadedBy,
         balance: updatedBalance,
+        name,
         //AccountOfficer: userId,
       });
 
@@ -162,27 +165,27 @@ class TransactionController {
     }
   }
 
-  async updateTransaction(req, res) {
-    try {
-      const { id } = req.params; // Transaction ID
-      const updateData = req.body; // Data to update
+  // async updateTransaction(req, res) {
+  //   try {
+  //     const { id } = req.params; // Transaction ID
+  //     const updateData = req.body; // Data to update
   
-      // Call the service to update the transaction
-      const updatedTransaction = await TransactionService.updateTransaction(id, updateData);
+  //     // Call the service to update the transaction
+  //     const updatedTransaction = await TransactionService.updateTransaction(id, updateData);
   
-      return res.status(200).json({
-        success: true,
-        message: "Transaction updated successfully",
-        data: updatedTransaction,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error updating transaction",
-        error: error.message,
-      });
-    }
-  }
+  //     return res.status(200).json({
+  //       success: true,
+  //       message: "Transaction updated successfully",
+  //       data: updatedTransaction,
+  //     });
+  //   } catch (error) {
+  //     return res.status(500).json({
+  //       success: false,
+  //       message: "Error updating transaction",
+  //       error: error.message,
+  //     });
+  //   }
+  // }
   async getAllDeposits(req, res) {
     try {
       // Call the service to get all deposit transactions
