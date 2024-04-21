@@ -34,14 +34,6 @@ router.get("/bank/recieved", loanController.getTotalloanRecievedOnDB);
 router.get('/loans/depositsByCashAndPaymentDate', loanController.getLoansDepositedByCashAndPaymentDate);
 // Define a route to get a loan by its ID
 router.get("/:loanId", loanController.getLoanById);
-// In your Express routes definition (loanRoute.js)
-//router.get("/customer/:customerId/loans", loanController.getCustomerLoans);
-///api/loans/customer/:customerId/loans
 
-
-
-//router.post("/disbursement", loanController.createDisbursement);
-
-// Define other transaction routes here
 
 module.exports = router;

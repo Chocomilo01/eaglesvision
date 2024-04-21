@@ -240,6 +240,7 @@ class LoanController {
         collectedBy,
         description,
         uploadedBy,
+        name,
       } = req.body;
 
       // Verify that the customer exists
@@ -298,6 +299,7 @@ class LoanController {
         modeOfPayment,
         collectedBy,
         uploadedBy,
+        name,
         // ... Other withdrawal details ...
       });
 
@@ -335,6 +337,7 @@ class LoanController {
         description,
         collectedBy,
         uploadedBy,
+        name,
       } = req.body;
 
       // Verify that the customer exists
@@ -394,6 +397,7 @@ class LoanController {
         modeOfPayment,
         collectedBy,
         uploadedBy,
+        name,
         paymentDate: new Date(),
         balance: balanceAfterDeposit,
         totalLoanRecieved: loan_recieved,
@@ -716,15 +720,15 @@ class LoanController {
     }
   }
   
-  async getCustomerLoans(req, res, next) {
-    try {
-      const customerId = req.params.customerId;
-      const customerLoans = await LoanService.getCustomerLoans(customerId);
-      res.status(200).json(customerLoans);
-    } catch (error) {
-      next(error);
-    }
-  }
+  // async getCustomerLoans(req, res, next) {
+  //   try {
+  //     const customerId = req.params.customerId;
+  //     const customerLoans = await LoanService.getCustomerLoans(customerId);
+  //     res.status(200).json(customerLoans);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 
   async getTotalloanRecievedOnDB(req, res, next) {
     try {
