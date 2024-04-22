@@ -184,8 +184,16 @@ class LoanController {
         });
       }
   
+      // Calculate the updated totalLoanReceived and totalInterestAccrued
+      const updatedTotalLoanReceived = existingLoan.totalLoanRecieved + (updateData.amount || 0);
+      const updatedTotalInterestAccrued = existingLoan.totalInterestAccured + (updateData.interestRate || 0);
+  
       // Update the loan using the LoanService
-      const updatedLoan = await LoanService.update({ _id: loanId }, updateData);
+      const updatedLoan = await LoanService.update({ _id: loanId }, {
+        ...updateData,
+        totalLoanRecieved: updatedTotalLoanReceived,
+        totalInterestAccured: updatedTotalInterestAccrued,
+      });
   
       return res.status(200).json({
         success: true,
@@ -764,7 +772,58 @@ class LoanController {
       });
     }
   }
+//   async getDuplicateLoans(req, res) {
+//     try {
+//         const duplicateLoans = await LoanService.findDuplicateLoans();
 
+//         return res.status(200).json({
+//             success: true,
+//             message: "Duplicate loans fetched successfully",
+//             data: duplicateLoans,
+//         });
+//     } catch (error) {
+//         return res.status(500).json({
+//             success: false,
+//             message: "Error fetching duplicate loans",
+//             error: error.message,
+//         });
+//     }
+// }
 
+// async getDuplicateLoanIds(req, res) {
+//   try {
+//     const duplicateIds = await LoanService.findDuplicateLoanIds();
+    
+//     res.status(200).json({
+//       success: true,
+//       data: duplicateIds,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Error fetching duplicate loan IDs",
+//       error: error.message,
+//     });
+//   }
+// }
+
+// async deleteDuplicateLoans(req, res) {
+//   try {
+//     const duplicateIds = await LoanService.findAndDeleteDuplicateLoans();
+    
+//     res.status(200).json({
+//       success: true,
+//       data: duplicateIds,
+//       message: "Duplicate loans deleted successfully",
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Error deleting duplicate loans",
+//       error: error.message,
+//     });
+//   }
+// }
+  
 }
 module.exports = new LoanController();

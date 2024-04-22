@@ -233,7 +233,7 @@ class LoanService {
         // totalInterestAccured += loan.interestRate;
       });
   
-      totalLoanRecieved -= 18000000;  // Subtract 18,000,000 from totalLoanReceived
+      // totalLoanRecieved -= 18000000;  // Subtract 18,000,000 from totalLoanReceived
   
       return { totalLoanRecieved, totalInterestAccured, totalLoanRepaid };
   
@@ -241,6 +241,48 @@ class LoanService {
       throw error;
     }
   }
+  
+  // async findAndDeleteDuplicateLoans() {
+  //   try {
+  //     const loans = await LoanModel.find();
+  //     const duplicateLoans = loans.filter((loan, index, self) =>
+  //       index !== self.findIndex((t) => (
+  //         t.customerId === loan.customerId && t.amount === loan.amount
+  //       ))
+  //     );
+
+  //     const duplicateIds = duplicateLoans.map(loan => loan._id);
+
+  //     // Delete duplicate loans
+  //     await LoanModel.deleteMany({ _id: { $in: duplicateIds } });
+
+  //     return duplicateIds;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+  // async findAndDeleteDuplicateLoans() {
+  //   try {
+  //     const loans = await LoanModel.find();
+  //     const duplicateLoans = loans.filter((loan, index, self) =>
+  //       index !== self.findIndex((t) => (
+  //         t.customerId === loan.customerId && t.amount === loan.amount
+  //       ))
+  //     );
+
+  //     const duplicateIds = duplicateLoans.map(loan => loan._id);
+
+  //     // Delete duplicate loans
+  //     await LoanModel.deleteMany({ _id: { $in: duplicateIds } });
+
+  //     return duplicateIds;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+
+
 
 
 }
