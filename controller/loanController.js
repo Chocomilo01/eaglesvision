@@ -148,52 +148,13 @@ class LoanController {
     }
   }
 
-  async updateLoan(req, res) {
-    try {
-      const { loanId } = req.params;
-      const updateData = req.body;
-  
-      // Update the loan using the LoanService
-      const updatedLoan = await LoanService.update({ _id: loanId }, updateData);
-  
-      return res.status(200).json({
-        success: true,
-        message: "Loan updated successfully",
-        data: updatedLoan,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error updating loan",
-        error: error.message,
-      });
-    }
-  }
   // async updateLoan(req, res) {
   //   try {
   //     const { loanId } = req.params;
   //     const updateData = req.body;
   
-  //     // Check if the loan exists
-  //     const existingLoan = await LoanService.fetchOne({ _id: loanId });
-  
-  //     if (!existingLoan) {
-  //       return res.status(404).json({
-  //         success: false,
-  //         message: "Loan not found",
-  //       });
-  //     }
-  
-  //     // Calculate the updated totalLoanReceived and totalInterestAccrued
-  //     const updatedTotalLoanReceived = existingLoan.totalLoanRecieved + (updateData.amount || 0);
-  //     const updatedTotalInterestAccrued = existingLoan.totalInterestAccured + (updateData.interestRate || 0);
-  
   //     // Update the loan using the LoanService
-  //     const updatedLoan = await LoanService.update({ _id: loanId }, {
-  //       ...updateData,
-  //       totalLoanRecieved: updatedTotalLoanReceived,
-  //       totalInterestAccured: updatedTotalInterestAccrued,
-  //     });
+  //     const updatedLoan = await LoanService.update({ _id: loanId }, updateData);
   
   //     return res.status(200).json({
   //       success: true,
@@ -208,6 +169,62 @@ class LoanController {
   //     });
   //   }
   // }
+  async updateLoan(req, res) {
+    try {
+      const { loanId } = req.params;
+      const updateData = req.body;
+  
+      // Fetch the existing loan
+      const existingLoan = await LoanService.fetchOne({ _id: loanId });
+  
+      if (!existingLoan) {
+        return res.status(404).json({
+          success: false,
+          message: "Loan not found",
+        });
+      }
+  
+      // Calculate the updated totalLoanReceived and totalInterestAccrued
+      let updatedTotalLoanRecieved = existingLoan.totalLoanRecieved || 0;
+      let updatedTotalInterestAccured = existingLoan.totalInterestAccured || 0;
+  
+      // Check if 'amount' or 'interestRate' is being updated
+      if (updateData.amount) {
+        updatedTotalLoanRecieved += parseFloat(updateData.amount);
+      }
+  
+      if (updateData.interestRate) {
+        updatedTotalInterestAccured += parseFloat(updateData.interestRate);
+      }
+  
+      // Calculate the interest
+      const interest = (parseFloat(updateData.amount) + parseFloat(updateData.interestRate))
+  
+      // Calculate the balance
+      const balance = existingLoan.amount + interest - existingLoan.totalLoanRePaid;
+  
+      // Update the loan using the LoanService
+      const updatedLoan = await LoanService.update({ _id: loanId }, {
+        ...updateData,
+        totalLoanRecieved: updatedTotalLoanRecieved,
+        totalInterestAccured: updatedTotalInterestAccured,
+        interest: interest,
+        balance: balance,
+      });
+  
+      return res.status(200).json({
+        success: true,
+        message: "Loan updated successfully",
+        data: updatedLoan,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error updating loan",
+        error: error.message,
+      });
+    }
+  }
 
   async deleteLoan(req, res) {
     try {
