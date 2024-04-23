@@ -132,7 +132,7 @@ class LoanController {
         repaymentDate: loanEndDate,
         uploadedBy,
         collectedBy,
-        
+
       });
 
       return res.status(201).json({
@@ -267,6 +267,12 @@ class LoanController {
         description,
         uploadedBy,
         name,
+        firstGuarantorsName,
+        firstGuarantorsPhoneNumber,
+        firstGuarantorsOccupation,
+        secondGuarantorsName,
+        secondGuarantorsPhoneNumber,
+        secondGuarantorsOccupation,
       } = req.body;
 
       // Verify that the customer exists
@@ -326,10 +332,13 @@ class LoanController {
         collectedBy,
         uploadedBy,
         name: customer.name, // Include the customer's name here
-        firstGuarantorsName: customer.firstGuarantorsName,
-        firstGuarantorsPhoneNumber: customer.firstGuarantorsPhoneNumber,
-        secondGuarantorsName: customer.secondGuarantorsName,
-        secondGuarantorsPhoneNumber: customer.secondGuarantorsPhoneNumber,
+        firstGuarantorsName,
+        firstGuarantorsPhoneNumber,
+        firstGuarantorsOccupation,
+        secondGuarantorsName,
+        secondGuarantorsPhoneNumber,
+        secondGuarantorsOccupation,
+      
         // ... Other withdrawal details ...
       });
 
@@ -368,6 +377,12 @@ class LoanController {
         collectedBy,
         uploadedBy,
         name,
+        firstGuarantorsName,
+        firstGuarantorsPhoneNumber,
+        firstGuarantorsOccupation,
+        secondGuarantorsName,
+        secondGuarantorsPhoneNumber,
+        secondGuarantorsOccupation,
        
       } = req.body;
 
@@ -434,10 +449,13 @@ class LoanController {
         totalLoanRecieved: loan_recieved,
         totalLoanRePaid: existingLoan.totalLoanRePaid,
         totalInterestAccured: interest_recieved,
-        firstGuarantorsName: customer.firstGuarantorsName,
-        firstGuarantorsPhoneNumber: customer.firstGuarantorsPhoneNumber,
-        secondGuarantorsName: customer.secondGuarantorsName,
-        secondGuarantorsPhoneNumber: customer.secondGuarantorsPhoneNumber,
+        firstGuarantorsName,
+        firstGuarantorsPhoneNumber,
+        firstGuarantorsOccupation,
+        secondGuarantorsName,
+        secondGuarantorsPhoneNumber,
+        secondGuarantorsOccupation,
+        
 
         // ... Other deposit details ...
       });
