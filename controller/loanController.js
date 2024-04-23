@@ -132,6 +132,7 @@ class LoanController {
         repaymentDate: loanEndDate,
         uploadedBy,
         collectedBy,
+        
       });
 
       return res.status(201).json({
