@@ -267,12 +267,13 @@ class LoanController {
         description,
         uploadedBy,
         name,
-        firstGuarantorsName,
-        firstGuarantorsPhoneNumber,
-        firstGuarantorsOccupation,
-        secondGuarantorsName,
-        secondGuarantorsPhoneNumber,
-        secondGuarantorsOccupation,
+        // firstGuarantorsName,
+        // firstGuarantorsPhoneNumber,
+        // firstGuarantorsOccupation,
+        // secondGuarantorsName,
+        // secondGuarantorsPhoneNumber,
+        // secondGuarantorsOccupation,
+        // phone1,
       } = req.body;
 
       // Verify that the customer exists
@@ -332,12 +333,20 @@ class LoanController {
         collectedBy,
         uploadedBy,
         name: customer.name, // Include the customer's name here
-        firstGuarantorsName,
-        firstGuarantorsPhoneNumber,
-        firstGuarantorsOccupation,
-        secondGuarantorsName,
-        secondGuarantorsPhoneNumber,
-        secondGuarantorsOccupation,
+        firstGuarantorsName: customer.firstGuarantorsName,
+        firstGuarantorsPhoneNumber: customer.firstGuarantorsPhoneNumber,
+        firstGuarantorsOccupation: customer.firstGuarantorsOccupation,
+        secondGuarantorsName: customer.secondGuarantorsName,
+        secondGuarantorsPhoneNumber: customer.secondGuarantorsPhoneNumber,
+        secondGuarantorsOccupation: customer.secondGuarantorsOccupation,
+        phoneNo1: customer.phoneNo1,
+        // firstGuarantorsName,
+        // firstGuarantorsPhoneNumber,
+        // firstGuarantorsOccupation,
+        // secondGuarantorsName,
+        // secondGuarantorsPhoneNumber,
+        // secondGuarantorsOccupation,
+        // phoneNo1,
       
         // ... Other withdrawal details ...
       });
@@ -377,13 +386,7 @@ class LoanController {
         collectedBy,
         uploadedBy,
         name,
-        firstGuarantorsName,
-        firstGuarantorsPhoneNumber,
-        firstGuarantorsOccupation,
-        secondGuarantorsName,
-        secondGuarantorsPhoneNumber,
-        secondGuarantorsOccupation,
-       
+        
       } = req.body;
 
       // Verify that the customer exists
@@ -449,12 +452,13 @@ class LoanController {
         totalLoanRecieved: loan_recieved,
         totalLoanRePaid: existingLoan.totalLoanRePaid,
         totalInterestAccured: interest_recieved,
-        firstGuarantorsName,
-        firstGuarantorsPhoneNumber,
-        firstGuarantorsOccupation,
-        secondGuarantorsName,
-        secondGuarantorsPhoneNumber,
-        secondGuarantorsOccupation,
+        firstGuarantorsName: customer.firstGuarantorsName,
+        firstGuarantorsPhoneNumber: firstGuarantorsPhoneNumber,
+        firstGuarantorsOccupation: firstGuarantorsOccupation,
+        secondGuarantorsName: customer.secondGuarantorsName,
+        secondGuarantorsPhoneNumber: customer.secondGuarantorsPhoneNumber,
+        secondGuarantorsOccupation: customer.secondGuarantorsOccupation,
+        phoneNo1: customer.phoneNo1,
         
 
         // ... Other deposit details ...
