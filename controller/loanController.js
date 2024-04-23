@@ -89,7 +89,7 @@ class LoanController {
         //amount: disbursementAmount + interestAmount, // Add interest to the loan amount
         amount: disbursementAmount,
         type: "disbursement",
-        name,
+        name: customer.name, // Include the customer's name here
         loanTitle,
         phoneNo1,
         phoneNo2,
@@ -324,7 +324,7 @@ class LoanController {
         modeOfPayment,
         collectedBy,
         uploadedBy,
-        name,
+        name: customer.name, // Include the customer's name here
         // ... Other withdrawal details ...
       });
 
@@ -422,7 +422,7 @@ class LoanController {
         modeOfPayment,
         collectedBy,
         uploadedBy,
-        name,
+        name: customer.name, // Include the customer's name here
         paymentDate: new Date(),
         balance: balanceAfterDeposit,
         totalLoanRecieved: loan_recieved,
