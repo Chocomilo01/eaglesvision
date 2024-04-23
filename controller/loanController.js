@@ -333,20 +333,13 @@ class LoanController {
         collectedBy,
         uploadedBy,
         name: customer.name, // Include the customer's name here
-        firstGuarantorsName: firstGuarantorsName,
-        firstGuarantorsPhoneNumber: firstGuarantorsPhoneNumber,
-        firstGuarantorsOccupation: firstGuarantorsOccupation,
-        secondGuarantorsName: secondGuarantorsName,
-        secondGuarantorsPhoneNumber: secondGuarantorsPhoneNumber,
-        secondGuarantorsOccupation: secondGuarantorsOccupation,
-        phoneNo1: phoneNo1,
-        // firstGuarantorsName,
-        // firstGuarantorsPhoneNumber,
-        // firstGuarantorsOccupation,
-        // secondGuarantorsName,
-        // secondGuarantorsPhoneNumber,
-        // secondGuarantorsOccupation,
-        // phoneNo1,
+        firstGuarantorsName,
+        firstGuarantorsPhoneNumber,
+        firstGuarantorsOccupation,
+        secondGuarantorsName,
+        secondGuarantorsPhoneNumber,
+        secondGuarantorsOccupation,
+        phoneNo1,
       
         // ... Other withdrawal details ...
       });
@@ -459,13 +452,13 @@ class LoanController {
         totalLoanRecieved: loan_recieved,
         totalLoanRePaid: existingLoan.totalLoanRePaid,
         totalInterestAccured: interest_recieved,
-        firstGuarantorsName: firstGuarantorsName,
-        firstGuarantorsPhoneNumber: firstGuarantorsPhoneNumber,
-        firstGuarantorsOccupation: firstGuarantorsOccupation,
-        secondGuarantorsName: secondGuarantorsName,
-        secondGuarantorsPhoneNumber: secondGuarantorsPhoneNumber,
-        secondGuarantorsOccupation: secondGuarantorsOccupation,
-        phoneNo1: phoneNo1,
+        firstGuarantorsName,
+        firstGuarantorsPhoneNumber,
+        firstGuarantorsOccupation,
+        secondGuarantorsName,
+        secondGuarantorsPhoneNumber,
+        secondGuarantorsOccupation,
+        phoneNo1,
         
 
         // ... Other deposit details ...
