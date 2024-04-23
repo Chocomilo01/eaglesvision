@@ -325,7 +325,6 @@ class LoanController {
         collectedBy,
         uploadedBy,
         name: customer.name, // Include the customer's name here
-        loanTitle,
         phoneNo1,
         phoneNo2,
         houseAddress,
@@ -455,7 +454,6 @@ class LoanController {
         totalLoanRecieved: loan_recieved,
         totalLoanRePaid: existingLoan.totalLoanRePaid,
         totalInterestAccured: interest_recieved,
-        loanTitle,
         phoneNo1,
         phoneNo2,
         houseAddress,
