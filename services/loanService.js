@@ -216,54 +216,54 @@ class LoanService {
   //   }
   // }
 
-  async getLoansTotals(customerId) {
-    const loans = await LoanModel.find({ customer: customerId });
-    let totalLoanRecieved = 0;
-    let totalInterestAccured = 0;
-    let totalLoanRePaid = 0;
+  // async getLoansTotals(customerId) {
+  //   const loans = await LoanModel.find({ customer: customerId });
+  //   let totalLoanRecieved = 0;
+  //   let totalInterestAccured = 0;
+  //   let totalLoanRePaid = 0;
 
-    loans.forEach(loan => {
-      totalLoanRecieved += parseFloat(loan.totalLoanRecieved);
-      totalInterestAccured += parseFloat(loan.totalInterestAccured);
-      totalLoanRePaid += parseFloat(loan.totalLoanRePaid);
-    });
+  //   loans.forEach(loan => {
+  //     totalLoanRecieved += parseFloat(loan.totalLoanRecieved);
+  //     totalInterestAccured += parseFloat(loan.totalInterestAccured);
+  //     totalLoanRePaid += parseFloat(loan.totalLoanRePaid);
+  //   });
 
-    return {
-      totalLoanRecieved,
-      totalInterestAccured,
-      totalLoanRePaid,
-    };
-  }
-
-
-  // async getLoansTotals() {
-  //   try {
-  //     // Find all loans Given by the bank in the database
-  //     const loans = await LoanModel.find({ type: {$in: ["deposit", "disbursement"]} });
-  //     const repays = await LoanModel.find({ type: {$in: ["withdrawal"]} });
-  
-  //     let totalLoanRecieved = 0;
-  //     let totalInterestAccured = 0;
-  //     let totalLoanRepaid = 0;
-  
-  //     loans.forEach((loan) => {
-  //       totalLoanRecieved += parseFloat(loan.amount);
-  //       // totalInterestAccured += loan.interestRate;
-  //     });
-  
-  //     repays.forEach((repay) => {
-  //       totalLoanRepaid += parseFloat(repay.amount);
-  //       // totalInterestAccured += loan.interestRate;
-  //     });
-  
-  //     // totalLoanRecieved -= 18000000;  // Subtract 18,000,000 from totalLoanReceived
-  
-  //     return { totalLoanRecieved, totalInterestAccured, totalLoanRepaid };
-  
-  //   } catch (error) {
-  //     throw error;
-  //   }
+  //   return {
+  //     totalLoanRecieved,
+  //     totalInterestAccured,
+  //     totalLoanRePaid,
+  //   };
   // }
+
+
+  async getLoansTotals() {
+    try {
+      // Find all loans Given by the bank in the database
+      const loans = await LoanModel.find({ type: {$in: ["deposit", "disbursement"]} });
+      const repays = await LoanModel.find({ type: {$in: ["withdrawal"]} });
+  
+      let totalLoanRecieved = 0;
+      let totalInterestAccured = 0;
+      let totalLoanRepaid = 0;
+  
+      loans.forEach((loan) => {
+        totalLoanRecieved += parseFloat(loan.amount);
+        // totalInterestAccured += loan.interestRate;
+      });
+  
+      repays.forEach((repay) => {
+        totalLoanRepaid += parseFloat(repay.amount);
+        // totalInterestAccured += loan.interestRate;
+      });
+  
+      // totalLoanRecieved -= 18000000;  // Subtract 18,000,000 from totalLoanReceived
+  
+      return { totalLoanRecieved, totalInterestAccured, totalLoanRepaid };
+  
+    } catch (error) {
+      throw error;
+    }
+  }
   
   
   // async findAndDeleteDuplicateLoans() {
