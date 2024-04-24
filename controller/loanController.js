@@ -584,23 +584,44 @@ class LoanController {
     }
   }
 
+  // async getLoans(req, res) {
+  //   try {
+  //     console.log("Fetching loans...");
+  //     // Fetch all loans using the LoanService
+  //     const loans = await LoanService.getLoans({});
+  //     console.log("Loans fetched successfully");
+
+  //     return res.status(200).json({
+  //       success: true,
+  //       message: "Loans retrieved successfully",
+  //       data: loans,
+  //     });
+  //   } catch (error) {
+  //     return res.status(500).json({
+  //       success: false,
+  //       message: "Error fetching loans",
+  //       error: error.message,
+  //     });
+  //   }
+  // }
+
   async getLoans(req, res) {
     try {
       console.log("Fetching loans...");
       // Fetch all loans using the LoanService
       let loans = await LoanService.getLoans({});
   
-      // Loop through each loan to calculate and update the latest figures
-      for (let i = 0; i < loans.length; i++) {
-        const loan = loans[i];
-        // Update the loan figures using LoanService method
-        const updatedLoanFigures = await LoanService.updateLoanFigures(loan._id); // Assuming you have a method in LoanService to update these figures
-        // Update the loan object with the latest figures
-        loan.totalLoanRecieved = updatedLoanFigures.totalLoanRecieved;
-        loan.totalInterestAccured = updatedLoanFigures.totalInterestAccured;
-        loan.totalLoanRePaid = updatedLoanFigures.totalLoanRePaid;
-        loan.balance = updatedLoanFigures.balance;
-      }
+      // // Loop through each loan to calculate and update the latest figures
+      // for (let i = 0; i < loans.length; i++) {
+      //   const loan = loans[i];
+      //   // Update the loan figures using LoanService method
+      //   const updatedLoanFigures = await LoanService.updateLoanFigures(loan._id); // Assuming you have a method in LoanService to update these figures
+      //   // Update the loan object with the latest figures
+      //   loan.totalLoanRecieved = updatedLoanFigures.totalLoanRecieved;
+      //   loan.totalInterestAccured = updatedLoanFigures.totalInterestAccured;
+      //   loan.totalLoanRePaid = updatedLoanFigures.totalLoanRePaid;
+      //   loan.balance = updatedLoanFigures.balance;
+      // }
   
       console.log("Loans fetched successfully");
   
