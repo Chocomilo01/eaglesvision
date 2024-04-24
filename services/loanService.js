@@ -248,13 +248,15 @@ class LoanService {
   
       loans.forEach((loan) => {
         totalLoanRecieved += parseFloat(loan.amount);
-        // totalInterestAccured += loan.interestRate;
+         totalInterestAccured += parseFloat(loan.interestRate);
       });
   
       repays.forEach((repay) => {
         totalLoanRepaid += parseFloat(repay.amount);
         // totalInterestAccured += loan.interestRate;
       });
+
+      
   
       // totalLoanRecieved -= 18000000;  // Subtract 18,000,000 from totalLoanReceived
   
