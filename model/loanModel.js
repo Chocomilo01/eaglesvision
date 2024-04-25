@@ -10,7 +10,7 @@ const LoanSchema = new mongoose.Schema(
     loanDuration: { type: String },
     loanStartDate: { type: String, required: true },
     loanEndDate: { type: String, required: true },
-    repaymentSchedule: { type: String },
+    repaymentSchedule: { type: String, index: true },
 
     customer: {
       type: mongoose.Schema.Types.ObjectId,
@@ -49,6 +49,7 @@ const LoanSchema = new mongoose.Schema(
       enum: ["deposited", "disbursed", "withdrawn", "active", "defaulter"],
       default: "active",
       required: true,
+      index: true
     },
     balance: {
       type: Number,

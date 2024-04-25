@@ -570,12 +570,16 @@ class LoanController {
       // Find all loans with a status of "defaulter"
       const defaulters = await LoanService.getDefaulters();
   
+      console.log("Defaulters found:", defaulters); // Add this line for logging
+  
       return res.status(200).json({
         success: true,
         message: "Defaulters retrieved successfully",
         data: defaulters,
       });
     } catch (error) {
+      console.error("Error fetching defaulters:", error.message); // Add this line for logging
+  
       return res.status(500).json({
         success: false,
         message: "Error fetching defaulters",

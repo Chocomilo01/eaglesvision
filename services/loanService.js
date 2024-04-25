@@ -67,8 +67,21 @@ class LoanService {
 
   async getDefaulters() {
     try {
-      const defaulters = await LoanModel.find({ status: 'defaulter' });
-      return defaulters;
+      const currentDate = new Date().toISOString(); // Get the current date in ISO format
+  
+      // Find all loans with an "active" status and a repaymentDate in the past
+      const defaulters = await LoanModel.find({
+        status: 'active',
+        repaymentDate: { $lt: currentDate },
+      })
+      .sort({ repaymentDate: 1 }) // Sort by repaymentDate in ascending order
+      .populate('customer') // Populate the customer details
+      .exec();
+  
+      // Retrieve the next payment date from the sorted list
+      const nextPaymentDate = defaulters.length > 0 ? defaulters[0].repaymentDate : null;
+  
+      return { defaulters, nextPaymentDate };
     } catch (error) {
       throw error;
     }
