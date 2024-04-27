@@ -19,7 +19,7 @@ const LoanSchema = new mongoose.Schema(
     },
     name: {type: String},
     loanTitle: { type: String },
-    phoneNo1: { type: String },
+    phoneNo1: { type: String,  unique: true },
     phoneNo2: { type: String },
     houseAddress: { type: String },
     officeAddress: { type: String },

@@ -39,7 +39,7 @@ const CustomerSchema = new mongoose.Schema(
     },
     customersPhoneNo: {
       type: String,
-      // required: true,
+      unique: true,
       minLength: 8,
       maxLength: 11,
     },
@@ -112,10 +112,7 @@ const CustomerSchema = new mongoose.Schema(
     uploadedBy: {
       type: String,
     },
-    // officerIncharge_id: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User",
-    // },
+    
   },
   { timestamps: true }
 );
