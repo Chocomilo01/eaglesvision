@@ -441,12 +441,12 @@ class LoanController {
       //       },
       //   });
 
-        if (existingDeposit) {
-            return res.status(400).json({
-                success: false,
-                message: "A deposit already exists for this customer within the specified time frame",
-            });
-        }
+        // if (existingDeposit) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "A deposit already exists for this customer within the specified time frame",
+        //     });
+        // }
       // Parse existingLoan.balance, depositAmount, and interestAmount as numbers
       const existingBalance = parseFloat(existingLoan.balance);
       const deposit = parseFloat(amount);
