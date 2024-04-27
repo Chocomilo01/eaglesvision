@@ -29,6 +29,7 @@ router.get('/byCollector/:collectorName', loanController.getLoansByCollector);
 router.get("/total-amount-by-payment-date", loanController.getTotalAmountByPaymentDate);
 router.get('/total-balance', loanController.getTotalLoanBalance);
 router.get("/defaulters", loanController.getDefaulters);
+router.delete('/defaulters', loanController.deleteDefaulters);
 router.get("/bank/recieved", loanController.getTotalloanRecievedOnDB);
 // Define a route for getting loans deposited by cash within a date range
 router.get('/loans/depositsByCashAndPaymentDate', loanController.getLoansDepositedByCashAndPaymentDate);

@@ -622,6 +622,35 @@ class LoanController {
     }
   }
 
+  async deleteDefaulters(req, res) {
+    try {
+      // Find all loans with a status of "defaulter"
+      const defaulters = await LoanService.getDefaulters();
+  
+      // Delete each defaulter loan
+      const deletionPromises = defaulters.map(async (defaulter) => {
+        // Use LoanService to delete the loan
+        const result = await LoanService.delete({ _id: defaulter._id });
+        return result;
+      });
+  
+      // Wait for all deletion promises to resolve
+      await Promise.all(deletionPromises);
+  
+      return res.status(200).json({
+        success: true,
+        message: "Defaulters deleted successfully",
+      });
+    } catch (error) {
+      console.error("Error deleting defaulters:", error.message);
+      return res.status(500).json({
+        success: false,
+        message: "Error deleting defaulters",
+        error: error.message,
+      });
+    }
+  }
+
   // async getLoans(req, res) {
   //   try {
   //     console.log("Fetching loans...");
