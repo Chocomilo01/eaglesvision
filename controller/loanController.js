@@ -312,12 +312,12 @@ class LoanController {
         //     },
         // });
 
-        if (existingWithdrawal) {
-            return res.status(400).json({
-                success: false,
-                message: "A withdrawal already exists for this customer within the specified time frame",
-            });
-        }
+        // if (existingWithdrawal) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "A withdrawal already exists for this customer within the specified time frame",
+        //     });
+        // }
       
       // Calculate the remaining loan balance after deducting the withdrawal amount
       const remainingLoanBalance = existingLoan.balance - amount;
