@@ -6,6 +6,10 @@ const CustomerSchema = new mongoose.Schema(
     name: { type: String, 
       required: true 
     },
+    picture: {
+      type: String, // Assuming you store the path or URL of the image
+      required: false // Adjust as needed based on your requirements
+    },
     occupation: { type: String, 
       // required: true 
     },

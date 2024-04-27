@@ -300,6 +300,23 @@ class LoanController {
           message: "Loan not found for this customer",
         });
       }
+
+      // Check if there is an existing withdrawal for the same customer within a certain time frame
+        const existingWithdrawal = await loanModel.findOne({
+            customer: customer._id,
+            type: "withdrawal",
+            createdAt: {
+                $gte: new Date(loanStartDate), // Greater than or equal to loan start date
+                $lte: new Date(loanEndDate),   // Less than or equal to loan end date
+            },
+        });
+
+        if (existingWithdrawal) {
+            return res.status(400).json({
+                success: false,
+                message: "A withdrawal already exists for this customer within the specified time frame",
+            });
+        }
       
       // Calculate the remaining loan balance after deducting the withdrawal amount
       const remainingLoanBalance = existingLoan.balance - amount;
@@ -413,6 +430,22 @@ class LoanController {
           message: "Loan not found for this customer",
         });
       }
+
+      const existingDeposit = await loanModel.findOne({
+            customer: customer._id,
+            type: "deposit",
+            createdAt: {
+                $gte: new Date(loanStartDate), // Greater than or equal to loan start date
+                $lte: new Date(loanEndDate),   // Less than or equal to loan end date
+            },
+        });
+
+        if (existingDeposit) {
+            return res.status(400).json({
+                success: false,
+                message: "A deposit already exists for this customer within the specified time frame",
+            });
+        }
       // Parse existingLoan.balance, depositAmount, and interestAmount as numbers
       const existingBalance = parseFloat(existingLoan.balance);
       const deposit = parseFloat(amount);

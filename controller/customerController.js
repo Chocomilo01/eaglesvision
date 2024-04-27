@@ -1,3 +1,7 @@
+const fs = require('fs');
+const path = require('path');
+//const multer = require('multer'); // Assuming you're using multer for file uploads
+
 const CustomerService = require("../services/customerService");
 const  { generateUniqueAccountNumber } = require("../utils/uniqueNumber")
 const CustomerModel = require("../model/customerModel");
@@ -7,6 +11,7 @@ const customerService = require("../services/customerService");
 class CustomerController {
     async createCustomer(req, res) {
       const customer = req.body;
+      const picturePath = req.body.picturePath; // Assuming you're passing the path to the picture in the request body
       
       try {
         // Generate a unique account number
@@ -27,7 +32,9 @@ class CustomerController {
   
         // Add the account number to the customer data
         customer.accountNumber = accountNumber;
-        
+        if (picturePath) {
+          customer.picture = fs.readFileSync(picturePath);
+      }
         // Create a new customer document using the Mongoose service
         const createdCustomer = await customerService.create({...customer})
 
@@ -49,13 +56,19 @@ class CustomerController {
     async updateCustomer(req, res){
         const updateData = req.body
         const customerId = req.params.id
+        const picturePath = req.body.picturePath; // Assuming you're passing the path to the picture in the request body
     
             // Fetch the user with the id
         const existingCustomer = await CustomerService.fetchOne({_id: customerId})
          if(!existingCustomer) res.status(403).json({
           success: false,
                 message: 'Customer not found'
-     })
+     });
+
+        // Check if picture path exists in update data
+        if (picturePath) {
+          updateData.picture = fs.readFileSync(picturePath);
+      }
         if(updateData.name){
             const existingCustomerWithUpdateName = await CustomerService.fetchOne({
             name: updateData.name.toLowerCase()
