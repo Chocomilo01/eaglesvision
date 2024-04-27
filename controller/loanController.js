@@ -75,7 +75,7 @@ class LoanController {
       // Check if there is an existing loan for this customer
       const existingLoan = await LoanService.fetchOne({
         customer: customer._id,
-        type: "disbursement" // condition to check for disbursements only
+       // type: "disbursement" // condition to check for disbursements only
       });
 
       if (existingLoan) {
@@ -303,14 +303,14 @@ class LoanController {
       }
 
       // Check if there is an existing withdrawal for the same customer within a certain time frame
-        const existingWithdrawal = await loanModel.findOne({
-            customer: customer._id,
-            type: "withdrawal",
-            createdAt: {
-                $gte: new Date(loanStartDate), // Greater than or equal to loan start date
-                $lte: new Date(loanEndDate),   // Less than or equal to loan end date
-            },
-        });
+        // const existingWithdrawal = await loanModel.findOne({
+        //     customer: customer._id,
+        //     type: "withdrawal",
+        //     createdAt: {
+        //         $gte: new Date(loanStartDate), // Greater than or equal to loan start date
+        //         $lte: new Date(loanEndDate),   // Less than or equal to loan end date
+        //     },
+        // });
 
         if (existingWithdrawal) {
             return res.status(400).json({
@@ -432,14 +432,14 @@ class LoanController {
         });
       }
 
-      const existingDeposit = await loanModel.findOne({
-            customer: customer._id,
-            type: "deposit",
-            createdAt: {
-                $gte: new Date(loanStartDate), // Greater than or equal to loan start date
-                $lte: new Date(loanEndDate),   // Less than or equal to loan end date
-            },
-        });
+      // const existingDeposit = await loanModel.findOne({
+      //       customer: customer._id,
+      //       type: "deposit",
+      //       createdAt: {
+      //           $gte: new Date(loanStartDate), // Greater than or equal to loan start date
+      //           $lte: new Date(loanEndDate),   // Less than or equal to loan end date
+      //       },
+      //   });
 
         if (existingDeposit) {
             return res.status(400).json({
