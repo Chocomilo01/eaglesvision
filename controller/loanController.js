@@ -75,6 +75,7 @@ class LoanController {
       // Check if there is an existing loan for this customer
       const existingLoan = await LoanService.fetchOne({
         customer: customer._id,
+        type: "disbursement" // condition to check for disbursements only
       });
 
       if (existingLoan) {

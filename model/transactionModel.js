@@ -54,4 +54,6 @@ const TransactionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+TransactionSchema.index({ type: 1, amount: 1, customer: 1, paymentDate: 1 }, { unique: true });
+
 module.exports = mongoose.model("TransactionModel", TransactionSchema);

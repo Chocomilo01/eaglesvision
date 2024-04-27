@@ -93,5 +93,6 @@ const LoanSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+LoanSchema.index({ loanTitle: 1, customer: 1 }, { unique: true });
 
 module.exports = mongoose.model("LoanModel", LoanSchema);

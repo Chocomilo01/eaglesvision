@@ -73,13 +73,31 @@ class TransactionController {
         data: responsePayload
       });
     } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error creating deposit",
-        error: error.message
-      });
+      if (error.code === 11000 && error.keyPattern) {
+        // Check if the error is a duplicate key error
+        const keys = Object.keys(error.keyPattern);
+        const duplicateFields = keys.map(key => key.charAt(0).toUpperCase() + key.slice(1));
+        const errorMessage = `Duplicate ${duplicateFields.join(', ')} found. Please ensure uniqueness.`;
+        return res.status(400).json({
+          success: false,
+          message: errorMessage
+        });
+      } else {
+        return res.status(500).json({
+          success: false,
+          message: "Error creating deposit",
+          error: error.message
+        });
+      }
     }
   }
+  //     return res.status(500).json({
+  //       success: false,
+  //       message: "Error creating deposit",
+  //       error: error.message
+  //     });
+  //   }
+  // }
 
   async createWithdrawal(req, res) {
     try {
