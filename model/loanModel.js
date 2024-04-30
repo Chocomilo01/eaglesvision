@@ -74,7 +74,7 @@ const LoanSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    upploadedBy: {
+    uploadedBy: {
       type: String,
     },
     collectedBy: {
