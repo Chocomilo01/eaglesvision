@@ -35,9 +35,13 @@ router.get("/bank/recieved", loanController.getTotalloanRecievedOnDB);
 router.get('/loans/depositsByCashAndPaymentDate', loanController.getLoansDepositedByCashAndPaymentDate);
 // Define a route to get a loan by its ID
 router.get("/:loanId", loanController.getLoanById);
+router.patch("/:loanId/update", loanController.updateLoanTransaction);
 //router.get("/get-duplicate-loans/loans", loanController.getDuplicateLoans);
 //router.get("/duplicate-ids/loans", loanController.getDuplicateLoanIds);
 //router.delete("/delete-duplicates/loans", loanController.deleteDuplicateLoans);
+
+
+
 
 
 
