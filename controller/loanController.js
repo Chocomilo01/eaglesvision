@@ -271,7 +271,6 @@ class LoanController {
         collectedBy,
         description,
         uploadedBy,
-        name,
         firstGuarantorsName,
         firstGuarantorsPhoneNumber,
         firstGuarantorsOccupation,
@@ -345,8 +344,8 @@ class LoanController {
         loanEndDate,
         loanStartDate,
         interestRate,
-        //paymentDate: new Date(),
-        paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
+        paymentDate: new Date(),
+        //paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
         balance: remainingLoanBalance,
         totalLoanRePaid: loan_repaid,
         totalLoanRecieved: existingLoan.totalLoanRecieved,
