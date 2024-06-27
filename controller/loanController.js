@@ -980,16 +980,18 @@ class LoanController {
 //     });
 //   }
 // }
+
+
 async updateLoanTransaction(req, res) {
   const loanId = req.params.loanId;
   const updateData = req.body;
 
-  if (!updateData.amount || !updateData.interestRate || !updateData.type) {
-    return res.status(400).json({
-      success: false,
-      message: "Missing required fields",
-    });
-  }
+  // if (!updateData.amount || !updateData.interestRate || !updateData.type) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: "Missing required fields",
+  //   });
+  // }
 
   try {
     const updatedLoan = await LoanService.update({ _id: loanId }, updateData);
