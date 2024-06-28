@@ -120,8 +120,8 @@ class LoanController {
         status:  "active",
         interestRate,
         loanDuration,
-        //loanStartDate,
-        loanStartDate: loanStartDate ? new Date(loanStartDate) : new Date(), // Use loanStarttDate from the request if provided
+        loanStartDate,
+        //loanStartDate: loanStartDate ? new Date(loanStartDate) : new Date(), // Use loanStarttDate from the request if provided
         loanEndDate,
         description,
         repaymentSchedule,
@@ -343,8 +343,8 @@ class LoanController {
         status: "withdrawn",
         description,
         loanEndDate,
-        //loanStartDate,
-        loanStartDate: loanStartDate ? new Date(loanStartDate) : new Date(), // Use loanStarttDate from the request if provided
+        loanStartDate,
+        //loanStartDate: loanStartDate ? new Date(loanStartDate) : new Date(), // Use loanStarttDate from the request if provided
         interestRate,
         paymentDate: new Date(),
         //paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
@@ -481,9 +481,8 @@ class LoanController {
         type: "deposit",
         status: "deposited",
         loanEndDate,
-        //loanStartDate,
-        loanStartDate: loanStartDate ? new Date(loanStartDate) : new Date(), // Use loanStarttDate from the request if provided
-        //paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
+        loanStartDate,
+        //loanStartDate: loanStartDate ? new Date(loanStartDate) : new Date(), // Use loanStarttDate from the request if provided
         interestRate,
         description,
         modeOfPayment,
