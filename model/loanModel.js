@@ -69,7 +69,7 @@ const LoanSchema = new mongoose.Schema(
     },
     // balance: {
     //   type: Number,
-    //   default: 0, // Set a default value of 0 for balance
+    //   default: 0, // Set a default value of 0 forbalance
     // },
     description: {
       type: String,
