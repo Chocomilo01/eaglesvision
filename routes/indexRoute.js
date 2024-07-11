@@ -1,12 +1,11 @@
-const express = require('express')
-const router = express.Router()
-const userRoute = require('./userRoute')
-const testmiddleware = require('../middlewares/test.middleware')
+const express = require('express');
+const router = express.Router();
+const userRoute = require('./userRoute');
+const testmiddleware = require('../middlewares/test.middleware');
 const customerRoutes = require("./customerRoutes");
 const transactionRoutes = require("./transactionRoutes");
 const loanRoutes = require("./loanRoute");
 const { authenticate } = require('../middlewares/authentication');
-//const searchRoute = require('./searchRoute')
 
 
 router.get("/healthcheck", (req, res) => {
