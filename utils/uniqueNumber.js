@@ -1,4 +1,4 @@
-function generateUniqueAccountNumber(prefix = "EAGLE-") {
+function generateUniqueAccountNumber(prefix = "KAPI-") {
     // Generate a random number (you can customize the range)
     const randomNumber = Math.floor(Math.random() * 10000000000);
   

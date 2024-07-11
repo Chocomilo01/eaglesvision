@@ -121,10 +121,12 @@ class LoanController {
         interestRate,
         loanDuration,
         loanStartDate,
+        //loanStartDate: loanStartDate ? new Date(loanStartDate) : new Date(), // Use loanStarttDate from the request if provided
         loanEndDate,
         description,
         repaymentSchedule,
-        paymentDate: new Date(),
+        //paymentDate: new Date(),
+        paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
         customer: customer._id,
         balance: disbursementAmount + interestAmount,
         totalLoanRecieved: disbursementAmount,
@@ -270,7 +272,6 @@ class LoanController {
         collectedBy,
         description,
         uploadedBy,
-        name,
         firstGuarantorsName,
         firstGuarantorsPhoneNumber,
         firstGuarantorsOccupation,
@@ -343,8 +344,10 @@ class LoanController {
         description,
         loanEndDate,
         loanStartDate,
+        //loanStartDate: loanStartDate ? new Date(loanStartDate) : new Date(), // Use loanStarttDate from the request if provided
         interestRate,
         paymentDate: new Date(),
+        //paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
         balance: remainingLoanBalance,
         totalLoanRePaid: loan_repaid,
         totalLoanRecieved: existingLoan.totalLoanRecieved,
@@ -407,6 +410,7 @@ class LoanController {
         secondGuarantorsPhoneNumber,
         secondGuarantorsOccupation,
         phoneNo1,
+        paymentDate,
         
       } = req.body;
 
@@ -478,13 +482,15 @@ class LoanController {
         status: "deposited",
         loanEndDate,
         loanStartDate,
+        //loanStartDate: loanStartDate ? new Date(loanStartDate) : new Date(), // Use loanStarttDate from the request if provided
         interestRate,
         description,
         modeOfPayment,
         collectedBy,
         uploadedBy,
         name: customer.name, // Include the customer's name here
-        paymentDate: new Date(),
+        //paymentDate: new Date(),
+        paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
         balance: balanceAfterDeposit,
         totalLoanRecieved: loan_recieved,
         totalLoanRePaid: existingLoan.totalLoanRePaid,
@@ -977,6 +983,33 @@ class LoanController {
 //     });
 //   }
 // }
-  
+
+
+async updateLoanTransaction(req, res) {
+  const loanId = req.params.loanId;
+  const updateData = req.body;
+
+  // if (!updateData.amount || !updateData.interestRate || !updateData.type) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: "Missing required fields",
+  //   });
+  // }
+
+  try {
+    const updatedLoan = await LoanService.update({ _id: loanId }, updateData);
+
+    return res.status(200).json({
+      success: true,
+      data: updatedLoan,
+      message: "Loan updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
 }
 module.exports = new LoanController();

@@ -318,11 +318,44 @@ class LoanService {
   //   } catch (error) {
   //     throw error;
   //   }
-  // }
+  // 
+  async update(filter, updateData) {
+    try {
+      // Fetch the current loan data
+      const currentLoan = await LoanModel.findOne(filter);
+      if (!currentLoan) {
+        throw new Error("Loan not found");
+      }
 
+      // Calculate the new balance based on the transaction type
+      let newBalance = currentLoan.totalLoanRecieved + currentLoan.totalInterestAccured - currentLoan.totalLoanRePaid;
+      if (updateData.type === 'deposit') {
+        newBalance += parseFloat(updateData.amount) + parseFloat(updateData.interestRate);
+      } else if (updateData.type === 'withdrawal') {
+        newBalance -= parseFloat(updateData.amount) + parseFloat(updateData.interestRate);
+      }
 
+      // Update the loan with the new balance and other details
+      const updatedLoan = await LoanModel.findOneAndUpdate(
+        filter,
+        {
+          ...updateData,
+          balance: newBalance,
+        },
+        { new: true } // Return the updated document
+      );
 
+      if (!updatedLoan) {
+        throw new Error("Loan not found");
+      }
 
+      return updatedLoan;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  
 
 }
 
