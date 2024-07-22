@@ -125,8 +125,8 @@ class LoanController {
         loanEndDate,
         description,
         repaymentSchedule,
-        //paymentDate: new Date(),
-        paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
+        paymentDate: new Date(),
+        //paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
         customer: customer._id,
         balance: disbursementAmount + interestAmount,
         totalLoanRecieved: disbursementAmount,
@@ -489,8 +489,8 @@ class LoanController {
         collectedBy,
         uploadedBy,
         name: customer.name, // Include the customer's name here
-        //paymentDate: new Date(),
-        paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
+        paymentDate: new Date(),
+        //paymentDate: paymentDate ? new Date(paymentDate) : new Date(), // Use paymentDate from the request if provided
         balance: balanceAfterDeposit,
         totalLoanRecieved: loan_recieved,
         totalLoanRePaid: existingLoan.totalLoanRePaid,
