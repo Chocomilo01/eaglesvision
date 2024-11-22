@@ -53,57 +53,105 @@ class CustomerController {
       }
     }
 
-    async updateCustomer(req, res) {
-    try {
-        const updateData = req.body;
-        const customerId = req.params.id;
-        const picturePath = req.body.picturePath; // Assuming you're passing the path to the picture in the request body
+//     async updateCustomer(req, res) {
+//     try {
+//         const updateData = req.body;
+//         const customerId = req.params.id;
+//         const picturePath = req.body.picturePath; // Assuming you're passing the path to the picture in the request body
 
-        // Fetch the user with the id
-        const existingCustomer = await CustomerService.fetchOne({ _id: customerId });
-        if (!existingCustomer) {
-            return res.status(403).json({
-                success: false,
-                message: 'Customer not found'
-            });
-        }
+//         // Fetch the user with the id
+//         const existingCustomer = await CustomerService.fetchOne({ _id: customerId });
+//         if (!existingCustomer) {
+//             return res.status(403).json({
+//                 success: false,
+//                 message: 'Customer not found'
+//             });
+//         }
 
-        // Check if picture path exists in update data
-        if (picturePath) {
-            updateData.picture = fs.readFileSync(picturePath);
-        }
+//         // Check if picture path exists in update data
+//         if (picturePath) {
+//             updateData.picture = fs.readFileSync(picturePath);
+//         }
 
-        if (updateData.name) {
-            const existingCustomerWithUpdateName = await CustomerService.fetchOne({
-                name: updateData.name.toLowerCase()
-            });
+//         if (updateData.name) {
+//             const existingCustomerWithUpdateName = await CustomerService.fetchOne({
+//                 name: updateData.name.toLowerCase()
+//             });
 
-            // Ensure existingCustomerWithUpdateName is not null and is not the same customer being updated
-            if (existingCustomerWithUpdateName && existingCustomerWithUpdateName._id.toString() !== customerId) {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Customer with that title already exists'
-                });
-            }
-        }
+//             // Ensure existingCustomerWithUpdateName is not null and is not the same customer being updated
+//             if (existingCustomerWithUpdateName && existingCustomerWithUpdateName._id.toString() !== customerId) {
+//                 return res.status(403).json({
+//                     success: false,
+//                     message: 'Customer with that title already exists'
+//                 });
+//             }
+//         }
 
-        // Update the customer data
-        const updatedData = await CustomerService.update(customerId, updateData);
-        res.status(200).json({
-            success: true,
-            message: 'Customer updated successfully',
-            data: updatedData
-        });
+//         // Update the customer data
+//         const updatedData = await CustomerService.update(customerId, updateData);
+//         res.status(200).json({
+//             success: true,
+//             message: 'Customer updated successfully',
+//             data: updatedData
+//         });
 
-    } catch (error) {
-        // Handle any unexpected errors
-        res.status(500).json({
-            success: false,
-            message: 'An error occurred while updating the customer',
-            error: error.message
-        });
-    }
-}
+//     } catch (error) {
+//         // Handle any unexpected errors
+//         res.status(500).json({
+//             success: false,
+//             message: 'An error occurred while updating the customer',
+//             error: error.message
+//         });
+//     }
+// }
+
+async updateCustomer(req, res) {
+      const updateData = req.body;
+      const customerId = req.params.id;
+  
+      try {
+          // Fetch the user with the ID
+          const existingCustomer = await CustomerService.fetchOne({ _id: customerId });
+          if (!existingCustomer) {
+              return res.status(404).json({
+                  success: false,
+                  message: 'Customer not found'
+              });
+          }
+  
+          // Check if name already exists
+          if (updateData.name) {
+              const existingCustomerWithUpdateName = await CustomerService.fetchOne({
+                  name: new RegExp(`^${updateData.name}$`, "i") // Case-insensitive
+              });
+  
+              if (
+                  existingCustomerWithUpdateName &&
+                  existingCustomerWithUpdateName._id.toString() !== customerId
+              ) {
+                  return res.status(403).json({
+                      success: false,
+                      message: 'Customer with that name already exists'
+                  });
+              }
+          }
+  
+          // Update the customer
+          const updatedData = await CustomerService.update(customerId, updateData);
+          return res.status(200).json({
+              success: true,
+              message: 'Customer updated successfully',
+              data: updatedData
+          });
+      } catch (error) {
+          console.error(error);
+          return res.status(500).json({
+              success: false,
+              message: 'Internal server error',
+              error: error.message
+          });
+      }
+  }
 
 
     async fetchCustomers(req, res){
