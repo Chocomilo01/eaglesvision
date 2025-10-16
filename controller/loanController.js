@@ -677,40 +677,27 @@ class LoanController {
   //     });
   //   }
   // }
+async getLoans(req, res) {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const result = await LoanService.getLoans(page, limit);
 
-  async getLoans(req, res) {
-    try {
-      console.log("Fetching loans...");
-      // Fetch all loans using the LoanService
-      let loans = await LoanService.getLoans({});
-  
-      // // Loop through each loan to calculate and update the latest figures
-      // for (let i = 0; i < loans.length; i++) {
-      //   const loan = loans[i];
-      //   // Update the loan figures using LoanService method
-      //   const updatedLoanFigures = await LoanService.updateLoanFigures(loan._id); // Assuming you have a method in LoanService to update these figures
-      //   // Update the loan object with the latest figures
-      //   loan.totalLoanRecieved = updatedLoanFigures.totalLoanRecieved;
-      //   loan.totalInterestAccured = updatedLoanFigures.totalInterestAccured;
-      //   loan.totalLoanRePaid = updatedLoanFigures.totalLoanRePaid;
-      //   loan.balance = updatedLoanFigures.balance;
-      // }
-  
-      console.log("Loans fetched successfully");
-  
-      return res.status(200).json({
-        success: true,
-        message: "Loans retrieved successfully",
-        data: loans,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error fetching loans",
-        error: error.message,
-      });
-    }
+    return res.status(200).json({
+      success: true,
+      message: "Loans retrieved successfully",
+      data: result.loans,
+      pagination: result.pagination,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching loans",
+      error: error.message,
+    });
   }
+}
+
+
 
   async getLoanById(req, res) {
     try {
@@ -739,38 +726,26 @@ class LoanController {
       });
     }
   }
+async getCustomerLoans(req, res) {
+  try {
+    const { customerId } = req.params;
+    const { page = 1, limit = 20 } = req.query;
+    const result = await LoanService.getCustomerLoans(customerId, page, limit);
 
-  async getCustomerLoans(req, res) {
-    try {
-      const { customerId } = req.params;
-  
-      // Verify that the customer exists
-      const customer = await CustomerService.fetchOne({ _id: customerId });
-  
-      if (!customer) {
-        return res.status(404).json({
-          success: false,
-          message: "Customer not found",
-        });
-      }
-  
-      // Query the database for loans associated with the customer
-      const customerLoans = await LoanService.fetch({ customer: customerId });
-  
-      return res.status(200).json({
-        success: true,
-        message: "Customer loans retrieved successfully",
-        data: customerLoans,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error fetching customer loans",
-        error: error.message,
-      });
-    }
+    return res.status(200).json({
+      success: true,
+      message: "Customer loans retrieved successfully",
+      data: result.loans,
+      pagination: result.pagination,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching customer loans",
+      error: error.message,
+    });
   }
-
+}
   async getLoansDepositedByCashAndPaymentDate(req, res) {
     try {
       const { startDate, endDate } = req.query;

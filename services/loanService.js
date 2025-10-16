@@ -15,14 +15,31 @@ class LoanService {
   async delete(filter) {
     return await LoanModel.deleteOne(filter); // Use deleteOne to delete a single document matching the filter
   }
-  async getLoans() {
+  async getLoans(page = 1, limit = 20) {
     try {
-      const loans = await LoanModel.find(); // Find all loans in the database
-      return loans;
+      const skip = (page - 1) * limit;
+
+      // Fetch all loans sorted by newest first
+      const loans = await LoanModel.find({})
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(Number(limit));
+
+      const total = await LoanModel.countDocuments();
+
+      return {
+        loans,
+        pagination: {
+          total,
+          totalPages: Math.ceil(total / limit),
+          currentPage: Number(page),
+        },
+      };
     } catch (error) {
       throw error;
     }
   }
+
   async update(filter, updateData) {
     return await LoanModel.updateOne(filter, updateData);
   }
@@ -191,11 +208,26 @@ class LoanService {
       throw new Error(`Error fetching loans by collector: ${error.message}`);
     }
   }
-
-  async getCustomerLoans(customerId) {
+  async getCustomerLoans(customerId, page = 1, limit = 20) {
     try {
-      const customerLoans = await LoanModel.find({ customer: customerId });
-      return customerLoans;
+      const skip = (page - 1) * limit;
+
+      // Fetch loans belonging to this customer, sorted by newest first
+      const loans = await LoanModel.find({ customer: customerId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(Number(limit));
+
+      const total = await LoanModel.countDocuments({ customer: customerId });
+
+      return {
+        loans,
+        pagination: {
+          total,
+          totalPages: Math.ceil(total / limit),
+          currentPage: Number(page),
+        },
+      };
     } catch (error) {
       throw error;
     }

@@ -1,18 +1,18 @@
 const TransactionModel = require("../model/transactionModel");
 
-  // Implement other CRUD operations as needed
+// Implement other CRUD operations as needed
 class TransactionService {
   async create(transactionData) {
     return await TransactionModel.create(transactionData);
   }
 
   async fetch(filter) {
-    return await TransactionModel.find(filter)
+    return await TransactionModel.find(filter);
   }
   async getAllDeposits() {
     try {
       // Query all transactions with type "deposit"
-      const deposits = await TransactionModel.find({ type: 'deposit' });
+      const deposits = await TransactionModel.find({ type: "deposit" });
 
       return deposits;
     } catch (error) {
@@ -27,15 +27,15 @@ class TransactionService {
       throw new Error(error.message);
     }
   }
-  
+
   // WITHDRAWALS
-async createWithdrawal(transactionData) {
+  async createWithdrawal(transactionData) {
     return await TransactionModel.create(transactionData);
   }
   async getAllWithdrawals() {
     try {
       // Query the database for all withdrawal transactions
-      const withdrawals = await TransactionModel.find({ type: 'withdrawal' });
+      const withdrawals = await TransactionModel.find({ type: "withdrawal" });
 
       return withdrawals;
     } catch (error) {
@@ -63,52 +63,49 @@ async createWithdrawal(transactionData) {
   //       updateData,
   //       { new: true } // Return the updated document
   //     );
-  
+
   //     if (!updatedTransaction) {
   //       throw new Error("Transaction not found");
   //     }
-  
+
   //     return updatedTransaction;
   //   } catch (error) {
   //     throw new Error(`Error updating transaction: ${error.message}`);
   //   }
   // }
- 
-  
-//   async searchTransactionsByDate(startDate, endDate) {
-//     try {
-//       // Query transactions within the provided date range
-//       const transactions = await TransactionModel.find({
-//         paymentDate: {
-//           $gte: startDate,
-//           $lt: endDate,
-//         },
-//       });
-  
-//       return transactions;
-//     } catch (error) {
-//       throw new Error(`Error fetching transactions by date: ${error.message}`);
-//     }
-//   }
-//   async searchDepositCashByDate(startDate, endDate) {
-//   try {
-//     // Query transactions within the provided date range and collected via cash
-//     const transactions = await TransactionModel.find({
-//       type: 'deposit',
-//       modeOfPayment: 'cash', // Add this condition for cash transactions
-//       paymentDate: {
-//         $gte: startDate,
-//         $lte: endDate,
-//       },
-//     });
 
-//     return transactions;
-//   } catch (error) {
-//     throw new Error(`Error searching deposit cash transactions by date: ${error.message}`);
-//   }
-// }
+  //   async searchTransactionsByDate(startDate, endDate) {
+  //     try {
+  //       // Query transactions within the provided date range
+  //       const transactions = await TransactionModel.find({
+  //         paymentDate: {
+  //           $gte: startDate,
+  //           $lt: endDate,
+  //         },
+  //       });
 
+  //       return transactions;
+  //     } catch (error) {
+  //       throw new Error(`Error fetching transactions by date: ${error.message}`);
+  //     }
+  //   }
+  //   async searchDepositCashByDate(startDate, endDate) {
+  //   try {
+  //     // Query transactions within the provided date range and collected via cash
+  //     const transactions = await TransactionModel.find({
+  //       type: 'deposit',
+  //       modeOfPayment: 'cash', // Add this condition for cash transactions
+  //       paymentDate: {
+  //         $gte: startDate,
+  //         $lte: endDate,
+  //       },
+  //     });
 
+  //     return transactions;
+  //   } catch (error) {
+  //     throw new Error(`Error searching deposit cash transactions by date: ${error.message}`);
+  //   }
+  // }
 
   async searchTransactionsByPaymentDate(startDate, endDate) {
     try {
@@ -125,29 +122,99 @@ async createWithdrawal(transactionData) {
       throw error;
     }
   }
+  async getAllTransactionsPaginated(skip, limit) {
+    try {
+      const transactions = await TransactionModel.find()
+        .sort({ createdAt: -1 }) // newest first
+        .skip(skip)
+        .limit(limit)
+        .lean(); // for faster read-only access
+      return transactions;
+    } catch (error) {
+      throw new Error(
+        `Error retrieving paginated transactions: ${error.message}`
+      );
+    }
+  }
+  async getAllTransactionsByUploaderPaginated(uploadedBy, skip, limit) {
+    try {
+      const transactions = await TransactionModel.find({
+        uploadedBy: { $regex: new RegExp(`^${uploadedBy}$`, "i") }, // case-insensitive match
+      })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
+      return transactions;
+    } catch (error) {
+      throw new Error(
+        `Error retrieving paginated transactions by uploader: ${error.message}`
+      );
+    }
+  }
+  async countAllTransactionsByUploader(uploadedBy) {
+    try {
+      return await TransactionModel.countDocuments({
+        uploadedBy: { $regex: new RegExp(`^${uploadedBy}$`, "i") },
+      });
+    } catch (error) {
+      throw new Error(
+        `Error counting transactions by uploader: ${error.message}`
+      );
+    }
+  }
+  async getTransactions(query, skip, limit) {
+    try {
+      return await TransactionModel.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+    } catch (error) {
+      throw new Error("Error fetching transactions: " + error.message);
+    }
+  }
+  async countTransactions(query) {
+    try {
+      return await TransactionModel.countDocuments(query);
+    } catch (error) {
+      throw new Error("Error counting transactions: " + error.message);
+    }
+  }
+  async countAllTransactions() {
+    try {
+      return await TransactionModel.countDocuments();
+    } catch (error) {
+      throw new Error(`Error counting transactions: ${error.message}`);
+    }
+  }
+
   async getTotalDepositByTransferByPaymentDate(startDate, endDate) {
     try {
       const totalDepositTransactions = await TransactionModel.find({
-        type: 'deposit',
+        type: "deposit",
         modeOfPayment: "transfer",
-        paymentDate: { $gte: startDate, $lt: endDate }
+        paymentDate: { $gte: startDate, $lt: endDate },
       });
 
-      console.log("Hello World")
-      console.log(totalDepositTransactions)
+      console.log("Hello World");
+      console.log(totalDepositTransactions);
 
-      let totalDepositAmount = 0
-      totalDepositTransactions.forEach(transaction => {
-        totalDepositAmount += transaction.amount
-      })
-      
+      let totalDepositAmount = 0;
+      totalDepositTransactions.forEach((transaction) => {
+        totalDepositAmount += transaction.amount;
+      });
+
       if (totalDepositTransactions.length > 0) {
         return totalDepositAmount;
       } else {
         return 0;
       }
     } catch (error) {
-      throw new Error(`Error calculating total deposit amount: ${error.message}`);
+      throw new Error(
+        `Error calculating total deposit amount: ${error.message}`
+      );
     }
   }
 
@@ -156,15 +223,15 @@ async createWithdrawal(transactionData) {
       const totalDepositAmount = await TransactionModel.aggregate([
         {
           $match: {
-            type: 'deposit',
-            modeOfPayment: 'cash',
+            type: "deposit",
+            modeOfPayment: "cash",
             paymentDate: { $gte: startDate, $lt: endDate },
           },
         },
         {
           $group: {
             _id: null,
-            total: { $sum: '$amount' },
+            total: { $sum: "$amount" },
           },
         },
       ]);
@@ -175,7 +242,9 @@ async createWithdrawal(transactionData) {
         return 0;
       }
     } catch (error) {
-      throw new Error(`Error retrieving total deposit transactions by cash by payment date: ${error.message}`);
+      throw new Error(
+        `Error retrieving total deposit transactions by cash by payment date: ${error.message}`
+      );
     }
   }
   async getTotalWithdrawalsByCashByPaymentDate(startDate, endDate) {
@@ -183,26 +252,28 @@ async createWithdrawal(transactionData) {
       const totalWithdrawalsAmount = await TransactionModel.aggregate([
         {
           $match: {
-            type: 'withdrawal',
-            modeOfPayment: 'cash',
+            type: "withdrawal",
+            modeOfPayment: "cash",
             paymentDate: { $gte: startDate, $lt: endDate },
           },
         },
         {
           $group: {
             _id: null,
-            total: { $sum: '$amount' },
+            total: { $sum: "$amount" },
           },
         },
       ]);
-      console.log(totalWithdrawalsAmount)
+      console.log(totalWithdrawalsAmount);
       if (totalWithdrawalsAmount.length > 0) {
         return totalWithdrawalsAmount[0].total;
       } else {
         return 0;
       }
     } catch (error) {
-      throw new Error(`Error retrieving total withdrawal transactions by cash by payment date: ${error.message}`);
+      throw new Error(
+        `Error retrieving total withdrawal transactions by cash by payment date: ${error.message}`
+      );
     }
   }
 
@@ -211,16 +282,16 @@ async createWithdrawal(transactionData) {
       const totalWithdrawalsAmount = await TransactionModel.aggregate([
         {
           $match: {
-            type: 'withdrawal',
+            type: "withdrawal",
             // choose: 'Debit',
-            modeOfPayment: 'transfer',
+            modeOfPayment: "transfer",
             paymentDate: { $gte: startDate, $lt: endDate },
           },
         },
         {
           $group: {
             _id: null,
-            total: { $sum: '$amount' },
+            total: { $sum: "$amount" },
           },
         },
       ]);
@@ -231,7 +302,9 @@ async createWithdrawal(transactionData) {
         return 0;
       }
     } catch (error) {
-      throw new Error(`Error retrieving total withdrawal transactions by transfer by payment date: ${error.message}`);
+      throw new Error(
+        `Error retrieving total withdrawal transactions by transfer by payment date: ${error.message}`
+      );
     }
   }
   // New method to retrieve all withdrawal transactions by payment date
@@ -239,7 +312,7 @@ async createWithdrawal(transactionData) {
     try {
       // Query withdrawal transactions within the provided date range
       const transactions = await TransactionModel.find({
-        type: 'withdrawal',
+        type: "withdrawal",
         paymentDate: {
           $gte: startDate,
           $lte: endDate,
@@ -248,7 +321,9 @@ async createWithdrawal(transactionData) {
 
       return transactions;
     } catch (error) {
-      throw new Error(`Error retrieving all withdrawal transactions by payment date: ${error.message}`);
+      throw new Error(
+        `Error retrieving all withdrawal transactions by payment date: ${error.message}`
+      );
     }
   }
   async getLoansDepositedByTransfer(startDate, endDate) {
@@ -260,7 +335,7 @@ async createWithdrawal(transactionData) {
           $lte: endDate,
         },
       };
-  
+
       // Query the database to find loans that are "deposits" via transfer and within the specified date range
       const transferDepositLoans = await LoanModel.find({
         $and: [
@@ -269,13 +344,13 @@ async createWithdrawal(transactionData) {
           dateRangeQuery,
         ],
       });
-  
+
       // Calculate the total deposit amount
       const totalDepositAmount = transferDepositLoans.reduce(
         (total, loan) => total + loan.amount,
         0
       );
-  
+
       return totalDepositAmount;
     } catch (error) {
       throw error;
@@ -287,12 +362,14 @@ async createWithdrawal(transactionData) {
 
       return transactions;
     } catch (error) {
-      throw new Error(`Error retrieving transactions for customer: ${error.message}`);
+      throw new Error(
+        `Error retrieving transactions for customer: ${error.message}`
+      );
     }
   }
   async getAllTransactions() {
     try {
-      console.log("Hello World!")
+      console.log("Hello World!");
       const transactions = await TransactionModel.find();
 
       return transactions;
@@ -303,23 +380,56 @@ async createWithdrawal(transactionData) {
   async getAllTransactionsByCash() {
     try {
       // Query the database for all transactions with modeOfPayment set to 'cash'
-      const cashTransactions = await TransactionModel.find({ modeOfPayment: 'cash' });
+      const cashTransactions = await TransactionModel.find({
+        modeOfPayment: "cash",
+      });
 
       return cashTransactions;
-    } catch (error) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-      throw new Error(`Error retrieving transactions by cash: ${error.message}`);
+    } catch (error) {
+      throw new Error(
+        `Error retrieving transactions by cash: ${error.message}`
+      );
     }
   }
+
+  async getAllTransactionsByCollectorPaginated(collectedBy, skip, limit) {
+    try {
+      const transactions = await TransactionModel.find({ collectedBy })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
+      return transactions;
+    } catch (error) {
+      throw new Error(
+        `Error retrieving paginated transactions by collector: ${error.message}`
+      );
+    }
+  }
+
+  async countAllTransactionsByCollector(collectedBy) {
+    try {
+      return await TransactionModel.countDocuments({ collectedBy });
+    } catch (error) {
+      throw new Error(
+        `Error counting transactions by collector: ${error.message}`
+      );
+    }
+  }
+
   async getAllTransactionsByTransfer() {
     try {
       // Query the database for all transactions with modeOfPayment set to 'transfer'
       const transferTransactions = await TransactionModel.find({
-        modeOfPayment: 'transfer',
+        modeOfPayment: "transfer",
       });
 
       return transferTransactions;
     } catch (error) {
-      throw new Error(`Error retrieving transactions by transfer: ${error.message}`);
+      throw new Error(
+        `Error retrieving transactions by transfer: ${error.message}`
+      );
     }
   }
   async getAllTransactionsByCollector(collectedBy) {
@@ -331,6 +441,5 @@ async createWithdrawal(transactionData) {
     }
   }
 }
-
 
 module.exports = new TransactionService();

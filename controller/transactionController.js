@@ -596,23 +596,40 @@ class TransactionController {
   }
 
 
-  async getAllTransactions(req, res) {
-    try {
-      const transactions = await TransactionService.getAllTransactions();
-  
-      return res.status(200).json({
-        success: true,
-        message: "All transactions retrieved successfully",
-        data: transactions,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error retrieving all transactions",
-        error: error.message,
-      });
-    }
+async getAllTransactions(req, res) {
+  try {
+    // Default values if none provided
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    // Calculate skip value
+    const skip = (page - 1) * limit;
+
+    // Fetch paginated data and total count
+    const [transactions, total] = await Promise.all([
+      TransactionService.getAllTransactionsPaginated(skip, limit),
+      TransactionService.countAllTransactions()
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Transactions retrieved successfully",
+      data: transactions,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error retrieving transactions",
+      error: error.message
+    });
+  }
 }
+
 async getAllTransactionsByCash(req, res) {
   try {
     // Call the service to get all transactions with modeOfPayment set to 'cash'
@@ -650,35 +667,106 @@ async getAllTransactionsByTransfer(req, res) {
     });
   }
 }
-async getAllTransactionsByCollector(req, res) {
-  try {
-    const { collectedBy } = req.query;
+ async getAllTransactionsByUploader(req, res) {
+    try {
+      const { uploadedBy, page = 1, limit = 50, startDate, endDate } = req.query;
 
-    // Check if collectedBy is provided
-    if (!collectedBy) {
-      return res.status(400).json({
+      if (!uploadedBy) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide uploadedBy in query params",
+        });
+      }
+
+      const pageNumber = parseInt(page);
+      const limitNumber = parseInt(limit);
+      const skip = (pageNumber - 1) * limitNumber;
+
+      const query = { uploadedBy };
+
+      // ✅ Filter by date range (if provided)
+      if (startDate && endDate) {
+        query.paymentDate = {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        };
+      }
+
+      // Get total and paginated results
+      const [transactions, total] = await Promise.all([
+        TransactionService.getTransactions(query, skip, limitNumber),
+        TransactionService.countTransactions(query),
+      ]);
+
+      res.status(200).json({
+        success: true,
+        message: "Transactions retrieved successfully",
+        data: transactions,
+        pagination: {
+          total,
+          page: pageNumber,
+          limit: limitNumber,
+          totalPages: Math.ceil(total / limitNumber),
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
         success: false,
-        message: 'Please provide a collectedBy value for the search.',
+        message: "Error retrieving transactions by uploader",
+        error: error.message,
       });
     }
-
-    // Call the service method to retrieve all transactions with a specific collectedBy value
-    const transactions = await TransactionService.getAllTransactionsByCollector(collectedBy);
-
-    return res.status(200).json({
-      success: true,
-      message: 'Transactions retrieved successfully',
-      data: transactions,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Error retrieving transactions by collector',
-      error: error.message,
-    });
   }
-}
+ async getAllTransactionsByCollector(req, res) {
+    try {
+      const { collectedBy, page = 1, limit = 50, startDate, endDate } = req.query;
 
+      if (!collectedBy) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide collectedBy in query params",
+        });
+      }
+
+      const pageNumber = parseInt(page);
+      const limitNumber = parseInt(limit);
+      const skip = (pageNumber - 1) * limitNumber;
+
+      const query = { collectedBy };
+
+      // ✅ Filter by date range (if provided)
+      if (startDate && endDate) {
+        query.paymentDate = {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        };
+      }
+
+      // Get total and paginated results
+      const [transactions, total] = await Promise.all([
+        TransactionService.getTransactions(query, skip, limitNumber),
+        TransactionService.countTransactions(query),
+      ]);
+
+      res.status(200).json({
+        success: true,
+        message: "Transactions retrieved successfully",
+        data: transactions,
+        pagination: {
+          total,
+          page: pageNumber,
+          limit: limitNumber,
+          totalPages: Math.ceil(total / limitNumber),
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Error retrieving transactions by collector",
+        error: error.message,
+      });
+    }
+  }
 
   async getAllTransactionsByCustomer(req, res) {
     try {
