@@ -222,16 +222,83 @@ class TransactionController {
       });
     }
   }
-  async getAllWithdrawals(req, res) {
-    // Call the service to get all withdrawal transactions
-    const withdrawals = await TransactionService.getAllWithdrawals();
+async getAllWithdrawals(req, res) {
+  try {
+    // Get parameters from query string
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const { startDate, endDate, modeOfPayment, collectedBy, uploadedBy } = req.query;
+    
+    // Validate pagination parameters
+    if (page < 1 || limit < 1 || limit > 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid pagination parameters. Page must be ≥ 1, limit must be between 1-100",
+      });
+    }
+
+    const skip = (page - 1) * limit;
+
+    // Build filter object
+    const filter = { type: "withdrawal" };
+    
+    // Add date filter if provided
+    if (startDate && endDate) {
+      filter.paymentDate = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
+    }
+    
+    // Add modeOfPayment filter if provided
+    if (modeOfPayment && ['cash', 'transfer'].includes(modeOfPayment)) {
+      filter.modeOfPayment = modeOfPayment;
+    }
+    
+    // Add collectedBy filter if provided
+    if (collectedBy) {
+      filter.collectedBy = { $regex: collectedBy, $options: "i" };
+    }
+    
+    // Add uploadedBy filter if provided
+    if (uploadedBy) {
+      filter.uploadedBy = { $regex: uploadedBy, $options: "i" };
+    }
+
+    // Call the service with filters
+    const [withdrawals, total] = await Promise.all([
+      TransactionService.getAllWithdrawalsPaginated(filter, skip, limit),
+      TransactionService.countAllWithdrawals(filter)
+    ]);
 
     return res.status(200).json({
       success: true,
-      message: "All withdrawal transactions retrieved successfully",
+      message: "Withdrawal transactions retrieved successfully",
       data: withdrawals,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: Math.ceil(total / limit),
+        hasNext: page < Math.ceil(total / limit),
+        hasPrev: page > 1
+      },
+      filters: {
+        startDate,
+        endDate,
+        modeOfPayment,
+        collectedBy,
+        uploadedBy
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error retrieving withdrawal transactions",
+      error: error.message,
     });
   }
+}
   async getWithdrawalById(req, res) {
     try {
       const withdrawalId = req.params.withdrawalId;

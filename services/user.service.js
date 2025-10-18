@@ -7,11 +7,28 @@ class userService {
         return await userModel.create(user)
     }
 
-    // Edit a user
+    // Edit a user - FIXED to handle password hashing
     async update(id, userData) {
-        return await userModel.findByIdAndUpdate(id, userData, { 
-            new: true
-        })
+        if (userData.password) {
+            // If updating password, we need to use findById + save to trigger pre('save') middleware
+            const user = await userModel.findById(id);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            
+            // Update user fields
+            Object.keys(userData).forEach(key => {
+                user[key] = userData[key];
+            });
+            
+            // This will trigger the pre('save') middleware and hash the password
+            return await user.save();
+        } else {
+            // For non-password updates, use findByIdAndUpdate
+            return await userModel.findByIdAndUpdate(id, userData, { 
+                new: true
+            });
+        }
     }
 
     // Delete a user

@@ -15,35 +15,18 @@ class LoanService {
   async delete(filter) {
     return await LoanModel.deleteOne(filter); // Use deleteOne to delete a single document matching the filter
   }
-  async getLoans(page = 1, limit = 20) {
+  async getLoans() {
     try {
-      const skip = (page - 1) * limit;
-
-      // Fetch all loans sorted by newest first
-      const loans = await LoanModel.find({})
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(Number(limit));
-
-      const total = await LoanModel.countDocuments();
-
-      return {
-        loans,
-        pagination: {
-          total,
-          totalPages: Math.ceil(total / limit),
-          currentPage: Number(page),
-        },
-      };
+      const loans = await LoanModel.find(); // Find all loans in the database
+      return loans;
     } catch (error) {
       throw error;
     }
   }
-
   async update(filter, updateData) {
     return await LoanModel.updateOne(filter, updateData);
   }
-  
+
   async getLoansDepositedByCashAndPaymentDate(startDate, endDate) {
     try {
       // Create a date range query for the paymentDate field
@@ -56,10 +39,7 @@ class LoanService {
 
       // Query the database to find loans that are "deposits" and within the specified date range
       const depositLoans = await LoanModel.find({
-        $and: [
-          { type: "deposit" },
-          dateRangeQuery,
-        ],
+        $and: [{ type: "deposit" }, dateRangeQuery],
       });
 
       return depositLoans;
@@ -67,12 +47,12 @@ class LoanService {
       throw error;
     }
   }
-  
+
   async getOverdueLoans(currentDate) {
     try {
       // Find all loans with an "active" status and a repaymentDate in the past
       const overdueLoans = await LoanModel.find({
-        status: 'active', // Adjust this based on your loan status criteria
+        status: "active", // Adjust this based on your loan status criteria
         repaymentDate: { $lt: currentDate },
       });
 
@@ -85,19 +65,20 @@ class LoanService {
   async getDefaulters() {
     try {
       const currentDate = new Date().toISOString(); // Get the current date in ISO format
-  
+
       // Find all loans with an "active" status and a repaymentDate in the past
       const defaulters = await LoanModel.find({
-        status: 'active',
+        status: "active",
         repaymentDate: { $lt: currentDate },
       })
-      .sort({ repaymentDate: 1 }) // Sort by repaymentDate in ascending order
-      .populate('customer') // Populate the customer details
-      .exec();
-  
+        .sort({ repaymentDate: 1 }) // Sort by repaymentDate in ascending order
+        .populate("customer") // Populate the customer details
+        .exec();
+
       // Retrieve the next payment date from the sorted list
-      const nextPaymentDate = defaulters.length > 0 ? defaulters[0].repaymentDate : null;
-  
+      const nextPaymentDate =
+        defaulters.length > 0 ? defaulters[0].repaymentDate : null;
+
       return { defaulters, nextPaymentDate };
     } catch (error) {
       throw error;
@@ -208,30 +189,16 @@ class LoanService {
       throw new Error(`Error fetching loans by collector: ${error.message}`);
     }
   }
-  async getCustomerLoans(customerId, page = 1, limit = 20) {
-    try {
-      const skip = (page - 1) * limit;
 
-      // Fetch loans belonging to this customer, sorted by newest first
-      const loans = await LoanModel.find({ customer: customerId })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(Number(limit));
-
-      const total = await LoanModel.countDocuments({ customer: customerId });
-
-      return {
-        loans,
-        pagination: {
-          total,
-          totalPages: Math.ceil(total / limit),
-          currentPage: Number(page),
-        },
-      };
-    } catch (error) {
-      throw error;
-    }
+async getCustomerLoans(customerId) {
+  try {
+    const customerLoans = await LoanModel.find({ customer: customerId })
+      .sort({ createdAt: -1 }); // Add sorting here
+    return customerLoans;
+  } catch (error) {
+    throw error;
   }
+}
 
   // async getLoansTotals() {
   //   try {
@@ -280,39 +247,36 @@ class LoanService {
   //   };
   // }
 
-
   async getLoansTotals() {
     try {
       // Find all loans Given by the bank in the database
-      const loans = await LoanModel.find({ type: {$in: ["deposit", "disbursement"]} });
-      const repays = await LoanModel.find({ type: {$in: ["withdrawal"]} });
-  
+      const loans = await LoanModel.find({
+        type: { $in: ["deposit", "disbursement"] },
+      });
+      const repays = await LoanModel.find({ type: { $in: ["withdrawal"] } });
+
       let totalLoanRecieved = 0;
       let totalInterestAccured = 0;
       let totalLoanRepaid = 0;
-  
+
       loans.forEach((loan) => {
         totalLoanRecieved += parseFloat(loan.amount);
-         totalInterestAccured += parseFloat(loan.interestRate);
+        totalInterestAccured += parseFloat(loan.interestRate);
       });
-  
+
       repays.forEach((repay) => {
         totalLoanRepaid += parseFloat(repay.amount);
         // totalInterestAccured += loan.interestRate;
       });
 
-      
-  
       // totalLoanRecieved -= 18000000;  // Subtract 18,000,000 from totalLoanReceived
-  
+
       return { totalLoanRecieved, totalInterestAccured, totalLoanRepaid };
-  
     } catch (error) {
       throw error;
     }
   }
-  
-  
+
   // async findAndDeleteDuplicateLoans() {
   //   try {
   //     const loans = await LoanModel.find();
@@ -350,7 +314,7 @@ class LoanService {
   //   } catch (error) {
   //     throw error;
   //   }
-  // 
+  //
   async update(filter, updateData) {
     try {
       // Fetch the current loan data
@@ -360,11 +324,16 @@ class LoanService {
       }
 
       // Calculate the new balance based on the transaction type
-      let newBalance = currentLoan.totalLoanRecieved + currentLoan.totalInterestAccured - currentLoan.totalLoanRePaid;
-      if (updateData.type === 'deposit') {
-        newBalance += parseFloat(updateData.amount) + parseFloat(updateData.interestRate);
-      } else if (updateData.type === 'withdrawal') {
-        newBalance -= parseFloat(updateData.amount) + parseFloat(updateData.interestRate);
+      let newBalance =
+        currentLoan.totalLoanRecieved +
+        currentLoan.totalInterestAccured -
+        currentLoan.totalLoanRePaid;
+      if (updateData.type === "deposit") {
+        newBalance +=
+          parseFloat(updateData.amount) + parseFloat(updateData.interestRate);
+      } else if (updateData.type === "withdrawal") {
+        newBalance -=
+          parseFloat(updateData.amount) + parseFloat(updateData.interestRate);
       }
 
       // Update the loan with the new balance and other details
@@ -386,11 +355,6 @@ class LoanService {
       throw error;
     }
   }
-  
-  
-
 }
-
-
 
 module.exports = new LoanService();
