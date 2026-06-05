@@ -18,7 +18,8 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "*", // Replace * with the client's domain if necessary
+    origin: ["http://localhost:3000"],
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: [
       "Origin",
@@ -27,8 +28,7 @@ app.use(
       "Accept",
       "Authorization",
     ],
-    credentials: true,
-  }),
+  })
 );
 app.use(errorHandler)
 

@@ -41,7 +41,7 @@ const CustomerSchema = new mongoose.Schema(
       type: String,
       unique: true,
       minLength: 8,
-      maxLength: 11,
+      maxLength: 15,
     },
     spouseName: {
       type: String,

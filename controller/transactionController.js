@@ -1,5 +1,7 @@
 const TransactionService = require("../services/transactionService");
 const CustomerService = require("../services/customerService");
+const { sendSMS } = require("../services/smsService");
+
 
 class TransactionController {
   // Inside the createDeposit method
@@ -40,6 +42,11 @@ class TransactionController {
       await customer.save();
 
       const updatedBalance = customer.accountBalance;
+
+      await sendSMS(
+        customer.customersPhoneNo,
+        `Dear ${customer.name}, your account has been credited with NGN ${depositAmount}. Available Balance: NGN ${updatedBalance}.`,
+      );
 
        // Create a deposit transaction
       const depositTransaction = await TransactionService.create({
@@ -136,6 +143,11 @@ class TransactionController {
       await customer.save();
 
       const updatedBalance = customer.accountBalance;
+
+      await sendSMS(
+        customer.customersPhoneNo,
+        `Dear ${customer.name}, your account has been debited with NGN ${amount}. Available Balance: NGN ${updatedBalance}.`,
+      );
 
       // Create a withdrawal transaction with user information
       const withdrawalTransaction = await TransactionService.createWithdrawal({

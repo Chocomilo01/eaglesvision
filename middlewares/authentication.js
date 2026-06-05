@@ -4,7 +4,8 @@ dotenv.config();
 
 //user must sign in
 const authenticate = (req, res, next) => {
-  const token = req.headers["authorization"] && req.headers["authorization"].split(" ")[1];
+  const token =
+    req.headers["authorization"] && req.headers["authorization"].split(" ")[1];
 
   if (!token) {
     return res.status(401).send("Access denied. Not authenticated");
@@ -46,64 +47,73 @@ const authenticate = (req, res, next) => {
 // };
 //authorization & Permission "account Officer", "assistant manager", "dpo"
 const adminAuthorizer = (req, res, next) => {
-  const value = "superAdmin"
-  if (req.user.roles == value) next()
-  
-  else return res.status(401).json({
-    message: `Sorry your, Not an ${value}`, 
-    success: false
-  })
+  const value = "superAdmin";
+  if (req.user.roles == value) next();
+  else
+    return res.status(401).json({
+      message: `Sorry your, Not an ${value}`,
+      success: false,
+    });
 };
-//authorization & Permission
 const admin_managerAuthorizer = (req, res, next) => {
-  
-  const value = ["superAdmin", "manager"]
-  if (req.user.roles == value[0] || req.user.roles == value[1] ) next()
-  
-  else return res.status(401).json({
-    message: `Sorry your, Not an ${value}`, 
-    success: false
-  })
+  console.log("USER:", req.user);
+  if (!req.user) {
+    return res.status(401).json({
+      message: "User not authenticated",
+      success: false,
+    });
+  }
+
+  const value = ["superAdmin", "manager"];
+
+  if (req.user.roles === value[0] || req.user.roles === value[1]) {
+    return next();
+  }
+
+  return res.status(401).json({
+    message: `Sorry, you are not ${value.join(" or ")}`,
+    success: false,
+  });
 };
 //authorization & Permission
 const accountOfficerAuthorizer = (req, res, next) => {
-  const value = "accountOfficer"
-  if (req.user.roles == value) next()
-  
-  else return res.status(401).json({
-    message: `Sorry your, Not an ${value}`, 
-    success: false
-  })
+  const value = "accountOfficer";
+  if (req.user.roles == value) next();
+  else
+    return res.status(401).json({
+      message: `Sorry your, Not an ${value}`,
+      success: false,
+    });
 };
 //authorization & Permission
 const managerAuthorizer = (req, res, next) => {
-  const value = "manager"
-  if (req.user.roles == value) next()
-  
-  else return res.status(401).json({
-    message: `Sorry your, Not an ${value}`, 
-    success: false
-  })
+  const value = "manager";
+  if (req.user.roles == value) next();
+  else
+    return res.status(401).json({
+      message: `Sorry your, Not an ${value}`,
+      success: false,
+    });
 };
 //authorization & Permission
 const accountManagerAuthorizer = (req, res, next) => {
-  const value = "accountManager"
-  if (req.user.roles == value) next()
-  
-  else return res.status(401).json({
-    message: `Sorry your, Not an ${value}`, 
-    success: false
-  })
+  const value = "accountManager";
+  if (req.user.roles == value) next();
+  else
+    return res.status(401).json({
+      message: `Sorry your, Not an ${value}`,
+      success: false,
+    });
 };
 //authorization & Permission dpo
 const dpoAuthorizer = (req, res, next) => {
-  const value = "dpo"
-  if (req.user.roles == value) next()
-  
-  else return res.status(401).json({
-    message: `Sorry your, Not an ${value}`, 
-    success: false
-  })
+  const value = "dpo";
+  if (req.user.roles == value) next();
+  else
+    return res.status(401).json({
+      message: `Sorry your, Not an ${value}`,
+      success: false,
+    });
 };
 
 module.exports = {

@@ -1,20 +1,72 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const { adminAuthorizer, authenticate, admin_managerAuthorizer }  = require('../middlewares/authentication');
-const customerController = require('../controller/customerController');
-const validate = require('../middlewares/validate.middleware');
-const customerSchema = require('../schema/customer.schema');
+const {
+  authenticate,
+  adminAuthorizer,
+  admin_managerAuthorizer,
+} = require("../middlewares/authentication");
 
+const customerController = require("../controller/customerController");
+const validate = require("../middlewares/validate.middleware");
+const customerSchema = require("../schema/customer.schema");
 
-router.post('/', validate(customerSchema), customerController.createCustomer) // role : manager, DPO
-router.get('/', customerController.fetchCustomers) // Role : dpo
-router.get('/search', customerController.searchCustomers); // role: user
-router.get('/:id', customerController.fetchOneCustomer) // Everybodyz
-router.patch('/:id', admin_managerAuthorizer, adminAuthorizer, customerController.updateCustomer)
-router.delete('/:id', adminAuthorizer, customerController.deleteCustomer)
-router.get("/:customerId/transactions", customerController.getCustomerTransactions);
-//router.get("/:customerId/savings-transactions", customerController.getSavingsTransactions);
+/**
+ * Create Customer
+ * Roles: superAdmin, manager
+ */
+router.post(
+  "/",
+  authenticate,
+  admin_managerAuthorizer,
+  validate(customerSchema),
+  customerController.createCustomer,
+);
 
+/**
+ * Fetch All Customers
+ */
+router.get("/", authenticate, customerController.fetchCustomers);
 
- module.exports = router;
+/**
+ * Search Customers
+ */
+router.get("/search", authenticate, customerController.searchCustomers);
+
+/**
+ * Fetch One Customer
+ */
+router.get("/:id", authenticate, customerController.fetchOneCustomer);
+
+/**
+ * Update Customer
+ * Roles: superAdmin, manager
+ */
+router.patch(
+  "/:id",
+  authenticate,
+  admin_managerAuthorizer,
+  customerController.updateCustomer,
+);
+
+/**
+ * Delete Customer
+ * Role: superAdmin only
+ */
+router.delete(
+  "/:id",
+  authenticate,
+  adminAuthorizer,
+  customerController.deleteCustomer,
+);
+
+/**
+ * Customer Transactions
+ */
+router.get(
+  "/:customerId/transactions",
+  authenticate,
+  customerController.getCustomerTransactions,
+);
+
+module.exports = router;

@@ -13,7 +13,7 @@ const customerSchema = Joi.object({
     bankAccountNo: Joi.string().pattern(/^[0-9]+$/).min(10).max(20),
     bankAccountName: Joi.string().min(3).max(100),
     bankName: Joi.string().min(3).max(50),
-    customersPhoneNo: Joi.string().pattern(/^[0-9]+$/).min(8).max(11),
+    customersPhoneNo: Joi.string().pattern(/^[0-9]+$/).min(8).max(15),
     dateOfBirth: Joi.date(),
     placeOfBirth: Joi.string().min(3).max(100),
     occupation: Joi.string().min(3).max(100),

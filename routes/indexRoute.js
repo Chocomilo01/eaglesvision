@@ -13,8 +13,8 @@ router.get("/healthcheck", (req, res) => {
 });
 
 router.use('/users', userRoute)
-router.use("/customers",authenticate, customerRoutes);
-router.use("/transactions",authenticate, transactionRoutes);
+router.use("/customers",customerRoutes);
+router.use("/transactions", transactionRoutes);
 router.use("/loans",authenticate, loanRoutes);
 //router.use('/search', testmiddleware, searchRoute)
 
